@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+@section scripts {
+    <script charset="UTF-8" type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&mkt=en-GB"></script>
+    <script type="text/javascript">
+        var map = [];
+        const updateRate = 30;
+
+        function GetMap() {
+            $.ajaxSetup({ cache: false });
+            map = new Microsoft.Maps.Map(document.getElementById("mapDiv"),
+                               {
+                                   credentials: "ApfWme6djEwhx5JqGqyzMf8PrYvSmspgz_nsCamSsEab7AK46NNwhEGd840O1QH3",
+                                   center: new Microsoft.Maps.Location(51.45, -2.5833),
+                                   mapTypeId: Microsoft.Maps.MapTypeId.road,
+                                   zoom: 14
+                               });
+
+            (function worker() {
+                $.get('/Map/GetLocations', function (data) {
+
+                    map.entities.clear();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var dat = data[i];
+
+                        var readingTime = moment(dat.ReadingTime);
+
+                        var timeSinceReading = moment().diff(readingTime, "minutes");
+
+                        if (timeSinceReading >= 60)
+                            continue;
+
+                        var color = "text-success bg-success";
+
+                        if (timeSinceReading >= 40)
+                            color = "text-danger bg-danger";
+                        else if (timeSinceReading >= 20)
+                            color = "text-warning bg-warning";
+
+                        var content = "<div style='font-size:12px;font-weight:bold;border:solid 2px;width:45px;height:20px' class='" + color + "'>";
+                        if (dat.Callsign)
+                            content += dat.Callsign;
+                        else
+                            content += "WR???";
+
+                        content += "</div>";
+                        var options = { width: null, height: null, htmlContent: content, anchor: new Microsoft.Maps.Point(22.5, 10) };
+                        var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(dat.Latitude, dat.Longitude), options);
+
+                        map.entities.push(pin);
+                    }
+
+                    setTimeout(worker, updateRate * 1000);
+                })
+            })();
+        };
+
+        GetMap();
+    </script>
+
+}
+
+<div id="mapDiv" style="position: fixed; top: 50px; left: 0; right: 0; bottom:50px;"></div>
+<hr />
+<div class="pull-right" style="position: fixed; left: 0; right: 0; bottom:0;">
+    <div style='font-size:12px;font-weight:bold;border:solid 2px;display:inline' class="text-success bg-success">WR123</div>
+    <div style="display:inline">Received less than 20 minutes ago</div>
+    <div style='font-size:12px;font-weight:bold;border:solid 2px;display:inline' class="text-warning bg-warning">WR123</div>
+    <div style="display:inline">Received less than 40 minutes ago</div>
+    <div style='font-size:12px;font-weight:bold;border:solid 2px;display:inline' class="text-danger bg-danger">WR123</div>
+    <div style="display:inline">Received less than 60 minutes ago</div>
+</div>
