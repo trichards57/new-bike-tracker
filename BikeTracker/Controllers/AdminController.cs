@@ -126,14 +126,14 @@ namespace BikeTracker.Controllers
                 user.Email = model.EmailAddress;
 
                 var role = user.Roles.FirstOrDefault();
-                if (role == null)
-                {
-                    role = new IdentityUserRole();
-                    user.Roles.Add(role);
-                }
+                if (role != null)
+                    user.Roles.Remove(role);
 
+                role = new IdentityUserRole();
                 role.UserId = model.Id;
                 role.RoleId = model.RoleId;
+                user.Roles.Add(role);
+
 
                 dbContext.SaveChanges();
 
