@@ -32,6 +32,7 @@ namespace BikeTracker.Controllers
             }), JsonRequestBehavior.AllowGet);
         }
 
+        [AllowAnonymous]
         public ActionResult CheckIn(string imei, decimal lat, decimal lon, string time, string date)
         {
             var received = DateTimeOffset.ParseExact(string.Format("{0} {1}", date, time), "ddMMyy HHmmss.fff", CultureInfo.CurrentCulture);
