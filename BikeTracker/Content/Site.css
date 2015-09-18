@@ -22,3 +22,39 @@ select,
 textarea {
     max-width: 280px;
 }
+
+#mapDiv {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 90px;
+}
+
+.map-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 85px;
+}
+
+@media (min-width: 768px) {
+    #mapDiv {
+        bottom: 70px;
+    }
+
+    .map-footer {
+        height: 65px;
+    }
+}
+
+@media (min-width: 992px) {
+    #mapDiv {
+        bottom: 50px;
+    }
+
+    .map-footer {
+        height: 45px;
+    }
+}

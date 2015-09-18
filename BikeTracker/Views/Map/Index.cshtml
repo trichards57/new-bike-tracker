@@ -65,13 +65,28 @@
 
 }
 
-<div id="mapDiv" style="position: fixed; top: 50px; left: 0; right: 0; bottom:50px;"></div>
+<div id="mapDiv" ></div>
 <hr />
-<div class="pull-right" style="position: fixed; left: 0; right: 0; bottom:0;">
-    <div style='font-size:12px;font-weight:bold;border:solid 2px;display:inline' class="text-success bg-success">WR123</div>
-    <div style="display:inline">Received less than 20 minutes ago</div>
-    <div style='font-size:12px;font-weight:bold;border:solid 2px;display:inline' class="text-warning bg-warning">WR123</div>
-    <div style="display:inline">Received less than 40 minutes ago</div>
-    <div style='font-size:12px;font-weight:bold;border:solid 2px;display:inline' class="text-danger bg-danger">WR123</div>
-    <div style="display:inline">Received less than 60 minutes ago</div>
+<div class="map-footer pull-right">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <div style='font-size:12px;font-weight:bold;border:solid 2px;display:inline' class="text-success bg-success">WR123</div>
+                <div style="display:inline">Received less than 20 minutes ago</div>
+            </div>
+            <div class="col-sm-4">
+                <div style='font-size:12px;font-weight:bold;border:solid 2px;display:inline' class="text-warning bg-warning">WR123</div>
+                <div style="display:inline">Received less than 40 minutes ago</div>
+            </div>
+            <div class="col-sm-4">
+                <div style='font-size:12px;font-weight:bold;border:solid 2px;display:inline' class="text-danger bg-danger">WR123</div>
+                <div style="display:inline">Received less than 60 minutes ago</div>
+            </div>
+        </div>
+        <div class="row">
+            <footer class="col-md-12">
+                <p>&copy; @DateTime.Now.Year - Tony Richards</p>
+            </footer>
+        </div>
+    </div>
 </div>
