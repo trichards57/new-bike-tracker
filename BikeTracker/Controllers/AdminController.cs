@@ -1,11 +1,11 @@
 ﻿using BikeTracker.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Linq;
-using Microsoft.AspNet.Identity;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace BikeTracker.Controllers
 {

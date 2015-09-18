@@ -1,8 +1,9 @@
+using BikeTracker.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Data.Entity.Migrations;
+
 namespace BikeTracker.Migrations
 {
-    using Models;
-    using Microsoft.AspNet.Identity.EntityFramework;
-    using System.Data.Entity.Migrations;
 
     internal sealed class Configuration : DbMigrationsConfiguration<ApplicationDbContext>
     {
