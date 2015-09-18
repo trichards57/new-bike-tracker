@@ -39,6 +39,30 @@ textarea {
     height: 85px;
 }
 
+.map-footer-row {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.callsign-flag {
+    font-size: 12px;
+    font-weight: bold;
+    border: solid 2px;
+    display: inline;
+}
+
+.move-tool {
+    position: fixed;
+    left: 10px;
+    top: 100px;
+    z-index: 100;
+    background-color: white;
+    border: 1px solid black;
+    padding: 5px;
+    border-radius: 5px;
+}
+
 @media (min-width: 768px) {
     #mapDiv {
         bottom: 70px;
