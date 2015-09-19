@@ -199,6 +199,7 @@
     <Compile Include="Models\LocationModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IIMEIService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
