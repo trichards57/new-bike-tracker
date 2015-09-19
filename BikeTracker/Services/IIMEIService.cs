@@ -44,8 +44,8 @@ namespace BikeTracker.Services
             {
                 iToC = new IMEIToCallsign
                 {
-                    CallSign = callsign,
-                    IMEI = imei ?? "WR???",
+                    CallSign = callsign ?? "WR???",
+                    IMEI = imei,
                     Type = type ?? VehicleType.Unknown
                 };
 
