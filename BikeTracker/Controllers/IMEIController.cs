@@ -1,7 +1,7 @@
 ﻿using BikeTracker.Models;
-using System.Data.Entity;
-using System.Linq;
+using BikeTracker.Services;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace BikeTracker.Controllers
@@ -9,20 +9,27 @@ namespace BikeTracker.Controllers
     [Authorize(Roles = "IMEIAdmin,GeneralAdmin")]
     public class IMEIController : Controller
     {
-        private ApplicationDbContext dbContext = new ApplicationDbContext();
+        private IIMEIService imeiService;
 
-        // GET: IMEI
-        public ActionResult Index()
+        public IMEIController() : this(null) { }
+
+        public IMEIController(IIMEIService imeiService)
         {
-            return View(dbContext.IMEIToCallsigns.ToList());
+            this.imeiService = imeiService ?? new IMEIService();
         }
 
-        public ActionResult Details(int? id)
+        // GET: IMEI
+        public async Task<ActionResult> Index()
+        {
+            return View(await imeiService.GetAllAsync());
+        }
+
+        public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var imeiToCallsign = dbContext.IMEIToCallsigns.Find(id);
+            var imeiToCallsign = await imeiService.GetFromId(id.Value);
 
             if (imeiToCallsign == null)
                 return HttpNotFound();
@@ -36,49 +43,54 @@ namespace BikeTracker.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "IMEI, CallSign, Type")]IMEIToCallsign imeiToCallsign)
+        public async Task<ActionResult> Create(CreateIMEIToCallsignViewModel imeiToCallsign)
         {
             if (ModelState.IsValid)
             {
-                dbContext.IMEIToCallsigns.Add(imeiToCallsign);
-                dbContext.SaveChanges();
+                await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
                 return RedirectToAction("Index");
             }
 
             return View(imeiToCallsign);
         }
 
-        public ActionResult Edit(int? id)
+        public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var imeiToCallsign = dbContext.IMEIToCallsigns.Find(id);
+            var imeiToCallsign = await imeiService.GetFromId(id.Value);
             if (imeiToCallsign == null)
                 return HttpNotFound();
 
-            return View(imeiToCallsign);
+            var model = new CreateIMEIToCallsignViewModel
+            {
+                CallSign = imeiToCallsign.CallSign,
+                IMEI = imeiToCallsign.IMEI,
+                Type = imeiToCallsign.Type
+            };
+
+            return View(model);
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id, IMEI, CallSign, Type")]IMEIToCallsign imeiToCallsign)
+        public async Task<ActionResult> Edit(CreateIMEIToCallsignViewModel imeiToCallsign)
         {
             if (ModelState.IsValid)
             {
-                dbContext.Entry(imeiToCallsign).State = EntityState.Modified;
-                dbContext.SaveChanges();
+                await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
                 return RedirectToAction("Index");
             }
 
             return View(imeiToCallsign);
         }
 
-        public ActionResult Delete(int? id)
+        public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var iMEIToCallsign = dbContext.IMEIToCallsigns.Find(id);
+            var iMEIToCallsign = await imeiService.GetFromId(id.Value);
             if (iMEIToCallsign == null)
             {
                 return HttpNotFound();
@@ -89,20 +101,10 @@ namespace BikeTracker.Controllers
         // POST: LocationTracker/IMEIToCallsigns/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            var iMEIToCallsign = dbContext.IMEIToCallsigns.Find(id);
-            dbContext.IMEIToCallsigns.Remove(iMEIToCallsign);
-            dbContext.SaveChanges();
+            await imeiService.DeleteIMEIById(id);
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-                dbContext.Dispose();
-
-            base.Dispose(disposing);
         }
     }
 }

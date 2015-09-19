@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace BikeTracker.Services
 {
@@ -11,11 +10,13 @@ namespace BikeTracker.Services
     {
         Task<IEnumerable<IMEIToCallsign>> GetAllAsync();
         Task<IMEIToCallsign> GetFromIMEI(string imei);
+        Task<IMEIToCallsign> GetFromId(int id);
         Task RegisterCallsign(string imei, string callsign = null, VehicleType? type = null);
         Task DeleteIMEI(string imei);
+        Task DeleteIMEIById(int id);
     }
 
-    public class IMEIService : IIMEIService
+    public class IMEIService : IIMEIService, IDisposable
     {
         private ApplicationDbContext dataContext = new ApplicationDbContext();
 
@@ -69,6 +70,44 @@ namespace BikeTracker.Services
             }
 
             return iToC;
+        }
+
+        public async Task<IMEIToCallsign> GetFromId(int id)
+        {
+            return await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
+        }
+
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    dataContext.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+        }
+
+        public async Task DeleteIMEIById(int id)
+        {
+            var callsign = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
+            if (callsign != null)
+            {
+                dataContext.IMEIToCallsigns.Remove(callsign);
+                await dataContext.SaveChangesAsync();
+            }
+
         }
     }
 }
