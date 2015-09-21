@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 
 namespace BikeTracker.Models
@@ -25,6 +26,7 @@ namespace BikeTracker.Models
     {
         Unknown,
         Bike,
+        [Display(Name ="Foot Patrol")]
         FootPatrol,
         Ambulance,
         Other
@@ -34,6 +36,7 @@ namespace BikeTracker.Models
     {
         public int Id { get; set; }
         public string IMEI { get; set; }
+        [Display(Name = "Call Sign")]
         public string CallSign { get; set; }
         public VehicleType Type { get; set; }
     }
