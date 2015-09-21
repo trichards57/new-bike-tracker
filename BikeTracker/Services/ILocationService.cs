@@ -1,9 +1,7 @@
 ﻿using BikeTracker.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BikeTracker.Services
@@ -26,14 +24,14 @@ namespace BikeTracker.Services
             this.imeiService = imeiService ?? new IMEIService();
         }
 
-        public async Task<IEnumerable<LocationRecord>> GetLocations()
+        public Task<IEnumerable<LocationRecord>> GetLocations()
         {
             var reportedCallsigns = dataContext.LocationRecords.Select(l => l.Callsign).Distinct();
             var latestLocations = reportedCallsigns.Select(c => dataContext.LocationRecords.Where(l => l.Callsign == c)
                 .OrderByDescending(l => l.ReadingTime)
-                .FirstOrDefault()).Where(l=>l!=null);
+                .FirstOrDefault()).Where(l => l != null);
 
-            return latestLocations;
+            return Task.FromResult(latestLocations.AsEnumerable());
         }
 
         public async Task RegisterLocation(string imei, DateTimeOffset readingTime, DateTimeOffset receivedTime, decimal latitude, decimal longitude)

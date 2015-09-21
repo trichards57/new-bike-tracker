@@ -1,5 +1,4 @@
-﻿using BikeTracker.Models;
-using BikeTracker.Services;
+﻿using BikeTracker.Services;
 using System;
 using System.Globalization;
 using System.Linq;
