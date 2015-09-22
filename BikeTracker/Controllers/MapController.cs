@@ -40,11 +40,20 @@ namespace BikeTracker.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<ActionResult> CheckIn(string imei, decimal lat, decimal lon, string time, string date)
+        public async Task<ActionResult> CheckIn(string imei, decimal? lat, decimal? lon, string time, string date)
         {
+            if (lat == null || lon == null)
+                return Content("No Location Given");
+
+            if (time == null || date == null)
+                return Content("No Date or Time Given");
+
+            if (imei == null)
+                return Content("No IMEI Given");
+
             var readingTime = DateTimeOffset.ParseExact(string.Format("{0} {1}", date, time), "ddMMyy HHmmss.fff", CultureInfo.CurrentCulture);
 
-            await locationService.RegisterLocation(imei, readingTime, DateTimeOffset.Now, lat, lon);
+            await locationService.RegisterLocation(imei, readingTime, DateTimeOffset.Now, lat.Value, lon.Value);
 
             return Content("Location Receieved");
         }
