@@ -82,3 +82,13 @@ textarea {
         height: 45px;
     }
 }
+
+.full-width-button {
+    width: 100%;
+}
+
+.button-mini {
+    line-height: 1;
+    padding-top: 0;
+    margin-top: 4px;
+}

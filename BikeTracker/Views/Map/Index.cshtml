@@ -33,10 +33,30 @@
     </div>
 </div>
 <div class="move-tool">
+    <h4>Callsigns</h4>
     <form class="form-inline">
-        <div class="form-group-sm">
+        <div class="form-group">
             <label for="callsign-box">Jump to:</label>
             <select class="form-control" name="callsign-box" id="callsign-box"></select>
+        </div>
+        <div id="extra-controls" class="collapse">
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="hide-unknown" /> Hide unknown
+                    </label>
+                </div>
+            </div>
+            <div class="full-width-button">
+                <a href="#" role="button" id="refresh-button" class="btn btn-success full-width-button">
+                    Force Refresh
+                </a>
+            </div>
+        </div>
+        <div class="full-width-button">
+            <a data-toggle="collapse" href="#extra-controls" role="button" id="expand-button" class="btn btn-default full-width-button button-mini">
+                &hellip;
+            </a>
         </div>
     </form>
 </div>
