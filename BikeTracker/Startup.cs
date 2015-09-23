@@ -4,7 +4,7 @@ using Microsoft.Owin;
 using Owin;
 using System.Data.Entity;
 
-[assembly: OwinStartupAttribute(typeof(BikeTracker.Startup))]
+[assembly: OwinStartup(typeof(BikeTracker.Startup))]
 namespace BikeTracker
 {
     public partial class Startup

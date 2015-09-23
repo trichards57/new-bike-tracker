@@ -18,7 +18,12 @@ namespace BikeTracker.Models
         }
     }
 
-    public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationRole : IdentityRole
+    {
+        public string DisplayName { get; set; }
+    }
+
+    public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>
     {
         public static string GetRDSConnection()
         {
@@ -37,7 +42,7 @@ namespace BikeTracker.Models
         }
 
         public ApplicationDbContext()
-            : base(GetRDSConnection() ?? "DefaultConnection", throwIfV1Schema: false)
+            : base(GetRDSConnection() ?? "DefaultConnection")
         {
         }
 

@@ -30,7 +30,7 @@ namespace BikeTracker.Controllers
                 Id = u.Id,
                 UserName = u.UserName,
                 EmailAddress = u.Email,
-                Role = dbContext.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId).Name
+                Role = dbContext.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId).DisplayName
             });
 
             return View(users);
@@ -104,7 +104,7 @@ namespace BikeTracker.Controllers
                 EmailAddress = u.Email,
                 UserName = u.UserName,
                 RoleId = dbContext.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId).Id,
-                Roles = dbContext.Roles.Select(r => new SelectListItem { Text = r.Name, Value = r.Id }),
+                Roles = dbContext.Roles.Select(r => new SelectListItem { Text = r.DisplayName, Value = r.Id }),
             }).FirstOrDefault(u => u.Id == id);
 
             if (model == null)

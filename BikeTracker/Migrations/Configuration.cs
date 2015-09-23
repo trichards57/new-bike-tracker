@@ -16,22 +16,25 @@ namespace BikeTracker.Migrations
         protected override void Seed(ApplicationDbContext context)
         {
 
-            var ga = new IdentityRole
+            var ga = new ApplicationRole
             {
                 Id = "164F8F72-1D1D-4EFF-BCF8-09181A2F2301",
-                Name = "GeneralAdmin"
+                Name = "GeneralAdmin",
+                DisplayName = "General Administrator"
             };
             context.Roles.AddOrUpdate(
-                new IdentityRole
+                new ApplicationRole
                 {
                     Id = "373BCB10-EDF9-418C-8C05-3289DDF92F4F",
-                    Name = "Normal"
+                    Name = "Normal",
+                    DisplayName = "Normal User"
                 },
                 ga,
-                new IdentityRole
+                new ApplicationRole
                 {
                     Id = "FEF5DD3C-BCF5-4A11-9430-237F077594A5",
-                    Name = "IMEIAdmin"
+                    Name = "IMEIAdmin",
+                    DisplayName = "IMEI Administrator"
                 }
             );
 

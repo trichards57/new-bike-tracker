@@ -9,10 +9,10 @@ namespace BikeTracker.Models
     {
         public string Id { get; set; }
 
-        [ReadOnly(true)]
+        [ReadOnly(true), Display(Name ="User Name")]
         public string UserName { get; set; }
 
-        [Required, EmailAddress]
+        [Required, EmailAddress, Display(Name = "Email Address")]
         public string EmailAddress { get; set; }
 
         [ReadOnly(true)]
