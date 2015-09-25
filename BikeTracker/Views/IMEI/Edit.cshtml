@@ -1,18 +1,16 @@
 ﻿@model BikeTracker.Models.CreateIMEIToCallsignViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit IMEI Details";
 }
 
-<h2>Edit</h2>
+<h2>@ViewBag.Title</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>IMEI Details for Callsign</h4>
-        <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group">
