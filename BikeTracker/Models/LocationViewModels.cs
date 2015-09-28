@@ -7,7 +7,7 @@ namespace BikeTracker.Models
         [Required(AllowEmptyStrings = false)]
         public string IMEI { get; set; }
         [Required(AllowEmptyStrings = false), 
-            RegularExpression("^[A-Z]{2}((0[1-9])|[1-9]{2,3})$", ErrorMessage = "That doesn't look like a valid callsign.")]
+            RegularExpression("^[A-Z]{2}((0[1-9])|[1-9][0-9]{1,2})$", ErrorMessage = "That doesn't look like a valid callsign.")]
         public string CallSign { get; set; }
         public VehicleType Type { get; set; }
     }
