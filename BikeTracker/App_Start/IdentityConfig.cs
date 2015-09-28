@@ -1,10 +1,12 @@
-﻿using BikeTracker.Models;
+﻿using Amazon.SimpleEmail;
+using Amazon.SimpleEmail.Model;
+using BikeTracker.Models;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -12,9 +14,31 @@ namespace BikeTracker
 {
     public class EmailService : IIdentityMessageService
     {
+        private const string FromEmail = "tony.richards@bath.edu";
+
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
+            var subject = new Content(message.Subject);
+
+            var applicationMessage = message as ApplicationMessage;
+
+            var body = new Body();
+            body.Text = new Content(message.Body);
+            if (applicationMessage != null)
+                body.Html = new Content(applicationMessage.HtmlBody);
+
+            var toEmail = new Destination(new List<string> { message.Destination });
+
+            var email = new Message(subject, body);
+            var request = new SendEmailRequest(FromEmail, toEmail, email);
+            var region = Amazon.RegionEndpoint.EUWest1;
+
+            var access = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+
+            var client = new AmazonSimpleEmailServiceClient(region);
+
+            client.SendEmail(request);
+
             return Task.FromResult(0);
         }
     }
@@ -29,16 +53,16 @@ namespace BikeTracker
     }
 
     // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
-    public class ApplicationUserManager : UserManager<ApplicationUser>
+    public class ApplicationUserManager : UserManager<ApplicationUser, string>
     {
-        public ApplicationUserManager(IUserStore<ApplicationUser> store)
+        public ApplicationUserManager(IUserStore<ApplicationUser, string> store)
             : base(store)
         {
         }
 
-        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
+        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
-            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            var manager = new ApplicationUserManager(new ApplicationUserStore(context.Get<ApplicationDbContext>()));
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
@@ -77,7 +101,7 @@ namespace BikeTracker
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
-                manager.UserTokenProvider = 
+                manager.UserTokenProvider =
                     new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
             }
             return manager;

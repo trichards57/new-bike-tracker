@@ -1,4 +1,5 @@
 ﻿using BikeTracker.Models;
+using BikeTracker.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -76,9 +77,9 @@ namespace BikeTracker.Controllers
                     var id = UserManager.FindByEmail(model.Email).Id;
                     UserManager.AddToRole(user.Id, "Normal");
 
-                    ViewBag.Message = "User account set up.";
+                    await UserManager.GenerateEmailConfirmationEmailAsync(Url, id);
 
-                    return View("Info");
+                    return View("UserAdded", user);
                 }
                 AddErrors(result);
             }
