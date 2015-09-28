@@ -14,7 +14,7 @@ namespace BikeTracker
 {
     public class EmailService : IIdentityMessageService
     {
-        private const string FromEmail = "tony.richards@bath.edu";
+        private const string FromEmail = "Tony Richards <tony.richards@bath.edu>";
 
         public Task SendAsync(IdentityMessage message)
         {

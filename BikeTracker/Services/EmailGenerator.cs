@@ -29,5 +29,29 @@ namespace BikeTracker.Services
 
             await userManager.EmailService.SendAsync(msg);
         }
+
+        public async static Task GeneratePasswordResetEmailAsync(this ApplicationUserManager userManager, UrlHelper url, string id)
+        {
+            var token = await userManager.GeneratePasswordResetTokenAsync(id);
+            var callbackUrl = url.Action("ResetPassword", "Account", new { userId = id, code = token }, "http");
+
+            var html = "<html><body><p>Hi,</p><p>You've asked to reset your password on the <a href='http://sjatracker.elasticbeanstalk.com/'>SJA Tracker website</a>.</p>";
+            html += $"<p>Please click <a href='{callbackUrl}'>this link</a> to complete the reset.</p>";
+            html += "<p>Please let me know if you have any problems.</p><p>Kind regards,</p><p>Tony Richards</p>";
+
+            var text = "Hi,\n\nYou've asked to reset your password on http://sjatracker.elasticbeanstalk.com (the SJA Tracker website).\n\n";
+            text += $"Please go to {callbackUrl} to complete the reset.\n\n";
+            text += "Please let me know if you have any problems.\n\nKind regards,\n\nTony Richards";
+
+            var msg = new ApplicationMessage
+            {
+                Body = text,
+                HtmlBody = html,
+                Destination = await userManager.GetEmailAsync(id),
+                Subject = "SJA Tracker: Reset your password"
+            };
+
+            await userManager.EmailService.SendAsync(msg);
+        }
     }
 }
