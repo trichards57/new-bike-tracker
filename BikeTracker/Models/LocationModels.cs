@@ -6,8 +6,8 @@ namespace BikeTracker.Models
 {
     public partial class ApplicationDbContext
     {
-        public DbSet<IMEIToCallsign> IMEIToCallsigns { get; set; }
-        public DbSet<LocationRecord> LocationRecords { get; set; }
+        public virtual DbSet<IMEIToCallsign> IMEIToCallsigns { get; set; }
+        public virtual DbSet<LocationRecord> LocationRecords { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Mvc;
+﻿using BikeTracker.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using BikeTracker;
-using BikeTracker.Controllers;
+using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Controllers
 {
@@ -15,39 +10,32 @@ namespace BikeTracker.Tests.Controllers
         [TestMethod]
         public void Index()
         {
-            // Arrange
-            HomeController controller = new HomeController();
-
-            // Act
-            ViewResult result = controller.Index() as ViewResult;
-
-            // Assert
+            var controller = new HomeController();
+            var result = controller.Index() as ViewResult;
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
         public void About()
         {
-            // Arrange
-            HomeController controller = new HomeController();
-
-            // Act
-            ViewResult result = controller.About() as ViewResult;
-
-            // Assert
-            Assert.AreEqual("Your application description page.", result.ViewBag.Message);
+            var controller = new HomeController();
+            var result = controller.About() as ViewResult;
+            Assert.IsNotNull(result);
         }
 
         [TestMethod]
         public void Contact()
         {
-            // Arrange
-            HomeController controller = new HomeController();
+            var controller = new HomeController();
+            var result = controller.Contact() as ViewResult;
+            Assert.IsNotNull(result);
+        }
 
-            // Act
-            ViewResult result = controller.Contact() as ViewResult;
-
-            // Assert
+        [TestMethod]
+        public void Policies()
+        {
+            var controller = new HomeController();
+            var result = controller.Policies() as ViewResult;
             Assert.IsNotNull(result);
         }
     }
