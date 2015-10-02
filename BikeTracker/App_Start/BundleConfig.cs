@@ -2,9 +2,15 @@
 
 namespace BikeTracker
 {
+    /// <summary>
+    /// Setup class to configure the website's script bundles.
+    /// </summary>
     public class BundleConfig
     {
-        // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
+        /// <summary>
+        /// Registers the website's script bundles.
+        /// </summary>
+        /// <param name="bundles">The bundle collection to populate.</param>
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(

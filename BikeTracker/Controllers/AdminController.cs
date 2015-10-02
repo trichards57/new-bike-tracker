@@ -1,5 +1,4 @@
 ﻿using BikeTracker.Models;
-using BikeTracker.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -10,11 +9,23 @@ using System.Web.Mvc;
 
 namespace BikeTracker.Controllers
 {
+    /// <summary>
+    /// Controller that handles basic admin tasks.
+    /// </summary>
     [Authorize(Roles = "GeneralAdmin")]
     public class AdminController : Controller
     {
+        /// <summary>
+        /// The database context for this controller.
+        /// </summary>
         private ApplicationDbContext dbContext = new ApplicationDbContext();
 
+        /// <summary>
+        /// Gets the user manager.
+        /// </summary>
+        /// <value>
+        /// The user manager.
+        /// </value>
         public ApplicationUserManager UserManager
         {
             get
@@ -23,18 +34,53 @@ namespace BikeTracker.Controllers
             }
         }
 
-        // GET: Admin
-        public ActionResult Index()
+        /// <summary>
+        /// Begins the create user process.
+        /// </summary>
+        /// <returns>The Create view</returns>
+        /// @mapping GET /Admin/Create
+        /// @notanon
+        /// @role{GeneralAdmin}
+        [HttpGet]
+        public ActionResult Create()
         {
-            var users = dbContext.Users.Select(u => new UserAdminModel
-            {
-                Id = u.Id,
-                UserName = u.UserName,
-                EmailAddress = u.Email,
-                Role = dbContext.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId).DisplayName
-            });
+            return View();
+        }
 
-            return View(users);
+        /// <summary>
+        /// Continues the create user process using the provided user details.
+        /// </summary>
+        /// <param name="model">The model containing the user details.</param>
+        /// <returns>If successul, the UserAdded view, otherwise returns to the Create view.</returns>
+        /// <remarks>
+        /// Sets up the user and triggers the email that asks the user to confirm their
+        /// email address.
+        /// </remarks>
+        /// @mapping POST /Admin/Create
+        /// @notanon
+        /// @role{GeneralAdmin}
+        /// @antiforgery
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    var id = UserManager.FindByEmail(model.Email).Id;
+                    UserManager.AddToRole(user.Id, "Normal");
+
+                    await UserManager.GenerateEmailConfirmationEmailAsync(Url, id);
+
+                    return View("UserAdded", user);
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -59,41 +105,18 @@ namespace BikeTracker.Controllers
             return View(user);
         }
 
-        [HttpGet]
-        public ActionResult Create()
+        // GET: Admin
+        public ActionResult Index()
         {
-            return View();
-        }
-
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
+            var users = dbContext.Users.Select(u => new UserAdminModel
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    var id = UserManager.FindByEmail(model.Email).Id;
-                    UserManager.AddToRole(user.Id, "Normal");
+                Id = u.Id,
+                UserName = u.UserName,
+                EmailAddress = u.Email,
+                Role = dbContext.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId).DisplayName
+            });
 
-                    await UserManager.GenerateEmailConfirmationEmailAsync(Url, id);
-
-                    return View("UserAdded", user);
-                }
-                AddErrors(result);
-            }
-
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error);
-            }
+            return View(users);
         }
 
         [HttpGet]
@@ -135,13 +158,20 @@ namespace BikeTracker.Controllers
                 role.RoleId = model.RoleId;
                 user.Roles.Add(role);
 
-
                 dbContext.SaveChanges();
 
                 return RedirectToAction("Index");
             }
 
             return View(model);
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
         }
     }
 }

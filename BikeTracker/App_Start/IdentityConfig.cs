@@ -9,57 +9,79 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace BikeTracker
 {
-    public class EmailService : IIdentityMessageService
+    // Configure the application sign-in manager which is used in this application.
+    /// <summary>
+    /// Subclass of SignInManager, set up to use <see cref="ApplicationUser"/> instead of IdentityUser.
+    /// </summary>
+    public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
     {
-        private const string FromEmail = "Tony Richards <tony.richards@bath.edu>";
-
-        public Task SendAsync(IdentityMessage message)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationSignInManager"/> class.
+        /// </summary>
+        /// <param name="userManager">The user manager to use.</param>
+        /// <param name="authenticationManager">The authentication manager to use.</param>
+        public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
+            : base(userManager, authenticationManager)
         {
-            var subject = new Content(message.Subject);
+        }
 
-            var applicationMessage = message as ApplicationMessage;
+        /// <summary>
+        /// Creates an <see cref="ApplicationSignInManager"/>
+        /// </summary>
+        /// <param name="options">The options used to create the <see cref="ApplicationSignInManager"/>.</param>
+        /// <param name="context">The context that supports the <see cref="ApplicationSignInManager"/>.</param>
+        /// <returns>A new instance of <see cref="ApplicationSignInManager"/> configured using the specified options.</returns>
+        public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
+        {
+            return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
+        }
 
-            var body = new Body();
-            body.Text = new Content(message.Body);
-            if (applicationMessage != null)
-                body.Html = new Content(applicationMessage.HtmlBody);
-
-            var toEmail = new Destination(new List<string> { message.Destination });
-
-            var email = new Message(subject, body);
-            var request = new SendEmailRequest(FromEmail, toEmail, email);
-            var region = Amazon.RegionEndpoint.EUWest1;
-
-            var access = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
-
-            var client = new AmazonSimpleEmailServiceClient(region);
-
-            client.SendEmail(request);
-
-            return Task.FromResult(0);
+        /// <summary>
+        /// Creates a ClaimsIdentity from the provided <see cref="ApplicationUser"/>.
+        /// </summary>
+        /// <param name="user">The <see cref="ApplicationUser"/>.</param>
+        /// <returns>A ClaimsIdentity for the user.</returns>
+        public override Task<ClaimsIdentity> CreateUserIdentityAsync(ApplicationUser user)
+        {
+            return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
         }
     }
 
-    public class SmsService : IIdentityMessageService
-    {
-        public Task SendAsync(IdentityMessage message)
-        {
-            // Plug in your SMS service here to send a text message.
-            return Task.FromResult(0);
-        }
-    }
-
-    // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
+    /// <summary>
+    /// Subclass of UserManager, set up to use <see cref="ApplicationUser"/> instead of IdentityUser.
+    /// Used to support user management for the website.
+    /// </summary>
     public class ApplicationUserManager : UserManager<ApplicationUser, string>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationUserManager"/> class.
+        /// </summary>
+        /// <param name="store">The store used to keep user information.</param>
         public ApplicationUserManager(IUserStore<ApplicationUser, string> store)
             : base(store)
         {
         }
 
+        /// <summary>
+        /// Creates a new <see cref="ApplicationUserManager"/>.
+        /// </summary>
+        /// <param name="options">The options used to create the ApplicationUserManager.</param>
+        /// <param name="context">The data context used to store the user information.</param>
+        /// <returns>An <see cref="ApplicationUserManager"/> created using the given options.</returns>
+        /// <remarks>
+        /// Sets up the following basic options:
+        ///
+        /// * Non-alphanumeric usernames are allowed
+        /// * User email addresses must be unique
+        /// * Passwords must be at least 6 characters long, including a digit, a symbol and upper- and lower-case letters
+        /// * User lockout is enabled and defaults to 5 minutes lockout after 5 failed attempts
+        /// * <see cref="EmailService"/> is used to send emails
+        /// * DataProtectorTokenProvider is used to generate email confirmation tokens
+        /// </remarks>
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
             var manager = new ApplicationUserManager(new ApplicationUserStore(context.Get<ApplicationDbContext>()));
@@ -85,19 +107,7 @@ namespace BikeTracker
             manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
             manager.MaxFailedAccessAttemptsBeforeLockout = 5;
 
-            // Register two factor authentication providers. This application uses Phone and Emails as a step of receiving a code for verifying the user
-            // You can write your own provider and plug it in here.
-            manager.RegisterTwoFactorProvider("Phone Code", new PhoneNumberTokenProvider<ApplicationUser>
-            {
-                MessageFormat = "Your security code is {0}"
-            });
-            manager.RegisterTwoFactorProvider("Email Code", new EmailTokenProvider<ApplicationUser>
-            {
-                Subject = "Security Code",
-                BodyFormat = "Your security code is {0}"
-            });
             manager.EmailService = new EmailService();
-            manager.SmsService = new SmsService();
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
@@ -106,24 +116,124 @@ namespace BikeTracker
             }
             return manager;
         }
+
+        /// <summary>
+        /// Generates the email confirmation email.
+        /// </summary>
+        /// <param name="url">The URL helper from the controller asking for the email.</param>
+        /// <param name="id">The id of the user who needs their email confirmed.</param>
+        /// <returns>
+        /// Generates a boiler-plate email including the confirmation token to send to
+        /// the user.  Uses <see cref="ApplicationMessage"/> to generate both an HTML
+        /// and Plain Text email when <see cref="EmailService"/> is used.
+        /// </returns>
+        public virtual async Task GenerateEmailConfirmationEmailAsync(UrlHelper url, string id)
+        {
+            var token = await GenerateEmailConfirmationTokenAsync(id);
+            var callbackUrl = url.Action("ConfirmEmail", "Account", new { userId = id, code = token }, "http");
+
+            var html = "<html><body><p>Hi,</p><p>An account has been created for you on the <a href='http://sjatracker.elasticbeanstalk.com/'>SJA Tracker website</a>.</p>";
+            html += $"<p>Please click <a href='{callbackUrl}'>this link</a> to confirm your email address before logging in.</p>";
+            html += "<p>Please let me know if you have any problems.</p><p>Kind regards,</p><p>Tony Richards</p>";
+
+            var text = "Hi,\n\nAn account has been created for you on http://sjatracker.elasticbeanstalk.com (the SJA Tracker website).\n\n";
+            text += $"Please go to {callbackUrl} to confirm your email address before logging in.\n\n";
+            text += "Please let me know if you have any problems.\n\nKind regards,\n\nTony Richards";
+
+            var msg = new ApplicationMessage
+            {
+                Body = text,
+                HtmlBody = html,
+                Destination = await GetEmailAsync(id),
+                Subject = "SJA Tracker: Confirm your email address"
+            };
+
+            await EmailService.SendAsync(msg);
+        }
+
+        /// <summary>
+        /// Generates the password reset email.
+        /// </summary>
+        /// <param name="url">The URL helper from the controller asking for the email.</param>
+        /// <param name="id">The id of the user who needs their password resetting.</param>
+        /// <returns>
+        /// Generates a boiler-plate email including the confirmation token to send to
+        /// the user.  Uses <see cref="ApplicationMessage"/> to generate both an HTML
+        /// and Plain Text email when <see cref="EmailService"/> is used.
+        /// </returns>
+        public virtual async Task GeneratePasswordResetEmailAsync(UrlHelper url, string id)
+        {
+            var token = await GeneratePasswordResetTokenAsync(id);
+            var callbackUrl = url.Action("ResetPassword", "Account", new { userId = id, code = token }, "http");
+
+            var html = "<html><body><p>Hi,</p><p>You've asked to reset your password on the <a href='http://sjatracker.elasticbeanstalk.com/'>SJA Tracker website</a>.</p>";
+            html += $"<p>Please click <a href='{callbackUrl}'>this link</a> to complete the reset.</p>";
+            html += "<p>Please let me know if you have any problems.</p><p>Kind regards,</p><p>Tony Richards</p>";
+
+            var text = "Hi,\n\nYou've asked to reset your password on http://sjatracker.elasticbeanstalk.com (the SJA Tracker website).\n\n";
+            text += $"Please go to {callbackUrl} to complete the reset.\n\n";
+            text += "Please let me know if you have any problems.\n\nKind regards,\n\nTony Richards";
+
+            var msg = new ApplicationMessage
+            {
+                Body = text,
+                HtmlBody = html,
+                Destination = await GetEmailAsync(id),
+                Subject = "SJA Tracker: Reset your password"
+            };
+
+            await EmailService.SendAsync(msg);
+        }
     }
 
-    // Configure the application sign-in manager which is used in this application.
-    public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
+    /// <summary>
+    /// Service to handle sending emails from the website
+    /// </summary>
+    public class EmailService : IIdentityMessageService
     {
-        public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
-            : base(userManager, authenticationManager)
-        {
-        }
+        /// <summary>
+        /// The standard From email address to use for all emails.
+        /// </summary>
+        private const string FromEmail = "Tony Richards <tony.richards@bath.edu>";
 
-        public override Task<ClaimsIdentity> CreateUserIdentityAsync(ApplicationUser user)
+        /// <summary>
+        /// Asynchronously sends the provided IdentityMessage.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        /// <remarks>
+        /// Sends the provided message using Amazon's Simple Email Service Client.
+        ///
+        /// If it is passed on ApplicationMessage, it will use it to populate
+        /// both the HTML body and the plain text body.  Otherwise, it will only
+        /// populate the message body and let Amazon SES work out how to format
+        /// it properly.
+        ///
+        /// Requires environment variable AWS_ACCESS_KEY_ID.
+        /// </remarks>
+        public Task SendAsync(IdentityMessage message)
         {
-            return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
-        }
+            var subject = new Content(message.Subject);
 
-        public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
-        {
-            return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
+            var applicationMessage = message as ApplicationMessage;
+
+            var body = new Body();
+            body.Text = new Content(message.Body);
+            if (applicationMessage != null)
+                body.Html = new Content(applicationMessage.HtmlBody);
+
+            var toEmail = new Destination(new List<string> { message.Destination });
+
+            var email = new Message(subject, body);
+            var request = new SendEmailRequest(FromEmail, toEmail, email);
+            var region = Amazon.RegionEndpoint.EUWest1;
+
+            var access = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+
+            var client = new AmazonSimpleEmailServiceClient(region);
+
+            client.SendEmail(request);
+
+            return Task.FromResult(0);
         }
     }
 }

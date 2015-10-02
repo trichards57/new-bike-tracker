@@ -3,8 +3,15 @@ using System.Web.Routing;
 
 namespace BikeTracker
 {
+    /// <summary>
+    /// Setup class to configure the website's routes.
+    /// </summary>
     public class RouteConfig
     {
+        /// <summary>
+        /// Registers the main website's routes.
+        /// </summary>
+        /// <param name="routes">The routes collection to add to.</param>
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");

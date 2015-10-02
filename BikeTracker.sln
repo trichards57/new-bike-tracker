@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeTracker.Tests", "BikeTr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeTrackerWP", "BikeTrackerWP\BikeTrackerWP.csproj", "{0176BEB9-8EC3-47D1-A59F-F69E25DEE72E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9E8951EC-2557-499E-8CAC-CAC29785A7E9}"
+	ProjectSection(SolutionItems) = preProject
+		docs.log = docs.log
+		Doxyfile = Doxyfile
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
