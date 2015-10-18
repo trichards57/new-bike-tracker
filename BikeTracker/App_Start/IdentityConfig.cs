@@ -227,8 +227,6 @@ namespace BikeTracker
             var request = new SendEmailRequest(FromEmail, toEmail, email);
             var region = Amazon.RegionEndpoint.EUWest1;
 
-            var access = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
-
             var client = new AmazonSimpleEmailServiceClient(region);
 
             client.SendEmail(request);
