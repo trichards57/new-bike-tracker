@@ -1,5 +1,5 @@
 ﻿var map = [];
-const updateRate = 30;
+var updateRate = 30;
 var hideUnknown = false;
 var refreshTimeout = [];
 
