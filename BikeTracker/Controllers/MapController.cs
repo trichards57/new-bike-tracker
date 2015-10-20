@@ -11,12 +11,14 @@ namespace BikeTracker.Controllers
     public class MapController : Controller
     {
         private ILocationService locationService;
+        private IIMEIService imeiService;
 
-        public MapController() : this(null) { }
+        public MapController() : this(null, null) { }
 
-        public MapController(ILocationService locationService)
+        public MapController(ILocationService locationService, IIMEIService imeiService)
         {
             this.locationService = locationService ?? new LocationService();
+            this.imeiService = imeiService ?? new IMEIService();
         }
 
         // GET: Map
@@ -54,8 +56,9 @@ namespace BikeTracker.Controllers
             var readingTime = DateTimeOffset.ParseExact(string.Format("{0} {1}", date, time), "ddMMyy HHmmss.fff", CultureInfo.CurrentCulture);
 
             await locationService.RegisterLocation(imei, readingTime, DateTimeOffset.Now, lat.Value, lon.Value);
+            var callsign = await imeiService.GetFromIMEI(imei);
 
-            return Content("Location Receieved");
+            return Content($"Location Receieved from {callsign.CallSign}.");
         }
     }
 }
