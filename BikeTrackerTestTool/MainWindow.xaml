@@ -1,0 +1,45 @@
+﻿<Window x:Class="BikeTrackerTestTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BikeTrackerTestTool"
+        xmlns:vm="clr-namespace:BikeTrackerTestTool.ViewModel"
+        mc:Ignorable="d"
+        Title="Bike Tracker Test Tool" Width="250" SizeToContent="Height">
+    <Window.Resources>
+        <vm:MainViewModel x:Key="MainVM" />
+    </Window.Resources>
+    <Grid DataContext="{StaticResource MainVM}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <TextBlock FontSize="16" Grid.ColumnSpan="2" Foreground="#FF003399" Margin="5,5,5,0">Bike Tracker Test Tool</TextBlock>
+        <Label Grid.Row="1" Margin="5,0,0,0" VerticalAlignment="Bottom">Server Location</Label>
+        <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Locations}" SelectedItem="{Binding SelectedLocation}" Margin="0,5,5,0" Height="23" />
+        <Label Grid.Row="2" Margin="5,0,0,0" VerticalAlignment="Bottom">IMEI Number</Label>
+        <TextBox Text="{Binding IMEI}" Grid.Row="2" Grid.Column="1" Height="23" Margin="0,5,5,0"></TextBox>
+        <Label Grid.Row="3" Margin="5,0,0,0" VerticalAlignment="Bottom">Update Rate</Label>
+        <TextBox Text="{Binding UpdateRate}" Grid.Row="3" Grid.Column="1" Margin="0,5,5,0" Height="23"></TextBox>
+        <Label Grid.Row="4" Margin="5,0,0,0" VerticalAlignment="Bottom">Base Latitude</Label>
+        <TextBox Text="{Binding Latitude}" Grid.Row="4" Grid.Column="1" Margin="0,5,5,0" Height="23"></TextBox>
+        <Label Grid.Row="5" Margin="5,0,0,0" VerticalAlignment="Bottom">Base Longitude</Label>
+        <TextBox Text="{Binding Longitude}" Grid.Row="5" Grid.Column="1" Margin="0,5,5,0" Height="23"></TextBox>
+        <Button Grid.Row="6" Grid.ColumnSpan="2" Command="{Binding StartUpdate}" Margin="5,5,5,0" Height="23">Start Update</Button>
+        <Button Grid.Row="7" Grid.ColumnSpan="2" Command="{Binding StopUpdate}" Margin="5,5,5,0" Height="23">Stop Update</Button>
+        <Label Grid.Row="8" Margin="5,0">Server Response</Label>
+        <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding ResponseString}" Margin="0,5,5,0" />
+    </Grid>
+</Window>
