@@ -64,7 +64,7 @@ function refresh() {
             if (timeSinceReading >= 60)
                 continue;
 
-            if (hideUnknown && dat.Callsign.indexOf('?') > -1) 
+            if (hideUnknown && dat.Callsign.indexOf('?') > -1)
                 continue;
 
             var color = "text-success bg-success";
@@ -93,6 +93,11 @@ function refresh() {
         }
 
         refreshTimeout = setTimeout(refresh, updateRate * 1000);
+    }).fail(function (xhr) {
+        if (xhr.status == 401) // Unauthorised
+        {
+            location.reload(true); // Refresh the page, which will redirect to the login page.
+        }
     })
 }
 

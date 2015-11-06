@@ -45,6 +45,7 @@ namespace BikeTracker.Migrations
                 PasswordHash = "ANelm9QxQnz8ks1U5SR6ydJAOZR8082O7hvKvFzHRBeEuFqpF9M0973tgtxphYmUnQ==",
                 SecurityStamp = "58544c68-e03d-468f-838d-56cb86d017b6",
                 UserName = "tony.richards@sja.org.uk",
+                EmailConfirmed = true
             };
             u.Roles.Add(new IdentityUserRole { RoleId = ga.Id, UserId = u.Id });
 
