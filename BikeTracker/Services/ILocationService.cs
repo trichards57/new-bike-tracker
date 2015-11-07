@@ -10,6 +10,8 @@ namespace BikeTracker.Services
     {
         Task RegisterLocation(string imei, DateTimeOffset readingTime, DateTimeOffset receivedTime, decimal latitude, decimal longitude);
         Task<IEnumerable<LocationRecord>> GetLocations();
+        Task RegisterLandmark(string name, decimal latitude, decimal longitude, DateTimeOffset? expiry = null);
+        Task<IEnumerable<Landmark>> GetLandmarks();
     }
 
     public class LocationService : ILocationService, IDisposable
@@ -72,6 +74,27 @@ namespace BikeTracker.Services
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
+        }
+
+        public async Task RegisterLandmark(string name, decimal latitude, decimal longitude, DateTimeOffset? expiry = null)
+        {
+            var landmark = new Landmark
+            {
+                Name = name,
+                Latitude = latitude,
+                Longitude = longitude,
+                Expiry = expiry ?? DateTimeOffset.Now.AddDays(7)
+            };
+
+            dataContext.Landmarks.Add(landmark);
+            await dataContext.SaveChangesAsync();
+        }
+
+        public Task<IEnumerable<Landmark>> GetLandmarks()
+        {
+            var landmarks = dataContext.Landmarks.Where(l => l.Expiry >= DateTimeOffset.Now);
+
+            return Task.FromResult(landmarks.AsEnumerable());
         }
     }
 }

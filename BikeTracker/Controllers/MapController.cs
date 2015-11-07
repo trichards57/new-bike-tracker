@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -41,6 +42,13 @@ namespace BikeTracker.Controllers
             }), JsonRequestBehavior.AllowGet);
         }
 
+        public async Task<JsonResult> GetLandmarks()
+        {
+            var registeredLandmarks = await locationService.GetLandmarks();
+
+            return Json(registeredLandmarks, JsonRequestBehavior.AllowGet);
+        }
+
         [AllowAnonymous]
         public async Task<ActionResult> CheckIn(string imei, decimal? lat, decimal? lon, string time, string date)
         {
@@ -59,6 +67,16 @@ namespace BikeTracker.Controllers
             var callsign = await imeiService.GetFromIMEI(imei);
 
             return Content($"Location Receieved from {callsign.CallSign}.");
+        }
+
+        public async Task<ActionResult> AddLandmark(string name, decimal lat, decimal lon)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "name is missing");
+
+            await locationService.RegisterLandmark(name, lat, lon);
+
+            return new HttpStatusCodeResult(HttpStatusCode.Created);
         }
     }
 }

@@ -188,6 +188,10 @@
     <Compile Include="Migrations\201509231653004_RoleDisplayName.Designer.cs">
       <DependentUpon>201509231653004_RoleDisplayName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511070834351_LandmarksAndExpirary.cs" />
+    <Compile Include="Migrations\201511070834351_LandmarksAndExpirary.Designer.cs">
+      <DependentUpon>201511070834351_LandmarksAndExpirary.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModels.cs" />
@@ -293,6 +297,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201509231653004_RoleDisplayName.resx">
       <DependentUpon>201509231653004_RoleDisplayName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511070834351_LandmarksAndExpirary.resx">
+      <DependentUpon>201511070834351_LandmarksAndExpirary.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -8,6 +8,7 @@ namespace BikeTracker.Models
     {
         public virtual DbSet<IMEIToCallsign> IMEIToCallsigns { get; set; }
         public virtual DbSet<LocationRecord> LocationRecords { get; set; }
+        public virtual DbSet<Landmark> Landmarks { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -17,6 +18,10 @@ namespace BikeTracker.Models
 
             modelBuilder.Entity<IMEIToCallsign>().Property(o => o.IMEI).IsRequired();
             modelBuilder.Entity<IMEIToCallsign>().Property(o => o.CallSign).IsRequired().HasMaxLength(5);
+
+            modelBuilder.Entity<Landmark>().Property(o => o.Latitude).HasPrecision(18, 6);
+            modelBuilder.Entity<Landmark>().Property(o => o.Longitude).HasPrecision(18, 6);
+            modelBuilder.Entity<Landmark>().Property(o => o.Name).IsRequired().HasMaxLength(20);
 
             base.OnModelCreating(modelBuilder);
         }
@@ -50,5 +55,15 @@ namespace BikeTracker.Models
         public decimal Longitude { get; set; }
         public DateTimeOffset ReadingTime { get; set; }
         public DateTimeOffset ReceiveTime { get; set; }
+        public bool Expired { get; set; } = false;
+    }
+
+    public class Landmark
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal Latitude { get; set; }
+        public decimal Longitude { get; set; }
+        public DateTimeOffset Expiry { get; set; }
     }
 }
