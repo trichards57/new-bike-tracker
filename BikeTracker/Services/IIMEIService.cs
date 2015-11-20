@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BikeTracker.Services
@@ -25,6 +26,11 @@ namespace BikeTracker.Services
             var callsign = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
             if (callsign != null)
             {
+                var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == callsign.CallSign && l.Expired == false);
+
+                foreach (var l in oldLocations)
+                    l.Expired = true;
+
                 dataContext.IMEIToCallsigns.Remove(callsign);
                 await dataContext.SaveChangesAsync();
             }
@@ -36,6 +42,14 @@ namespace BikeTracker.Services
 
             if (iToC != null)
             {
+                if (iToC.CallSign != callsign)
+                {
+                    var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == iToC.CallSign && l.Expired == false);
+
+                    foreach (var l in oldLocations)
+                        l.Expired = true;
+                }
+
                 iToC.CallSign = callsign ?? iToC.CallSign;
                 iToC.Type = type ?? iToC.Type;
                 await dataContext.SaveChangesAsync();
@@ -104,6 +118,11 @@ namespace BikeTracker.Services
             var callsign = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
             if (callsign != null)
             {
+                var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == callsign.CallSign && l.Expired == false);
+
+                foreach (var l in oldLocations)
+                    l.Expired = true;
+
                 dataContext.IMEIToCallsigns.Remove(callsign);
                 await dataContext.SaveChangesAsync();
             }

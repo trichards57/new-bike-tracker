@@ -30,7 +30,7 @@ namespace BikeTracker.Services
         public Task<IEnumerable<LocationRecord>> GetLocations()
         {
             var reportedCallsigns = dataContext.LocationRecords.Select(l => l.Callsign).Distinct();
-            var latestLocations = reportedCallsigns.Select(c => dataContext.LocationRecords.Where(l => l.Callsign == c)
+            var latestLocations = reportedCallsigns.Select(c => dataContext.LocationRecords.Where(l => l.Callsign == c && l.Expired == false)
                 .OrderByDescending(l => l.ReadingTime)
                 .FirstOrDefault()).Where(l => l != null);
 
