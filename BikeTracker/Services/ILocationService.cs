@@ -102,7 +102,7 @@ namespace BikeTracker.Services
         {
             var landmark = dataContext.Landmarks.FirstOrDefault(l => l.Id == id);
             if (landmark != null)
-                landmark.Expiry = DateTimeOffset.Now.AddSeconds(-1);
+                landmark.Expiry = DateTimeOffset.Now.AddDays(-1);
 
             await dataContext.SaveChangesAsync();
         }
