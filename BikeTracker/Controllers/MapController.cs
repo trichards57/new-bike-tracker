@@ -34,6 +34,7 @@ namespace BikeTracker.Controllers
 
             return Json(reportedIMEIs.Select(r => new
             {
+                r.Id,
                 r.Callsign,
                 r.ReadingTime,
                 r.Latitude,
@@ -77,6 +78,13 @@ namespace BikeTracker.Controllers
             await locationService.RegisterLandmark(name, lat, lon);
 
             return new HttpStatusCodeResult(HttpStatusCode.Created);
+        }
+
+        public async Task<ActionResult> ClearLandmark(int id)
+        {
+            await locationService.ClearLandmark(id);
+
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
     }
 }

@@ -52,6 +52,7 @@ textarea {
     font-weight: bold;
     border: solid 2px;
     display: inline;
+    white-space: nowrap;
 }
 
 .move-tool {
@@ -64,6 +65,14 @@ textarea {
     padding: 5px;
     border-radius: 5px;
 }
+
+.alert-box {
+    position: relative;
+    z-index: 120;
+    padding: 5px;
+    border-radius: 5px;
+}
+
 
 @media (min-width: 768px) {
     #mapDiv {
@@ -89,8 +98,21 @@ textarea {
     width: 100%;
 }
 
+a.full-width-button {
+    margin-bottom: 3px;
+}
+
 .button-mini {
     line-height: 1;
     padding-top: 0;
     margin-top: 4px;
+}
+
+.small-bottom-margin {
+    margin-bottom: 5px;
+}
+
+.small-hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }

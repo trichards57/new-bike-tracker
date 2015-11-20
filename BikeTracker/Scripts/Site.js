@@ -2,6 +2,7 @@
 var updateRate = 30;
 var hideUnknown = false;
 var refreshTimeout = [];
+var fadeTime = 5;
 
 $(document).ready(function () {
     $('#callsign-box').change(function () {
@@ -21,6 +22,23 @@ $(document).ready(function () {
         });
     });
 
+    $('#delete-landmark').click(function () {
+        $('#landmark-box option:selected').each(function (i, s) {
+            var id = $(s).val();
+
+            if (id !== 'empty') {
+                var url = "Map/ClearLandmark?id=" + id;
+
+                $.get(url).done(function () {
+                    $('#landmark-delete-alert').addClass('in');
+                    setTimeout(function () { $('#landmark-delete-alert').removeClass('in'); }, fadeTime * 1000);
+                    setTimeout(function () { $('#landmark-delete-alert').addClass('collapse'); }, fadeTime * 1000 + 2);
+                    refresh();
+                })
+            }
+        });
+    })
+
     $('#hide-unknown').change(function (e) {
         hideUnknown = $('#hide-unknown').prop('checked');
         clearTimeout(refreshTimeout);
@@ -30,6 +48,42 @@ $(document).ready(function () {
     $('#refresh-button').click(function (e) {
         clearTimeout(refreshTimeout);
         refresh();
+    });
+
+    $('#landmarkSave').click(function (e) {
+        if ($('#landmarkName').val() == null || $('#landmarkName').val().trim() === '')
+            return;
+
+        var name = $('#landmarkName').val().trim();
+        var lat = $('#landmarkLatitude').val().trim();
+        var lon = $('#landmarkLongitude').val().trim();
+
+        var url = "Map/AddLandmark?name=" + name + "&lat=" + lat + "&lon=" + lon;
+
+        $('#landmarkModal').modal('hide');
+
+        $.get(url).done(function () {
+            $('#landmark-success-alert').addClass('in');
+            setTimeout(function () { $('#landmark-success-alert').removeClass('in'); }, fadeTime * 1000);
+            clearTimeout(refreshTimeout);
+            refresh();
+        }).fail(function () {
+            $('#landmark-fail-alert').addClass('in');
+            setTimeout(function () { $('#landmark-fail-alert').removeClass('in'); }, fadeTime * 1000);
+            clearTimeout(refreshTimeout);
+            refresh();
+        });
+    })
+
+    $('#landmarkName').on('input', function () {
+        if ($('#landmarkName').val() == null || $('#landmarkName').val().trim() === '')
+        {
+            $('#landmarkSave').prop('disabled', true).addClass('disabled');
+        }
+        else
+        {
+            $('#landmarkSave').prop('disabled', false).removeClass('disabled');
+        }
     });
 
     if (navigator.geolocation) {
@@ -48,6 +102,7 @@ function refresh() {
 
         map.entities.clear();
         $('#callsign-box').find('option').remove();
+        $('#landmark-box').find('option').remove();
         $('#callsign-box').append($('<option>', {
             value: 'empty',
             text: 'Pick Callsign'
@@ -74,7 +129,7 @@ function refresh() {
             else if (timeSinceReading >= 20)
                 color = "text-warning bg-warning";
 
-            var content = "<div class='callsign-flag " + color + "'>";
+            var content = "<div class='callsign-flag " + color + "' data-type='callsign' data-id='" + dat.Id + "'>";
             if (dat.Callsign)
                 content += dat.Callsign;
             else
@@ -93,6 +148,29 @@ function refresh() {
         }
 
         refreshTimeout = setTimeout(refresh, updateRate * 1000);
+
+        $.get('/Map/GetLandmarks', function (data) {
+            for (var i = 0; i < data.length; i++) {
+                var dat = data[i];
+
+                var content = "<div class='callsign-flag text-info bg-info data-type='landmark' data-id='" + dat.Id + "'>" + dat.Name + "</div>"
+                var options = { width: null, height: null, htmlContent: content, anchor: new Microsoft.Maps.Point(22.5, 10) };
+                var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(dat.Latitude, dat.Longitude), options);
+
+                map.entities.push(pin);
+
+                $('#landmark-box').append($('<option>', {
+                    value: dat.Id,
+                    text: dat.Name
+                }));
+            }
+        }).fail(function (xhr) {
+            if (xhr.status == 401) // Unauthorised
+            {
+                location.reload(true); // Refresh the page, which will redirect to the login page.
+            }
+        })
+
     }).fail(function (xhr) {
         if (xhr.status == 401) // Unauthorised
         {
@@ -100,6 +178,20 @@ function refresh() {
         }
     })
 }
+
+function ShowAddLandmark(e) {
+    if (e.targetType == 'map' && e.isPrimary) {
+        $('#landmarkName').val('');
+        $('#landmarkSave').prop('disabled', true).addClass('disabled');
+        $('#landmarkModal').modal('show');
+
+        var point = new Microsoft.Maps.Point(e.getX(), e.getY());
+        var loc = e.target.tryPixelToLocation(point);
+        $('#landmarkLatitude').val(loc.latitude)
+        $('#landmarkLongitude').val(loc.longitude);
+        e.handled = true;
+    }
+};
 
 function GetMap() {
     $.ajaxSetup({ cache: false });
@@ -110,6 +202,8 @@ function GetMap() {
                            mapTypeId: Microsoft.Maps.MapTypeId.road,
                            zoom: 14
                        });
+
+    Microsoft.Maps.Events.addHandler(map, 'dblclick', ShowAddLandmark);
 
     refresh();
 };
