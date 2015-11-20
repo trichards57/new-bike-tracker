@@ -116,3 +116,10 @@ a.full-width-button {
     margin-top: 5px;
     margin-bottom: 5px;
 }
+
+.callsign-flag > img {
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+    height: 12px;
+}

@@ -130,6 +130,26 @@ function refresh() {
                 color = "text-warning bg-warning";
 
             var content = "<div class='callsign-flag " + color + "' data-type='callsign' data-id='" + dat.Id + "'>";
+
+            switch (dat.Type)
+            {
+                case 1: // Bike
+                    content += "<img src='/Content/bike15.png' />";
+                    break;
+                case 2: // Foot Patrol
+                    content += "<img src='/Content/man-silhouette1.png' />";
+                    break;
+                case 3: // Ambulance
+                    content += "<img src='/Content/transport66.png' />";
+                    break;
+                case 4: // Other
+                    content += "<img src='/Content/medical96.png' />";
+                    break;
+                default: // Unknown type
+                    content += "<img src='/Content/question30.png' />";
+                    break;
+            }
+
             if (dat.Callsign)
                 content += dat.Callsign;
             else
