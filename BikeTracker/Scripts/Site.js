@@ -88,6 +88,15 @@ $(document).ready(function () {
         }
     });
 
+    $('#landmarkName').keydown(function () {
+        if ($('#landmarkName').val() == null || $('#landmarkName').val().trim() === '') {
+            $('#landmarkSave').prop('disabled', true).addClass('disabled');
+        }
+        else {
+            $('#landmarkSave').prop('disabled', false).removeClass('disabled');
+        }
+    });
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(centreLocation);
     }
