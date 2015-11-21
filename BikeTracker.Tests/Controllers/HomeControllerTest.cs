@@ -16,14 +16,6 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public void About()
-        {
-            var controller = new HomeController();
-            var result = controller.About() as ViewResult;
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
         public void Contact()
         {
             var controller = new HomeController();

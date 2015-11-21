@@ -83,6 +83,16 @@ namespace BikeTracker.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Deletes the user specified by <paramref name="id"/>.
+        /// </summary>
+        /// <param name="id">The user identifier to delete.</param>
+        /// <param name="collection">The details from the rest of the form.</param>
+        /// <returns>If the user exists, returns a redirect to the Index, otherwise a File Not Found error.</returns>
+        /// @mapping POST /Admin/Delete
+        /// @notanon
+        /// @role{GeneralAdmin}
+        /// @antiforgery
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Delete(string id, FormCollection collection)
         {
@@ -94,6 +104,14 @@ namespace BikeTracker.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Begins the user delete process.
+        /// </summary>
+        /// <param name="id">The user identifier to delete.</param>
+        /// <returns>If the user exists, the Delete view, otherwise File Not Found</returns>
+        /// @mapping GET /Admin/Delete
+        /// @notanon
+        /// @role{GeneralAdmin}
         [HttpGet]
         public ActionResult Delete(string id)
         {
@@ -105,7 +123,14 @@ namespace BikeTracker.Controllers
             return View(user);
         }
 
-        // GET: Admin
+        /// <summary>
+        /// Displays the root User Admin console
+        /// </summary>
+        /// <returns>The Index view which displays the given user.</returns>
+        /// @mapping GET /Admin/
+        /// @mapping GET /Admin/Index
+        /// @notanon
+        /// @role{GeneralAdmin}
         public ActionResult Index()
         {
             var users = dbContext.Users.Select(u => new UserAdminModel
@@ -119,6 +144,14 @@ namespace BikeTracker.Controllers
             return View(users);
         }
 
+        /// <summary>
+        /// Displays the user update screen.
+        /// </summary>
+        /// <param name="id">The identifier of the user to update.</param>
+        /// <returns>The Update view if the user exists, otherwise File Not Found.</returns>
+        /// @mapping GET /Admin/Update
+        /// @notanon
+        /// @role{GeneralAdmin}
         [HttpGet]
         public ActionResult Update(string id)
         {
@@ -137,6 +170,16 @@ namespace BikeTracker.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Updates the specified user with the given details.
+        /// </summary>
+        /// <param name="model">The new user information.</param>
+        /// <returns>A File Not Found if the specified user doesn't exist.  The Update view if the
+        /// update has failed validation, or the Index view if the update succeeds.</returns>
+        /// @mapping POST /Admin/Update
+        /// @notanon
+        /// @role{GeneralAdmin}
+        /// @antiforgery
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update(UserAdminModel model)
@@ -166,6 +209,10 @@ namespace BikeTracker.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Adds the provided IdentityResult errors to the ModelState at the global error.
+        /// </summary>
+        /// <param name="result">The IdentityResult that needs reflecting in the ModelState.</param>
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)

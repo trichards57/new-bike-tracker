@@ -6,24 +6,61 @@ using System.Web.Mvc;
 
 namespace BikeTracker.Controllers
 {
+    /// <summary>
+    /// Controller that deals with all of the IMEI to Callsign activities
+    /// </summary>
     [Authorize(Roles = "IMEIAdmin,GeneralAdmin")]
     public class IMEIController : Controller
     {
+        /// <summary>
+        /// The IMEI Service used to access the database
+        /// </summary>
         private IIMEIService imeiService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IMEIController"/> class.
+        /// </summary>
         public IMEIController() : this(null) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IMEIController"/> class.
+        /// </summary>
+        /// <param name="imeiService">The IMEI service to use.</param>
+        /// <remarks>
+        /// This overload is used to allow dependency injection for testing.
+        /// </remarks>
         public IMEIController(IIMEIService imeiService)
         {
             this.imeiService = imeiService ?? new IMEIService();
         }
 
-        // GET: IMEI
+        /// <summary>
+        /// Displays the IMEI Admin control panel
+        /// </summary>
+        /// <returns>The Index view</returns>
+        /// @mapping GET /IMEI/
+        /// @mapping GET /IMEI/Index
+        /// @notanon
+        /// @role{GeneralAdmin}
+        /// @role{IMEIAdmin}
         public async Task<ActionResult> Index()
         {
             return View(await imeiService.GetAllAsync());
         }
 
+        /// <summary>
+        /// Displays the details associated with an IMEI to Callsign record
+        /// </summary>
+        /// <param name="id">The id of the IMEI to Callsign record.</param>
+        /// <returns>
+        /// A Bad Request result if <paramref name="id"/> is not provided.
+        /// A File Not Found if no record is linked with the id.
+        /// Otherwise the Details view.
+        /// </returns>
+        /// @mapping GET /IMEI/Details
+        /// @notanon
+        /// @role{GeneralAdmin}
+        /// @role{IMEIAdmin}
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
