@@ -30,9 +30,9 @@ $(document).ready(function () {
                 var url = "Map/ClearLandmark?id=" + id;
 
                 $.get(url).done(function () {
-                    $('#landmark-delete-alert').addClass('in');
+                    $('#landmark-delete-alert').removeClass('collapse').addClass('in');
                     setTimeout(function () { $('#landmark-delete-alert').removeClass('in'); }, fadeTime * 1000);
-                    setTimeout(function () { $('#landmark-delete-alert').addClass('collapse'); }, fadeTime * 1000 + 2);
+                    setTimeout(function () { $('#landmark-delete-alert').addClass('collapse'); }, (fadeTime + 2) * 1000);
                     refresh();
                 })
             }
@@ -63,13 +63,15 @@ $(document).ready(function () {
         $('#landmarkModal').modal('hide');
 
         $.get(url).done(function () {
-            $('#landmark-success-alert').addClass('in');
+            $('#landmark-success-alert').addClass('in').removeClass('collapse');
             setTimeout(function () { $('#landmark-success-alert').removeClass('in'); }, fadeTime * 1000);
+            setTimeout(function () { $('#landmark-success-alert').addClass('collapse'); }, (fadeTime + 2) * 1000);
             clearTimeout(refreshTimeout);
             refresh();
         }).fail(function () {
-            $('#landmark-fail-alert').addClass('in');
+            $('#landmark-fail-alert').addClass('in').removeClass('collapse');
             setTimeout(function () { $('#landmark-fail-alert').removeClass('in'); }, fadeTime * 1000);
+            setTimeout(function () { $('#landmark-fail-alert').addClass('collapse'); }, (fadeTime + 2) * 1000);
             clearTimeout(refreshTimeout);
             refresh();
         });
