@@ -51,12 +51,12 @@ $(document).ready(function () {
     });
 
     $('#landmarkSave').click(function (e) {
-        if ($('#landmarkName').val() == null || $('#landmarkName').val().trim() === '')
+        if ($('#landmarkName').val() == null || $.trim($('#landmarkName').val()) === '')
             return;
 
-        var name = $('#landmarkName').val().trim();
-        var lat = $('#landmarkLatitude').val().trim();
-        var lon = $('#landmarkLongitude').val().trim();
+        var name = $.trim($('#landmarkName').val());
+        var lat = $.trim($('#landmarkLatitude').val());
+        var lon = $.trim($('#landmarkLongitude').val());
 
         var url = "Map/AddLandmark?name=" + name + "&lat=" + lat + "&lon=" + lon;
 
@@ -78,7 +78,7 @@ $(document).ready(function () {
     })
 
     $('#landmarkName').on('input', function () {
-        if ($('#landmarkName').val() == null || $('#landmarkName').val().trim() === '')
+        if ($('#landmarkName').val() == null || $.trim($('#landmarkName').val()) === '')
         {
             $('#landmarkSave').prop('disabled', true).addClass('disabled');
         }
@@ -89,7 +89,7 @@ $(document).ready(function () {
     });
 
     $('#landmarkName').keydown(function () {
-        if ($('#landmarkName').val() == null || $('#landmarkName').val().trim() === '') {
+        if ($('#landmarkName').val() == null || $.trim($('#landmarkName').val()) === '') {
             $('#landmarkSave').prop('disabled', true).addClass('disabled');
         }
         else {
