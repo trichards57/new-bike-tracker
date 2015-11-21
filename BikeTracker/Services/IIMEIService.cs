@@ -12,6 +12,7 @@ namespace BikeTracker.Services
         Task<IEnumerable<IMEIToCallsign>> GetAllAsync();
         Task<IMEIToCallsign> GetFromIMEI(string imei);
         Task<IMEIToCallsign> GetFromId(int id);
+        Task<IQueryable<IMEIToCallsign>> GetFromIdQueryable(int id);
         Task RegisterCallsign(string imei, string callsign = null, VehicleType? type = null);
         Task DeleteIMEI(string imei);
         Task DeleteIMEIById(int id);
@@ -127,6 +128,11 @@ namespace BikeTracker.Services
                 await dataContext.SaveChangesAsync();
             }
 
+        }
+
+        public Task<IQueryable<IMEIToCallsign>> GetFromIdQueryable(int id)
+        {
+            return Task.FromResult(dataContext.IMEIToCallsigns.Where(i => i.Id == id));
         }
     }
 }
