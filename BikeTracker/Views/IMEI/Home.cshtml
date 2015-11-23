@@ -1,0 +1,29 @@
+﻿<div>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table table-responsive">
+        <tr>
+            <th>IMEI</th>
+            <th>Call Sign</th>
+            <th>Type</th>
+            <th></th>
+        </tr>
+
+        <tr ng-repeat="imei in imeis">
+            <td>
+                {{imei.IMEI}}
+            </td>
+            <td>
+                {{imei.CallSign}}
+            </td>
+            <td>
+                {{imei.Type}}
+            </td>
+            <td>
+                <a href="#/IMEIs/Edit/{{imei.Id}}">Edit</a> | <a href="#/IMEIs/Delete/{{imei.Id}}">Delete</a>
+            </td>
+        </tr>
+
+    </table>
+</div>

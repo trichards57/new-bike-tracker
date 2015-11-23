@@ -34,6 +34,11 @@ namespace BikeTracker.Controllers
             this.imeiService = imeiService ?? new IMEIService();
         }
 
+        public ActionResult Home()
+        {
+            return PartialView();
+        }
+
         /// <summary>
         /// Displays the IMEI Admin control panel
         /// </summary>
