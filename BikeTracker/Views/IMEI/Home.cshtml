@@ -1,7 +1,6 @@
 ﻿<div>
   <nav class="navbar navbar-default sub-navbar">
     <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
           <span class="sr-only">Toggle navigation</span>
@@ -11,8 +10,6 @@
         </button>
         <a class="navbar-brand" href="#">Manage IMEIs</a>
       </div>
-
-      <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <form class="navbar-form navbar-left" role="search">
           <div class="form-group">
@@ -26,42 +23,42 @@
         </form>
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <a href="#">New IMEI</a>
+            <a>New IMEI</a>
+          </li>
+          <li>
+            <a ng-click="refresh()" role="button">
+              Refresh <i class="glyphicon glyphicon-refresh"></i>
+            </a>
           </li>
         </ul>
       </div>
-      <!-- /.navbar-collapse -->
     </div>
-    <!-- /.container-fluid -->
   </nav>
   <table class="table table-responsive">
     <tr>
       <th>
         <a class="pointer" ng-click="updateSortBy('IMEI')">
           IMEI
-          <i ng-if="sortBy != 'IMEI' || (sortBy == 'IMEI' && !sortReverse)" class="glyphicon glyphicon-sort-by-alphabet"></i>
-          <i ng-if="sortBy == 'IMEI' && sortReverse" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+          <i ng-if="showAscending('IMEI')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+          <i ng-if="!showAscending('IMEI')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
         </a>
       </th>
       <th>
         <a class="pointer" ng-click="updateSortBy('CallSign')">
           Call Sign
-          <i ng-if="sortBy != 'CallSign' || (sortBy == 'CallSign' && !sortReverse)" class="glyphicon glyphicon-sort-by-alphabet"></i>
-          <i ng-if="sortBy == 'CallSign' && sortReverse" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+          <i ng-if="showAscending('CallSign')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+          <i ng-if="!showAscending('CallSign')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
         </a>
       </th>
       <th>
         <a class="pointer" ng-click="updateSortBy('Type')">
           Type
-          <i ng-if="sortBy != 'Type' || (sortBy == 'Type' && !sortReverse)" class="glyphicon glyphicon-sort-by-alphabet"></i>
-          <i ng-if="sortBy == 'Type' && sortReverse" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+          <i ng-if="showAscending('Type')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+          <i ng-if="!showAscending('Type')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
         </a>
 
       </th>
       <th>
-        <a ng-click="refresh()" role="button">
-          Refresh <i class="glyphicon glyphicon-refresh"></i>
-        </a>
       </th>
     </tr>
 

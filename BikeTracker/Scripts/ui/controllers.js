@@ -5,6 +5,10 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, I
     $scope.sortReverse = false;
     $scope.imeiFilter = '';
 
+    $scope.showAscending = function (param) {
+        return ($scope.sortBy != param || ($scope.sortBy == param && !$scope.sortReverse))
+    }
+
     $scope.updateSortBy = function (param) {
         if ($scope.sortBy == param)
             $scope.sortReverse = !$scope.sortReverse;
