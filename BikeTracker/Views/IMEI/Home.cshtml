@@ -4,23 +4,36 @@
     </p>
     <table class="table table-responsive">
         <tr>
-            <th>IMEI</th>
-            <th>Call Sign</th>
-            <th>Type</th>
             <th>
-              <a ng-click="refresh()" role="button"><i class="glyphicon glyphicon-refresh"></i> Refresh</a>
+                <a class="pointer" ng-click="updateSortBy('IMEI')">IMEI                
+                    <i ng-if="sortBy != 'IMEI' || (sortBy == 'IMEI' && !sortReverse)" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="sortBy == 'IMEI' && sortReverse" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                </a>
+            </th>
+            <th>
+                <a class="pointer" ng-click="updateSortBy('CallSign')">Call Sign
+                    <i ng-if="sortBy != 'CallSign' || (sortBy == 'CallSign' && !sortReverse)" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="sortBy == 'CallSign' && sortReverse" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                </a>
+            </th>
+            <th>
+                <a class="pointer" ng-click="updateSortBy('Type')">Type
+                    <i ng-if="sortBy != 'Type' || (sortBy == 'Type' && !sortReverse)" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="sortBy == 'Type' && sortReverse" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                </a>
+
+            </th>
+            <th>
+                <a ng-click="refresh()" role="button">Refresh <i class="glyphicon glyphicon-refresh"></i></a>
             </th>
         </tr>
 
-        <tr ng-repeat="imei in imeis">
-            <td>
-                {{imei.IMEI}}
+        <tr ng-repeat="imei in imeis | orderBy:sortBy:sortReverse">
+            <td>{{imei.IMEI}}
             </td>
-            <td>
-                {{imei.CallSign}}
+            <td>{{imei.CallSign}}
             </td>
-            <td>
-                {{imei.Type}}
+            <td>{{imei.Type}}
             </td>
             <td>
                 <a href="#/IMEIs/Edit/{{imei.Id}}">Edit</a> | <a href="#/IMEIs/Delete/{{imei.Id}}">Delete</a>

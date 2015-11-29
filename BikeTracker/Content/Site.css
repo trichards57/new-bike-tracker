@@ -123,3 +123,7 @@ a.full-width-button {
     margin-right: 2px;
     height: 12px;
 }
+
+.pointer {
+    cursor: pointer;
+}

@@ -250,7 +250,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = false
             };
 
-            await SubmitLogin(loginModel, null, Result.RedirectToUri);
+            await SubmitLogin(loginModel, null, Result.RedirectToHome);
         }
 
         [TestMethod]
