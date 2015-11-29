@@ -3,6 +3,7 @@
 appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, IMEI) {
     $scope.sortBy = 'IMEI';
     $scope.sortReverse = false;
+    $scope.imeiFilter = '';
 
     $scope.updateSortBy = function (param) {
         if ($scope.sortBy == param)

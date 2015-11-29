@@ -127,3 +127,7 @@ a.full-width-button {
 .pointer {
     cursor: pointer;
 }
+
+.sub-navbar {
+    margin-top: 10px;
+}
