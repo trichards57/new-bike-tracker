@@ -29,7 +29,11 @@ namespace BikeTracker
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
                       "~/Scripts/angular.js",
                       "~/Scripts/angular-route.js",
-                      "~/Scripts/angular-resource.js"));
+                      "~/Scripts/angular-resource.js",
+                      "~/Scripts/ui/app.js",
+                      "~/Scripts/ui/controllers.js",
+                      "~/Scripts/ui/services.js"
+                      ));
         }
     }
 }

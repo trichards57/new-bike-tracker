@@ -255,7 +255,7 @@
     <Content Include="Scripts\angular-route.min.js.map" />
     <Content Include="Scripts\angular-resource.min.js.map" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
-    <Content Include="Scripts\IMEIApp.js" />
+    <Content Include="Scripts\ui\app.js" />
     <Content Include="Scripts\jquery-1.11.3.js" />
     <Content Include="Scripts\jquery-1.11.3.min.js" />
     <Content Include="Scripts\jquery-1.11.3.min.map" />
@@ -269,6 +269,8 @@
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\Site.js" />
+    <Content Include="Scripts\ui\controllers.js" />
+    <Content Include="Scripts\ui\services.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -298,7 +300,9 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Map\Index.cshtml" />
-    <Content Include="Views\IMEI\Index.cshtml" />
+    <Content Include="Views\IMEI\Index.cshtml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\IMEI\Details.cshtml" />
     <Content Include="Views\IMEI\Create.cshtml" />
     <Content Include="Views\IMEI\Edit.cshtml" />
@@ -310,7 +314,9 @@
     <Content Include="Views\Home\Policies.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\VehicleType.cshtml" />
     <Content Include="Views\Admin\UserAdded.cshtml" />
-    <Content Include="Views\IMEI\Home.cshtml" />
+    <Content Include="Views\IMEI\Home.cshtml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -368,7 +374,8 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>doxygen "$(SolutionDir)Doxyfile"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
