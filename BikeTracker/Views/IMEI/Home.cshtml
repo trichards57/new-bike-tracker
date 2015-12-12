@@ -1,81 +1,140 @@
 ﻿<div>
-  <nav class="navbar navbar-default sub-navbar">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">Manage IMEIs</a>
-      </div>
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <form class="navbar-form navbar-left" role="search">
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-addon">
-                <i class="glyphicon glyphicon-search"></i>
-              </div>
-              <input type="text" class="form-control" placeholder="Search" ng-model="imeiFilter" />
+    <nav class="navbar navbar-default sub-navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Manage IMEIs</a>
             </div>
-          </div>
-        </form>
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a>New IMEI</a>
-          </li>
-          <li>
-            <a ng-click="refresh()" role="button">
-              Refresh <i class="glyphicon glyphicon-refresh"></i>
-            </a>
-          </li>
-        </ul>
-      </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Search" ng-model="imeiFilter" />
+                        </div>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a role="button" ng-click="showNewImei()">New IMEI</a>
+                    </li>
+                    <li>
+                        <a ng-click="refresh()" role="button">
+                            Refresh <i class="glyphicon glyphicon-refresh"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <table class="table table-responsive">
+        <tr>
+            <th>
+                <a class="pointer" ng-click="updateSortBy('IMEI')">
+                    IMEI
+                    <i ng-if="showAscending('IMEI')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="!showAscending('IMEI')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                </a>
+            </th>
+            <th>
+                <a class="pointer" ng-click="updateSortBy('CallSign')">
+                    Call Sign
+                    <i ng-if="showAscending('CallSign')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="!showAscending('CallSign')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                </a>
+            </th>
+            <th>
+                <a class="pointer" ng-click="updateSortBy('Type')">
+                    Type
+                    <i ng-if="showAscending('Type')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="!showAscending('Type')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                </a>
+
+            </th>
+            <th>
+            </th>
+        </tr>
+
+        <tr ng-repeat="imei in imeis | orderBy:sortBy:sortReverse | filter:imeiFilter">
+            <td>
+                {{imei.IMEI}}
+            </td>
+            <td>
+                {{imei.CallSign}}
+            </td>
+            <td>
+                {{imei.Type}}
+            </td>
+            <td>
+                <a href="#/IMEIs/Edit/{{imei.Id}}">Edit</a> | <a href="#/IMEIs/Delete/{{imei.Id}}">Delete</a>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="edit-dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 ng-if="createMode" class="modal-title">Register New IMEI</h4>
+                <h4 ng-if="!createMode" class="modal-title">Update IMEI</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" name="editForm" novalidate>
+                    <div class="form-group">
+                        <label for="edit-name" class="control-label">IMEI:</label>
+                        <input id="edit-name" type="text" class="form-control" required ng-model="dialogImei" />
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-name" class="control-label">Call Sign:</label>
+                        <input data-val-regex="That doesn't look like a valid callsign." data-val-regex-pattern="^[A-Z]{2}((0[1-9])|[1-9][0-9]{1,2})$" id="edit-callsign" type="text" class="form-control" required ng-model="dialogCallsign" />
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-description" class="control-label">Description:</label>
+                        <select id="edit-description" class="form-control" ng-model="dialogType">
+                            <option value="0">Unknown</option>
+                            <option value="1">Bike</option>
+                            <option value="2">Foot Patrol</option>
+                            <option value="3">Ambulance</option>
+                            <option value="4">Other</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="editForm.$invalid" ng-click="saveItem()">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
     </div>
-  </nav>
-  <table class="table table-responsive">
-    <tr>
-      <th>
-        <a class="pointer" ng-click="updateSortBy('IMEI')">
-          IMEI
-          <i ng-if="showAscending('IMEI')" class="glyphicon glyphicon-sort-by-alphabet"></i>
-          <i ng-if="!showAscending('IMEI')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
-        </a>
-      </th>
-      <th>
-        <a class="pointer" ng-click="updateSortBy('CallSign')">
-          Call Sign
-          <i ng-if="showAscending('CallSign')" class="glyphicon glyphicon-sort-by-alphabet"></i>
-          <i ng-if="!showAscending('CallSign')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
-        </a>
-      </th>
-      <th>
-        <a class="pointer" ng-click="updateSortBy('Type')">
-          Type
-          <i ng-if="showAscending('Type')" class="glyphicon glyphicon-sort-by-alphabet"></i>
-          <i ng-if="!showAscending('Type')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
-        </a>
+</div>
 
-      </th>
-      <th>
-      </th>
-    </tr>
-
-    <tr ng-repeat="imei in imeis | orderBy:sortBy:sortReverse | filter:imeiFilter">
-      <td>
-        {{imei.IMEI}}
-      </td>
-      <td>
-        {{imei.CallSign}}
-      </td>
-      <td>
-        {{imei.Type}}
-      </td>
-      <td>
-        <a href="#/IMEIs/Edit/{{imei.Id}}">Edit</a> | <a href="#/IMEIs/Delete/{{imei.Id}}">Delete</a>
-      </td>
-    </tr>
-
-  </table>
+<div class="modal fade" tabindex="-1" role="dialog" id="error-dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">{{errorTitle}}</h4>
+            </div>
+            <div class="modal-body">
+                <p>{{errorMessage}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Continue</button>
+            </div>
+        </div>
+    </div>
 </div>

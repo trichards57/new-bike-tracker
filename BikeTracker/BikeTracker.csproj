@@ -314,9 +314,7 @@
     <Content Include="Views\Home\Policies.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\VehicleType.cshtml" />
     <Content Include="Views\Admin\UserAdded.cshtml" />
-    <Content Include="Views\IMEI\Home.cshtml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Views\IMEI\Home.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -337,6 +335,9 @@
     <EmbeddedResource Include="Migrations\201511070834351_LandmarksAndExpirary.resx">
       <DependentUpon>201511070834351_LandmarksAndExpirary.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
