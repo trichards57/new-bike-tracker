@@ -1,4 +1,5 @@
 ﻿/// <autosync enabled="true" />
+/// <reference path="additional-methods.min.js" />
 /// <reference path="angular.min.js" />
 /// <reference path="angular-mocks.js" />
 /// <reference path="angular-resource.min.js" />
