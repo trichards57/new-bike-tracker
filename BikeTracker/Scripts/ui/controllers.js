@@ -86,7 +86,10 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, I
     }
 
     $scope.refresh = function () {
-        $scope.imeis = IMEI.query({}, function () { },
+        $scope.loading = true;
+        $scope.imeis = IMEI.query({}, function () {
+            $scope.loading = false;
+        },
             function () {
                 $scope.errorTitle = "Couldn't Load IMEIs";
                 $scope.errorMessage = "There was an error loading the IMEI list.  Please try again later.";
