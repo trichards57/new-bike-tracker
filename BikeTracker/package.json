@@ -1,0 +1,8 @@
+{
+  "version": "1.3.4",
+  "name": "BikeTracker",
+  "private": true,
+  "devDependencies": {
+      "bower": "1.7.1"
+  }
+}
