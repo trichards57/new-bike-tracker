@@ -14,11 +14,64 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, I
         return ($scope.sortBy != param || ($scope.sortBy == param && !$scope.sortReverse))
     }
 
+    $scope.saveImei = function () {
+        var i = new IMEI();
+        i.IMEI = $scope.dialogImei;
+        i.CallSign = $scope.dialogCallsign;
+        i.Type = $scope.dialogType;
+
+        if ($scope.createMode) {
+            i.$save([],
+                function () { $scope.refresh(); },
+                function () {
+                    $scope.errorTitle = "Couldn't Create IMEI";
+                    $scope.errorMessage = "There was an error creating that IMEI.  Please try again later.";
+
+                    $('#error-dialog').modal();
+                    $scope.refresh();
+                });
+        }
+        else {
+            i.Id = $scope.updateId;
+            i.$update({ imeiId: $scope.updateId },
+                function () { $scope.refresh(); },
+                function () {
+                    $scope.errorTitle = "Couldn't Update IMEI";
+                    $scope.errorMessage = "There was an error updating that IMEI.  Please try again later.";
+
+                    $('#error-dialog').modal();
+                    $scope.refresh();
+                });
+        }
+    }
+
+    $scope.showUpdateImei = function (id) {
+        $scope.createMode = false;
+
+        var imei = $.grep($scope.imeis, function (e) { return e.Id == id; })
+
+        if (imei.length == 1)
+            imei = imei[0];
+        else
+            return;
+
+        $scope.updateId = id;
+        $scope.dialogImei = imei.IMEI;
+        $scope.dialogCallsign = imei.CallSign;
+        $scope.dialogType = imei.Type;
+
+        $scope.editForm.$setPristine();
+
+        $('#edit-dialog').modal();
+    }
+
     $scope.showNewImei = function () {
         $scope.dialogImei = "";
         $scope.dialogCallsign = "";
-        $scope.dialogType = 0;
+        $scope.dialogType = "Unknown";
         $scope.createMode = true;
+
+        $scope.editForm.$setPristine();
 
         $('#edit-dialog').modal();
     }
@@ -26,8 +79,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, I
     $scope.updateSortBy = function (param) {
         if ($scope.sortBy == param)
             $scope.sortReverse = !$scope.sortReverse;
-        else
-        {
+        else {
             $scope.sortBy = param;
             $scope.sortReverse = false;
         }

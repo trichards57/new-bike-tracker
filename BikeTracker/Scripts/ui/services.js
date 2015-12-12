@@ -2,7 +2,7 @@
 
 appServices.factory('IMEI', ['$resource',
     function ($resource) {
-        return $resource('/odata/IMEI/:imeiId', {}, {
+        return $resource('/odata/IMEI(:imeiId)', {}, {
             query: {
                 method: 'GET',
                 params: { imeiId: '' },
@@ -13,7 +13,8 @@ appServices.factory('IMEI', ['$resource',
                         return d.value;
                     }
                 }
-            }
+            },
+            update: { method: 'PUT' }
         })
     }
 ]);

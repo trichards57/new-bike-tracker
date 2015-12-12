@@ -73,7 +73,7 @@
                 {{imei.Type}}
             </td>
             <td>
-                <a href="#/IMEIs/Edit/{{imei.Id}}">Edit</a> | <a href="#/IMEIs/Delete/{{imei.Id}}">Delete</a>
+                <a class="pointer" ng-click="showUpdateImei(imei.Id)">Edit</a> | <a href="#/IMEIs/Delete/{{imei.Id}}">Delete</a>
             </td>
         </tr>
 
@@ -93,27 +93,35 @@
             <div class="modal-body">
                 <form role="form" name="editForm" novalidate>
                     <div class="form-group">
-                        <label for="edit-name" class="control-label">IMEI:</label>
-                        <input id="edit-name" type="text" class="form-control" required ng-model="dialogImei" />
+                        <label for="editName" class="control-label">IMEI:</label>
+                        <input name="editName" type="number" class="form-control" required ng-model="dialogImei" />
+                        <div ng-show="editForm.$submitted || editForm.editName.$dirty">
+                            <span class="text-danger" ng-show="editForm.editName.$error.required">You need to give a valid IMEI.</span>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="edit-name" class="control-label">Call Sign:</label>
-                        <input data-msg-pattern="That doesn't look like a valid callsign." pattern="^[A-Z]{2}((0[1-9])|[1-9][0-9]{1,2})$" id="edit-callsign" type="text" class="form-control" required ng-model="dialogCallsign" />
+                        <label for="editCallsign" class="control-label">Call Sign:</label>
+                        <input ng-pattern="/^[A-Z]{2}((0[1-9])|[1-9][0-9]{1,2})$/" name="editCallsign" type="text" class="form-control" required ng-model="dialogCallsign" />
+                        {{editForm.editCallsign.$touched}}
+                        <div ng-show="editForm.$submitted || editForm.editCallsign.$dirty">
+                            <span class="text-danger" ng-show="editForm.editCallsign.$error.pattern">That doesn't look like a valid callsign.</span>
+                            <span class="text-danger" ng-show="editForm.editCallsign.$error.required">You need to give a callsign.</span>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="edit-description" class="control-label">Description:</label>
                         <select id="edit-description" class="form-control" ng-model="dialogType">
-                            <option value="0">Unknown</option>
-                            <option value="1">Bike</option>
-                            <option value="2">Foot Patrol</option>
-                            <option value="3">Ambulance</option>
-                            <option value="4">Other</option>
+                            <option value="Unknown">Unknown</option>
+                            <option value="Bike">Bike</option>
+                            <option value="FootPatrol">Foot Patrol</option>
+                            <option value="Ambulance">Ambulance</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="editForm.$invalid" ng-click="saveItem()">Save</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="editForm.$invalid" ng-click="saveImei()">Save</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
