@@ -89,5 +89,31 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, I
         $scope.imeis = IMEI.query();
     };
 
+    $scope.showDeleteConfirm = function (imeiId) {
+        var imei = $.grep($scope.imeis, function (e) { return e.Id == imeiId; });
+
+        if (imei.length == 1) {
+            imei = imei[0];
+        }
+        else
+            return;
+
+        $scope.deleteName = imei.CallSign;
+        $scope.deleteId = imei.Id;
+
+        $('#delete-dialog').modal();
+    }
+
+    $scope.removeItem = function () {
+        IMEI.remove({ imeiId: $scope.deleteId },
+            function () { $scope.refresh(); },
+            function () {
+                $scope.errorTitle = "Couldn't Delete IMEI";
+                $scope.errorMessage = "There was an error deleting that IMEI.  Please try again later.";
+
+                $('#error-dialog').modal();
+            });
+    }
+
     $scope.refresh();
 }]);
