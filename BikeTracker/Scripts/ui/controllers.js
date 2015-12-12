@@ -1,5 +1,9 @@
 ﻿var appControllers = angular.module('appControllers', ['appServices']);
 
+appControllers.controller('ControlPanelCtrl', ['$scope', function ($scope) {
+
+}])
+
 appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, IMEI) {
     $scope.sortBy = 'IMEI';
     $scope.sortReverse = false;

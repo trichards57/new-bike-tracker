@@ -182,6 +182,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\API\IMEIController.cs" />
+    <Compile Include="Controllers\ControlPanelController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IMEIController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -888,10 +889,6 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Map\Index.cshtml" />
     <Content Include="Views\IMEI\Index.cshtml" />
-    <Content Include="Views\IMEI\Details.cshtml" />
-    <Content Include="Views\IMEI\Create.cshtml" />
-    <Content Include="Views\IMEI\Edit.cshtml" />
-    <Content Include="Views\IMEI\Delete.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\Delete.cshtml" />
     <Content Include="Views\Admin\Create.cshtml" />
@@ -902,6 +899,8 @@
     <Content Include="Views\IMEI\Home.cshtml" />
     <Content Include="Views\Shared\_ValidationScripts.cshtml" />
     <Content Include="Views\Shared\_AngularScripts.cshtml" />
+    <Content Include="Views\ControlPanel\Index.cshtml" />
+    <Content Include="Views\ControlPanel\Home.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
