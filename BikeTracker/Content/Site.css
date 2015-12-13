@@ -131,3 +131,44 @@ a.full-width-button {
 .sub-navbar {
     margin-top: 10px;
 }
+
+.button-pic {
+    text-align: left;
+}
+
+    .button-pic a {
+        vertical-align: middle;
+        display: table;
+    }
+
+        .button-pic a img {
+            width: 75px;
+            float: left;
+            margin: 5px;
+            display: table-cell;
+        }
+
+        .button-pic a span {
+            color: #333;
+            vertical-align: middle;
+            display: table-cell;
+        }
+
+@media (min-width:992px) {
+    .button-pic {
+        text-align: center;
+    }
+        .button-pic a {
+            display: inline;
+        }
+
+        .button-pic a img {
+            width: 150px;
+            float: none;
+            display: inline;
+        }
+
+        .button-pic a span {
+            display:block;
+        }
+}

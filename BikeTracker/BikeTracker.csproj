@@ -219,7 +219,9 @@
     <Content Include="Content\bike15.png" />
     <Content Include="Content\man-silhouette1.png" />
     <Content Include="Content\medical96.png" />
+    <Content Include="Content\multiple25.png" />
     <Content Include="Content\question30.png" />
+    <Content Include="Content\smartphone86.png" />
     <Content Include="Content\transport66.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
