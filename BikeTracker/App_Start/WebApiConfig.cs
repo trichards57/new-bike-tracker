@@ -23,6 +23,11 @@ namespace BikeTracker
             // Web API configuration and services
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
             builder.EntitySet<IMEIToCallsign>("IMEI");
+            builder.EntitySet<UserAdminModel>("User");
+
+            var updateEmail = builder.Entity<UserAdminModel>().Action("UpdateEmail");
+            updateEmail.Parameter<string>("email");
+
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
 
             // Web API routes

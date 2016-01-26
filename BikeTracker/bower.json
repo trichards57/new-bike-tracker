@@ -9,6 +9,7 @@
     "moment": "~2.10.6",
     "angular": "~1.2.29",
     "angular-route": "~1.2.29",
-    "angular-resource": "~1.2.29"
+    "angular-resource": "~1.2.29",
+    "angular-ui-validate": "~1.1.1"
   }
 }

@@ -4,6 +4,35 @@ appControllers.controller('ControlPanelCtrl', ['$scope', function ($scope) {
 
 }])
 
+appControllers.controller('AdminCtrl', ['$scope', function ($scope) {
+    $scope.sortBy = 'IMEI';
+    $scope.sortReverse = false;
+    $scope.userFilter = '';
+
+    $scope.dialogEmail = "";
+    $scope.dialogPassword = "";
+    $scope.dialogPasswordConfirm = "";
+    $scope.dialogRole = "";
+
+    $scope.validPassword = function (value) {
+        // Yes yes, I know this is bad practice, but I can't fix it yet.
+        // See work item 426
+
+        if (!value.length >= 6)
+            return false; // Not long enough
+        if (!value.match(/.*[[:upper:]]+.*/))
+            return false; // No upper-case letter
+        if (!value.match(/.*[[:lower:]]+.*/))
+            return false; // No lower-case letter
+        if (!value.match(/.*[^[:alnum:]]+.*/))
+            return false; // No non-alphanumeric symbols
+        if (!value.match(/.*[^[:digit:]]+.*/))
+            return false; // No digits
+
+        return true; // Probably okay
+    }
+}])
+
 appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, IMEI) {
     $scope.sortBy = 'IMEI';
     $scope.sortReverse = false;

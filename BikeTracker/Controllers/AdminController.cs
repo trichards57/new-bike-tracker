@@ -160,8 +160,7 @@ namespace BikeTracker.Controllers
                 Id = u.Id,
                 EmailAddress = u.Email,
                 UserName = u.UserName,
-                RoleId = dbContext.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId).Id,
-                Roles = dbContext.Roles.Select(r => new SelectListItem { Text = r.DisplayName, Value = r.Id }),
+                RoleId = dbContext.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId).Id
             }).FirstOrDefault(u => u.Id == id);
 
             if (model == null)
@@ -207,6 +206,11 @@ namespace BikeTracker.Controllers
             }
 
             return View(model);
+        }
+
+        public ActionResult Home()
+        {
+            return PartialView();
         }
 
         /// <summary>
