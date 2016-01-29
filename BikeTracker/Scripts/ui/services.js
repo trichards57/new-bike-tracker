@@ -18,3 +18,22 @@ appServices.factory('IMEI', ['$resource',
         })
     }
 ]);
+
+appServices.factory('User', ['$resource',
+    function ($resource) {
+        return $resource('/odata/User(:userId)', {}, {
+            query: {
+                method: 'GET',
+                params: { userId: '' },
+                isArray: true,
+                transformResponse: {
+                    function(data, headersGetter) {
+                        var d = angular.fromJson(data);
+                        return d.value;
+                    }
+                }
+            },
+            update: { method: 'PUT' }
+        })
+    }
+]);
