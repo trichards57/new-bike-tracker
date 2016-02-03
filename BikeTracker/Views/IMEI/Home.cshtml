@@ -102,7 +102,7 @@
                 <form role="form" name="editForm" novalidate>
                     <div class="form-group">
                         <label for="editName" class="control-label">IMEI:</label>
-                        <input name="editName" type="number" class="form-control" required ng-model="dialogImei" />
+                        <input name="editName" type="tel" pattern="[0-9]*" class="form-control" required ng-model="dialogImei" />
                         <div ng-show="editForm.$submitted || editForm.editName.$dirty">
                             <span class="text-danger" ng-show="editForm.editName.$error.required">You need to give a valid IMEI.</span>
                         </div>

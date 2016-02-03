@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.OData;
+using System.Web.OData;
 
 namespace BikeTracker.Controllers.API
 {

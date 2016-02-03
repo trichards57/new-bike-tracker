@@ -57,6 +57,9 @@ namespace BikeTracker
     /// </summary>
     public class ApplicationUserManager : UserManager<ApplicationUser, string>
     {
+        public const int MinPasswordLength = 6;
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationUserManager"/> class.
         /// </summary>
@@ -95,7 +98,7 @@ namespace BikeTracker
             // Configure validation logic for passwords
             manager.PasswordValidator = new PasswordValidator
             {
-                RequiredLength = 6,
+                RequiredLength = MinPasswordLength,
                 RequireNonLetterOrDigit = true,
                 RequireDigit = true,
                 RequireLowercase = true,
@@ -117,6 +120,11 @@ namespace BikeTracker
             return manager;
         }
 
+        public virtual async Task GenerateEmailConfirmationEmailAsync(UrlHelper url, string id)
+        {
+            await GenerateEmailConfirmationEmailAsync(url, id, null);
+        }
+
         /// <summary>
         /// Generates the email confirmation email.
         /// </summary>
@@ -127,17 +135,29 @@ namespace BikeTracker
         /// the user.  Uses <see cref="ApplicationMessage"/> to generate both an HTML
         /// and Plain Text email when <see cref="EmailService"/> is used.
         /// </returns>
-        public virtual async Task GenerateEmailConfirmationEmailAsync(UrlHelper url, string id)
+        public virtual async Task GenerateEmailConfirmationEmailAsync(UrlHelper url, string id, string temporaryPassword)
         {
             var token = await GenerateEmailConfirmationTokenAsync(id);
             var callbackUrl = url.Action("ConfirmEmail", "Account", new { userId = id, code = token }, "http");
 
             var html = "<html><body><p>Hi,</p><p>An account has been created for you on the <a href='http://sjatracker.elasticbeanstalk.com/'>SJA Tracker website</a>.</p>";
             html += $"<p>Please click <a href='{callbackUrl}'>this link</a> to confirm your email address before logging in.</p>";
+            if (!string.IsNullOrEmpty(temporaryPassword))
+            {
+                html += "<p>This is your temporary password:</p>";
+                html += $"<p><pre>{temporaryPassword}</pre></p>";
+                html += "<p>You will need to change this after you have logged in.";
+            }
             html += "<p>Please let me know if you have any problems.</p><p>Kind regards,</p><p>Tony Richards</p>";
 
             var text = "Hi,\n\nAn account has been created for you on http://sjatracker.elasticbeanstalk.com (the SJA Tracker website).\n\n";
             text += $"Please go to {callbackUrl} to confirm your email address before logging in.\n\n";
+            if (!string.IsNullOrEmpty(temporaryPassword))
+            {
+                text += "This is your temporary password:\n\n";
+                text += $"{temporaryPassword}\n\n";
+                text += "You will need to change this after you have logged in.\n\n";
+            }
             text += "Please let me know if you have any problems.\n\nKind regards,\n\nTony Richards";
 
             var msg = new ApplicationMessage

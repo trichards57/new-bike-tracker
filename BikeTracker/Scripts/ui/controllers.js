@@ -10,27 +10,7 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User
     $scope.userFilter = '';
 
     $scope.dialogEmail = "";
-    $scope.dialogPassword = "";
-    $scope.dialogPasswordConfirm = "";
     $scope.dialogRole = "";
-
-    $scope.validPassword = function (value) {
-        // Yes yes, I know this is bad practice, but I can't fix it yet.
-        // See work item 426
-
-        if (!value.length >= 6)
-            return false; // Not long enough
-        if (!value.match(/.*[[:upper:]]+.*/))
-            return false; // No upper-case letter
-        if (!value.match(/.*[[:lower:]]+.*/))
-            return false; // No lower-case letter
-        if (!value.match(/.*[^[:alnum:]]+.*/))
-            return false; // No non-alphanumeric symbols
-        if (!value.match(/.*[^[:digit:]]+.*/))
-            return false; // No digits
-
-        return true; // Probably okay
-    };
 
     $scope.showAscending = function (param) {
         return ($scope.sortBy != param || ($scope.sortBy == param && !$scope.sortReverse))
@@ -40,16 +20,14 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User
         var i = new User();
 
         if ($scope.createMode) {
-            i.Email = $scope.dialogEmail;
-            i.Password = $scope.dialogPassword;
-            i.ConfirmPassword = $scope.dialogPasswordConfirm;
-            i.Role = $scope.dialogRole;
+            i.email = $scope.dialogEmail;
+            i.role = $scope.dialogRole;
 
             i.$save([],
                 function () { $scope.refresh(); },
                 function () {
-                    $scope.errorTitle = "Couldn't Create IMEI";
-                    $scope.errorMessage = "There was an error creating that IMEI.  Please try again later.";
+                    $scope.errorTitle = "Couldn't Create User";
+                    $scope.errorMessage = "There was an error creating that user.  Please try again later.";
 
                     $('#error-dialog').modal();
                     $scope.refresh();
@@ -139,7 +117,7 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User
     }
 
     $scope.removeItem = function () {
-        User.remove({ userId: $scope.userId },
+        User.remove({ userId: "'" + $scope.deleteId + "'" },
            function () { $scope.refresh(); },
             function () {
                 $scope.errorTitle = "Couldn't Delete User";

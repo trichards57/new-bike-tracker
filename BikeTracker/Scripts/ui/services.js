@@ -33,7 +33,13 @@ appServices.factory('User', ['$resource',
                     }
                 }
             },
-            update: { method: 'PUT' }
+            save: {
+                method: 'POST',
+                url: '/odata/User/API.Register'
+            },
+            update: {
+                method: 'PUT'
+            }
         })
     }
 ]);

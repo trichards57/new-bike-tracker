@@ -1,14 +1,15 @@
 ﻿using BikeTracker.Models;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.OData;
+using System.Web.OData;
+using System.Web.Security;
 
 namespace BikeTracker.Controllers.API
 {
@@ -47,7 +48,7 @@ namespace BikeTracker.Controllers.API
 
         // GET: odata/User(5)
         [EnableQuery]
-        public SingleResult<UserAdminModel> GetApplicationUser([FromODataUri] string key)
+        public SingleResult<UserAdminModel> Get([FromODataUri] string key)
         {
             return SingleResult.Create(db.Users.Where(applicationUser => applicationUser.Id == key).Select(u => new UserAdminModel
             {
@@ -91,23 +92,39 @@ namespace BikeTracker.Controllers.API
             return Ok();
         }
 
-        // POST: odata/User
-        public async Task<IHttpActionResult> Post(RegisterViewModel model)
+        [HttpPost]
+        public async Task<IHttpActionResult> Register(ODataActionParameters parameters)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var role = (string)parameters["role"];
+            var email = (string)parameters["email"];
 
-            var result = await UserManager.CreateAsync(user, model.Password);
+            const string DefaultRole = "Normal";
+
+            if (string.IsNullOrEmpty(role))
+                role = DefaultRole;
+
+            if (string.IsNullOrEmpty(email))
+                return BadRequest("email must be provided");
+
+            var addr = new EmailAddressAttribute();
+            if (!addr.IsValid(email))
+                return BadRequest("email is not valid");
+
+            if (!db.Roles.Any(r => r.Name == role))
+                role = DefaultRole;
+
+            var user = new ApplicationUser { UserName = email, Email = email };
+
+            var password = Membership.GeneratePassword(Math.Min(ApplicationUserManager.MinPasswordLength * 2, 128), 2);
+
+            var result = await UserManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
-                var id = (await UserManager.FindByEmailAsync(model.Email)).Id;
-                await UserManager.AddToRoleAsync(user.Id, model.Role);
+                var id = (await UserManager.FindByEmailAsync(email)).Id;
+                await UserManager.AddToRoleAsync(user.Id, role);
 
-                await UserManager.GenerateEmailConfirmationEmailAsync(new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext), id);
+                await UserManager.GenerateEmailConfirmationEmailAsync(new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext), id, password);
 
                 return Ok();
             }
