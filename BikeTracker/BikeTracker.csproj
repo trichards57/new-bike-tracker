@@ -212,6 +212,10 @@
     <Compile Include="Migrations\201511070834351_LandmarksAndExpirary.Designer.cs">
       <DependentUpon>201511070834351_LandmarksAndExpirary.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602032117390_AddedMustResetPassword.cs" />
+    <Compile Include="Migrations\201602032117390_AddedMustResetPassword.Designer.cs">
+      <DependentUpon>201602032117390_AddedMustResetPassword.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModels.cs" />
@@ -926,6 +930,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511070834351_LandmarksAndExpirary.resx">
       <DependentUpon>201511070834351_LandmarksAndExpirary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602032117390_AddedMustResetPassword.resx">
+      <DependentUpon>201602032117390_AddedMustResetPassword.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
