@@ -1,11 +1,12 @@
-﻿using System.Web.Mvc;
+﻿using BikeTracker.Controllers.Filters;
+using System.Web.Mvc;
 
 namespace BikeTracker.Controllers
 {
     /// <summary>
     /// Controller to handle reporting on the activity on the tracker.
     /// </summary>
-    [Authorize(Roles = "GeneralAdmin")]
+    [AuthorizePasswordExpires(Roles = "GeneralAdmin")]
     public class ReportController : Controller
     {
         /// <summary>

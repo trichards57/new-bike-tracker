@@ -1,4 +1,5 @@
-﻿using BikeTracker.Models;
+﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Models;
 using BikeTracker.Services;
 using System.Net;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace BikeTracker.Controllers
     /// <summary>
     /// Controller that deals with all of the IMEI to Callsign activities
     /// </summary>
-    [Authorize(Roles = "IMEIAdmin,GeneralAdmin")]
+    [AuthorizePasswordExpires(Roles = "IMEIAdmin,GeneralAdmin")]
     public class IMEIController : Controller
     {
         /// <summary>

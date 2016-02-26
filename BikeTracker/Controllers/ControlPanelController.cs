@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using BikeTracker.Controllers.Filters;
 using System.Web.Mvc;
 
 namespace BikeTracker.Controllers
 {
-    [Authorize(Roles = "IMEIAdmin,GeneralAdmin")]
+    [AuthorizePasswordExpires(Roles = "IMEIAdmin,GeneralAdmin")]
     public class ControlPanelController : Controller
     {
         // GET: ControlPanel

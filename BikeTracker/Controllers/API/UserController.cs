@@ -114,7 +114,7 @@ namespace BikeTracker.Controllers.API
             if (!db.Roles.Any(r => r.Name == role))
                 role = DefaultRole;
 
-            var user = new ApplicationUser { UserName = email, Email = email };
+            var user = new ApplicationUser { UserName = email, Email = email, MustResetPassword = true };
 
             var password = Membership.GeneratePassword(Math.Min(ApplicationUserManager.MinPasswordLength * 2, 128), 2);
 

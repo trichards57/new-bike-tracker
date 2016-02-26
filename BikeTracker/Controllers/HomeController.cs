@@ -1,10 +1,12 @@
-﻿using System.Web.Mvc;
+﻿using BikeTracker.Controllers.Filters;
+using System.Web.Mvc;
 
 namespace BikeTracker.Controllers
 {
     /// <summary>
     /// Controller that handles the home views which are open to everyone.
     /// </summary>
+    [AllowAnonymousPasswordExpires]
     public class HomeController : Controller
     {
         /// <summary>

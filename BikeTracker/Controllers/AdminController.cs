@@ -1,4 +1,5 @@
-﻿using BikeTracker.Models;
+﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -12,7 +13,7 @@ namespace BikeTracker.Controllers
     /// <summary>
     /// Controller that handles basic admin tasks.
     /// </summary>
-    [Authorize(Roles = "GeneralAdmin")]
+    [AuthorizePasswordExpires(Roles = "GeneralAdmin")]
     public class AdminController : Controller
     {
         /// <summary>

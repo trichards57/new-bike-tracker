@@ -204,6 +204,20 @@ namespace BikeTracker
 
             await EmailService.SendAsync(msg);
         }
+
+        public override async Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            var res = await base.ChangePasswordAsync(userId, currentPassword, newPassword);
+
+            if (res.Succeeded)
+            {
+                var user = await Store.FindByIdAsync(userId);
+                user.MustResetPassword = false;
+                await Store.UpdateAsync(user);
+            }
+
+            return res;
+        }
     }
 
     /// <summary>
