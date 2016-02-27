@@ -66,6 +66,17 @@ textarea {
     border-radius: 5px;
 }
 
+.move-tool h4 {
+    margin-top: 0;
+}
+
+.map-alert {
+    z-index: 101;
+    position: relative;
+    top: 100px;
+    text-align:center
+}
+
 .alert-box {
     position: relative;
     z-index: 120;
