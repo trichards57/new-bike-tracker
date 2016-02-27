@@ -1,10 +1,41 @@
-﻿var appControllers = angular.module('appControllers', ['appServices']);
+﻿/*jslint
+    browser: true
+*/
+/*global angular $ */
 
-appControllers.controller('ControlPanelCtrl', ['$scope', function ($scope) {
+var appControllers = angular.module('appControllers', ['appServices']);
 
-}])
+appControllers.controller("DeleteFormCtrl", ["$scope", "$uibModalInstance", "name", function ($scope, $uibModalInstance, name) {
+    "use strict";
+    $scope.name = name;
 
-appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User) {
+    $scope.ok = function () {
+        $uibModalInstance.close();
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss("cancel");
+    };
+}]);
+
+appControllers.controller("ErrorFormCtrl", ["$scope", "$uibModalInstance", "title", "message", function ($scope, $uibModalInstance, title, message) {
+    "use strict";
+    $scope.title = title;
+    $scope.message = message;
+
+    $scope.close = function () {
+        $uibModalInstance.close();
+    };
+}]);
+
+appControllers.controller('ControlPanelCtrl', [function () {
+    "use strict";
+
+    return;
+}]);
+
+appControllers.controller('AdminCtrl', ['$scope', 'User', '$uibModal', function ($scope, User, $uibModal) {
+    "use strict";
     $scope.sortBy = 'UserName';
     $scope.sortReverse = false;
     $scope.userFilter = '';
@@ -12,9 +43,25 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User
     $scope.dialogEmail = "";
     $scope.dialogRole = "";
 
+    $scope.showError = function (title, message) {
+        $uibModal.open({
+            animation: true,
+            templateUrl: "/Dialog/ErrorForm",
+            controller: "ErrorFormCtrl",
+            resolve: {
+                title: function () {
+                    return title;
+                },
+                message: function () {
+                    return message;
+                }
+            }
+        });
+    };
+
     $scope.showAscending = function (param) {
-        return ($scope.sortBy != param || ($scope.sortBy == param && !$scope.sortReverse))
-    }
+        return ($scope.sortBy !== param || ($scope.sortBy === param && !$scope.sortReverse));
+    };
 
     $scope.saveUser = function () {
         var i = new User();
@@ -23,41 +70,39 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User
             i.email = $scope.dialogEmail;
             i.role = $scope.dialogRole;
 
-            i.$save([],
-                function () { $scope.refresh(); },
-                function () {
-                    $scope.errorTitle = "Couldn't Create User";
-                    $scope.errorMessage = "There was an error creating that user.  Please try again later.";
-
-                    $('#error-dialog').modal();
-                    $scope.refresh();
-                });
-        }
-        else {
+            i.$save([], function () {
+                $scope.refresh();
+            }, function () {
+                $scope.showError("Couldn't Create User", "There was an error creating that user.  Please try again later.");
+                $scope.refresh();
+            });
+        } else {
             i.Id = $scope.updateId;
             i.EmailAddress = $scope.dialogEmail;
             i.Role = $scope.dialogRole;
-            i.$update({ userId: "'" + $scope.updateId + "'" },
-                function () { $scope.refresh(); },
-                function () {
-                    $scope.errorTitle = "Couldn't Update User";
-                    $scope.errorMessage = "There was an error updating that User.  Please try again later.";
-
-                    $('#error-dialog').modal();
-                    $scope.refresh();
-                });
+            i.$update({
+                userId: "'" + $scope.updateId + "'"
+            }, function () {
+                $scope.refresh();
+            }, function () {
+                $scope.showError("Couldn't Create User", "There was an error creating that user.  Please try again later.");
+                $scope.refresh();
+            });
         }
-    }
+    };
 
     $scope.showUpdateUser = function (id) {
         $scope.createMode = false;
 
-        var user = $.grep($scope.users, function (e) { return e.Id == id; })
+        var user = $.grep($scope.users, function (e) {
+            return e.Id === id;
+        });
 
-        if (user.length == 1)
+        if (user.length === 1) {
             user = user[0];
-        else
+        } else {
             return;
+        }
 
         $scope.updateId = id;
         $scope.dialogEmail = user.EmailAddress;
@@ -66,7 +111,7 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User
         $scope.editForm.$setPristine();
 
         $('#create-dialog').modal();
-    }
+    };
 
     $scope.showNewUser = function () {
         $scope.dialogEmail = "";
@@ -78,12 +123,12 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User
         $scope.editForm.$setPristine();
 
         $('#create-dialog').modal();
-    }
+    };
 
     $scope.updateSortBy = function (param) {
-        if ($scope.sortBy == param)
+        if ($scope.sortBy === param) {
             $scope.sortReverse = !$scope.sortReverse;
-        else {
+        } else {
             $scope.sortBy = param;
             $scope.sortReverse = false;
         }
@@ -93,44 +138,43 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User
         $scope.loading = true;
         $scope.users = User.query({}, function () {
             $scope.loading = false;
-        },
-        function () {
-            $scope.errorTitle = "Couldn't Load Users";
-            $scope.errorMessage = "There was an error loading the User list.  Please try again later.";
-
-            $('#error-dialog').modal();
+        }, function () {
+            $scope.showError("Couldn't Load Users", "There was an error loading the User list.  Please try again later.");
         });
     };
 
     $scope.showDeleteConfirm = function (userId) {
-        var user = $.grep($scope.users, function (e) { return e.Id == userId; });
+        var user = $.grep($scope.users, function (e) {
+            return e.Id === userId;
+        });
 
-        if (user.length == 1)
+        if (user.length === 1) {
             user = user[0];
-        else
+        } else {
             return;
+        }
 
         $scope.deleteName = user.Name;
         $scope.deleteId = user.Id;
 
         $('#delete-dialog').modal();
-    }
+    };
 
     $scope.removeItem = function () {
-        User.remove({ userId: "'" + $scope.deleteId + "'" },
-           function () { $scope.refresh(); },
-            function () {
-                $scope.errorTitle = "Couldn't Delete User";
-                $scope.errorMessage = "There was an error deleting that User.  Please try again later.";
-
-                $('#error-dialog').modal();
-            });
-    }
+        User.remove({
+            userId: "'" + $scope.deleteId + "'"
+        }, function () {
+            $scope.refresh();
+        }, function () {
+            $scope.showError("Couldn't Delete User", "There was an error deleting that User.  Please try again later.");
+        });
+    };
 
     $scope.refresh();
-}])
+}]);
 
-appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, IMEI) {
+appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$uibModal', function ($scope, IMEI, $uibModal) {
+    "use strict";
     $scope.sortBy = 'IMEI';
     $scope.sortReverse = false;
     $scope.imeiFilter = '';
@@ -140,9 +184,25 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, I
     $scope.dialogType = 0;
     $scope.createMode = true;
 
+    $scope.showError = function (title, message) {
+        $uibModal.open({
+            animation: true,
+            templateUrl: "/Dialog/ErrorForm",
+            controller: "ErrorFormCtrl",
+            resolve: {
+                title: function () {
+                    return title;
+                },
+                message: function () {
+                    return message;
+                }
+            }
+        });
+    };
+
     $scope.showAscending = function (param) {
-        return ($scope.sortBy != param || ($scope.sortBy == param && !$scope.sortReverse))
-    }
+        return ($scope.sortBy !== param || ($scope.sortBy === param && !$scope.sortReverse));
+    };
 
     $scope.saveImei = function () {
         var i = new IMEI();
@@ -151,39 +211,37 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, I
         i.Type = $scope.dialogType;
 
         if ($scope.createMode) {
-            i.$save([],
-                function () { $scope.refresh(); },
-                function () {
-                    $scope.errorTitle = "Couldn't Create IMEI";
-                    $scope.errorMessage = "There was an error creating that IMEI.  Please try again later.";
-
-                    $('#error-dialog').modal();
-                    $scope.refresh();
-                });
-        }
-        else {
+            i.$save([], function () {
+                $scope.refresh();
+            }, function () {
+                $scope.showError("Couldn't Create IMEI", "There was an error creating that IMEI.  Please try again later.");
+                $scope.refresh();
+            });
+        } else {
             i.Id = $scope.updateId;
-            i.$update({ imeiId: $scope.updateId },
-                function () { $scope.refresh(); },
-                function () {
-                    $scope.errorTitle = "Couldn't Update IMEI";
-                    $scope.errorMessage = "There was an error updating that IMEI.  Please try again later.";
-
-                    $('#error-dialog').modal();
-                    $scope.refresh();
-                });
+            i.$update({
+                imeiId: $scope.updateId
+            }, function () {
+                $scope.refresh();
+            }, function () {
+                $scope.showError("Couldn't Update IMEI", "There was an error updating that IMEI.  Please try again later.");
+                $scope.refresh();
+            });
         }
-    }
+    };
 
     $scope.showUpdateImei = function (id) {
         $scope.createMode = false;
 
-        var imei = $.grep($scope.imeis, function (e) { return e.Id == id; })
+        var imei = $.grep($scope.imeis, function (e) {
+            return e.Id === id;
+        });
 
-        if (imei.length == 1)
+        if (imei.length === 1) {
             imei = imei[0];
-        else
+        } else {
             return;
+        }
 
         $scope.updateId = id;
         $scope.dialogImei = imei.IMEI;
@@ -193,7 +251,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, I
         $scope.editForm.$setPristine();
 
         $('#edit-dialog').modal();
-    }
+    };
 
     $scope.showNewImei = function () {
         $scope.dialogImei = "";
@@ -204,55 +262,59 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', function ($scope, I
         $scope.editForm.$setPristine();
 
         $('#edit-dialog').modal();
-    }
+    };
 
     $scope.updateSortBy = function (param) {
-        if ($scope.sortBy == param)
+        if ($scope.sortBy === param) {
             $scope.sortReverse = !$scope.sortReverse;
-        else {
+        } else {
             $scope.sortBy = param;
             $scope.sortReverse = false;
         }
-    }
+    };
 
     $scope.refresh = function () {
         $scope.loading = true;
         $scope.imeis = IMEI.query({}, function () {
             $scope.loading = false;
-        },
-            function () {
-                $scope.errorTitle = "Couldn't Load IMEIs";
-                $scope.errorMessage = "There was an error loading the IMEI list.  Please try again later.";
-
-                $('#error-dialog').modal();
-            });
+        }, function () {
+            $scope.showError("Couldn't Load IMEIs", "There was an error loading the IMEI list.  Please try again later.");
+        });
     };
 
     $scope.showDeleteConfirm = function (imeiId) {
-        var imei = $.grep($scope.imeis, function (e) { return e.Id == imeiId; });
+        var imei = $.grep($scope.imeis, function (e) {
+            return e.Id === imeiId;
+        });
 
-        if (imei.length == 1) {
+        if (imei.length === 1) {
             imei = imei[0];
-        }
-        else
+        } else {
+            $scope.showError("Couldn't Delete IMEI", "There was an error deleting that IMEI.  Please try again later.");
             return;
+        }
 
-        $scope.deleteName = imei.CallSign;
-        $scope.deleteId = imei.Id;
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: "/Dialog/DeleteForm",
+            controller: "DeleteFormCtrl",
+            resolve: {
+                name: function () {
+                    return imei.Name;
+                }
+            }
+        });
 
-        $('#delete-dialog').modal();
-    }
-
-    $scope.removeItem = function () {
-        IMEI.remove({ imeiId: $scope.deleteId },
-            function () { $scope.refresh(); },
-            function () {
-                $scope.errorTitle = "Couldn't Delete IMEI";
-                $scope.errorMessage = "There was an error deleting that IMEI.  Please try again later.";
-
-                $('#error-dialog').modal();
+        modalInstance.result.then(function () {
+            IMEI.remove({
+                imeiId: $scope.deleteId
+            }, function () {
+                $scope.refresh();
+            }, function () {
+                $scope.showError("Couldn't Delete IMEI", "There was an error deleting that IMEI.  Please try again later.");
             });
-    }
+        });
+    };
 
     $scope.refresh();
 }]);

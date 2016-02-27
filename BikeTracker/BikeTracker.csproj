@@ -192,6 +192,7 @@
     <Compile Include="Controllers\API\IMEIController.cs" />
     <Compile Include="Controllers\API\UserController.cs" />
     <Compile Include="Controllers\ControlPanelController.cs" />
+    <Compile Include="Controllers\DialogController.cs" />
     <Compile Include="Controllers\Filters\AuthorizePasswordExpiresAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IMEIController.cs" />
@@ -911,6 +912,8 @@
     <Content Include="Views\ControlPanel\Index.cshtml" />
     <Content Include="Views\ControlPanel\Home.cshtml" />
     <Content Include="Views\Admin\Home.cshtml" />
+    <Content Include="Views\Dialog\DeleteForm.cshtml" />
+    <Content Include="Views\Dialog\ErrorForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
