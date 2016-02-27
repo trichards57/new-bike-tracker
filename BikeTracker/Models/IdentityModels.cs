@@ -16,6 +16,8 @@ namespace BikeTracker.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public bool MustResetPassword { get; set; } = false;
     }
 
     public class ApplicationMessage : IdentityMessage

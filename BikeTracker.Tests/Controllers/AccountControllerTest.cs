@@ -71,8 +71,15 @@ namespace BikeTracker.Tests.Controllers
             Assert.AreEqual(LocalUri, result.ViewBag.ReturnUrl);
         }
 
-        private async Task SubmitLogin(LoginViewModel loginModel, string returnUrl,
-            bool verificationFail = false, bool validationFail = false, bool redirectToUri = false, bool redirectToHome = false)
+        private enum Result
+        {
+            VerificationFailure,
+            ValidationFailure,
+            RedirectToUri,
+            RedirectToHome
+        }
+
+        private async Task SubmitLogin(LoginViewModel loginModel, string returnUrl, Result expectedResult)
         {
             var userManager = CreateMockUserManager();
             var signInManager = CreateMockSignInManager();
@@ -90,52 +97,55 @@ namespace BikeTracker.Tests.Controllers
 
             var result = await controller.Login(loginModel, returnUrl);
 
-            Assert.IsTrue(verificationFail || validationFail || redirectToUri || redirectToHome);
+            ViewResult vr;
 
-            if (verificationFail)
+            switch (expectedResult)
             {
-                var vr = result as ViewResult;
+                case Result.VerificationFailure:
+                    vr = result as ViewResult;
 
-                userManager.Verify(m => m.FindAsync(loginModel.Email, loginModel.Password), Times.AtLeastOnce);
-                signInManager.Verify(m => m.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
+                    userManager.Verify(m => m.FindAsync(loginModel.Email, loginModel.Password), Times.AtLeastOnce);
+                    signInManager.Verify(m => m.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
 
-                Assert.IsNotNull(vr);
-                Assert.AreEqual(loginModel, vr.Model);
-            }
-            else if (validationFail)
-            {
-                var vr = result as ViewResult;
+                    Assert.IsNotNull(vr);
+                    Assert.AreEqual(loginModel, vr.Model);
+                    break;
+                case Result.ValidationFailure:
+                    vr = result as ViewResult;
 
-                userManager.Verify(m => m.FindAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-                signInManager.Verify(m => m.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
+                    userManager.Verify(m => m.FindAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+                    signInManager.Verify(m => m.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
 
-                Assert.IsNotNull(vr);
-                Assert.AreEqual(loginModel, vr.Model);
-            }
-            else if (redirectToUri)
-            {
-                var rr = result as RedirectResult;
+                    Assert.IsNotNull(vr);
+                    Assert.AreEqual(loginModel, vr.Model);
+                    break;
+                case Result.RedirectToUri:
+                    var rr = result as RedirectResult;
 
-                userManager.Verify(m => m.FindAsync(loginModel.Email, loginModel.Password), Times.AtLeastOnce);
-                signInManager.Verify(m => m.PasswordSignInAsync(loginModel.Email, loginModel.Password, loginModel.RememberMe, false), Times.Once);
-                urlHelper.Verify(m => m.IsLocalUrl(returnUrl), Times.AtLeastOnce);
+                    userManager.Verify(m => m.FindAsync(loginModel.Email, loginModel.Password), Times.AtLeastOnce);
+                    signInManager.Verify(m => m.PasswordSignInAsync(loginModel.Email, loginModel.Password, loginModel.RememberMe, false), Times.Once);
+                    urlHelper.Verify(m => m.IsLocalUrl(returnUrl), Times.AtLeastOnce);
 
-                Assert.IsNotNull(rr);
-                Assert.AreEqual(returnUrl, rr.Url);
-                Assert.AreEqual(false, rr.Permanent);
-            }
-            else if (redirectToHome)
-            {
-                var rr = result as RedirectToRouteResult;
+                    Assert.IsNotNull(rr);
+                    Assert.AreEqual(returnUrl, rr.Url);
+                    Assert.AreEqual(false, rr.Permanent);
+                    break;
+                case Result.RedirectToHome:
+                    var rtr = result as RedirectToRouteResult;
 
-                userManager.Verify(m => m.FindAsync(loginModel.Email, loginModel.Password), Times.AtLeastOnce);
-                signInManager.Verify(m => m.PasswordSignInAsync(loginModel.Email, loginModel.Password, loginModel.RememberMe, false), Times.Once);
-                urlHelper.Verify(m => m.IsLocalUrl(returnUrl), Times.AtLeastOnce);
+                    userManager.Verify(m => m.FindAsync(loginModel.Email, loginModel.Password), Times.AtLeastOnce);
+                    signInManager.Verify(m => m.PasswordSignInAsync(loginModel.Email, loginModel.Password, loginModel.RememberMe, false), Times.Once);
+                    urlHelper.Verify(m => m.IsLocalUrl(returnUrl), Times.AtLeastOnce);
 
-                Assert.IsNotNull(rr);
-                Assert.AreEqual("Index", rr.RouteValues["action"]);
-                Assert.AreEqual("Home", rr.RouteValues["controller"]);
-                Assert.AreEqual(false, rr.Permanent);
+                    Assert.IsNotNull(rtr);
+                    Assert.AreEqual("Index", rtr.RouteValues["action"]);
+                    Assert.AreEqual("Home", rtr.RouteValues["controller"]);
+                    Assert.AreEqual(false, rtr.Permanent);
+
+                    break;
+                default:
+                    Assert.Fail("Bad expected result.");
+                    break;
             }
         }
 
@@ -149,7 +159,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = true
             };
 
-            await SubmitLogin(loginModel, null, verificationFail: true);
+            await SubmitLogin(loginModel, null, Result.VerificationFailure);
         }
 
         [TestMethod]
@@ -162,7 +172,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = true
             };
 
-            await SubmitLogin(loginModel, null, verificationFail: true);
+            await SubmitLogin(loginModel, null, Result.VerificationFailure);
         }
 
         [TestMethod]
@@ -175,7 +185,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = true
             };
 
-            await SubmitLogin(loginModel, null, verificationFail: true);
+            await SubmitLogin(loginModel, null, Result.VerificationFailure);
         }
 
         [TestMethod]
@@ -188,7 +198,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = true
             };
 
-            await SubmitLogin(loginModel, null, validationFail: true);
+            await SubmitLogin(loginModel, null, Result.ValidationFailure);
         }
 
         [TestMethod]
@@ -201,7 +211,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = true
             };
 
-            await SubmitLogin(loginModel, null, validationFail: true);
+            await SubmitLogin(loginModel, null, Result.ValidationFailure);
         }
 
         [TestMethod]
@@ -214,7 +224,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = true
             };
 
-            await SubmitLogin(loginModel, null, validationFail: true);
+            await SubmitLogin(loginModel, null, Result.ValidationFailure);
         }
 
         [TestMethod]
@@ -227,7 +237,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = true
             };
 
-            await SubmitLogin(loginModel, LocalUri, redirectToUri: true);
+            await SubmitLogin(loginModel, LocalUri, Result.RedirectToUri);
         }
 
         [TestMethod]
@@ -240,7 +250,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = false
             };
 
-            await SubmitLogin(loginModel, null, redirectToHome: true);
+            await SubmitLogin(loginModel, null, Result.RedirectToHome);
         }
 
         [TestMethod]
@@ -253,7 +263,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = true
             };
 
-            await SubmitLogin(loginModel, null, redirectToHome: true);
+            await SubmitLogin(loginModel, null, Result.RedirectToHome);
         }
 
         [TestMethod]
@@ -266,7 +276,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = true
             };
 
-            await SubmitLogin(loginModel, null, verificationFail: true);
+            await SubmitLogin(loginModel, null, Result.VerificationFailure);
         }
 
         [TestMethod]
@@ -279,7 +289,7 @@ namespace BikeTracker.Tests.Controllers
                 RememberMe = true
             };
 
-            await SubmitLogin(loginModel, ExternalUri, redirectToHome: true);
+            await SubmitLogin(loginModel, ExternalUri, Result.RedirectToHome);
         }
 
         private Mock<ApplicationSignInManager> CreateMockSignInManager()

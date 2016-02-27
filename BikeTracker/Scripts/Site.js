@@ -198,14 +198,14 @@ function refresh() {
         }).fail(function (xhr) {
             if (xhr.status == 401) // Unauthorised
             {
-                location.reload(true); // Refresh the page, which will redirect to the login page.
+                $("#loggedOutAlert").show();
             }
         })
 
     }).fail(function (xhr) {
         if (xhr.status == 401) // Unauthorised
         {
-            location.reload(true); // Refresh the page, which will redirect to the login page.
+            $("#loggedOutAlert").show();
         }
     })
 }

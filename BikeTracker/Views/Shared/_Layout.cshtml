@@ -9,7 +9,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - SJA Tracker</title>
-    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="~/Content/theme.css" />
+    <link rel="stylesheet" href="~/Content/Site.css" />
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -29,13 +30,10 @@
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                     @if (User.IsInRole("IMEIAdmin") || User.IsInRole("GeneralAdmin"))
                     {
-                        <li>@Html.ActionLink("IMEIs", "Index", "IMEI")</li>
-                    }
-                    @if (User.IsInRole("GeneralAdmin"))
-                    {
-                        <li>@Html.ActionLink("Admin", "Index", "Admin")</li>
+                        <li>@Html.ActionLink("Control Panel", "Index", "ControlPanel")</li>
                     }
                 </ul>
+
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
@@ -48,8 +46,8 @@
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
