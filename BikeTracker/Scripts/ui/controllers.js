@@ -151,22 +151,29 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$uibModal', function 
         if (user.length === 1) {
             user = user[0];
         } else {
+            $scope.showError("Couldn't Delete User", "There was an error deleting that User.  Please try again later.");
             return;
         }
 
-        $scope.deleteName = user.Name;
-        $scope.deleteId = user.Id;
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: "/Dialog/DeleteForm",
+            controller: "DeleteFormCtrl",
+            resolve: {
+                name: function () {
+                    return user.Name;
+                }
+            }
+        });
 
-        $('#delete-dialog').modal();
-    };
-
-    $scope.removeItem = function () {
-        User.remove({
-            userId: "'" + $scope.deleteId + "'"
-        }, function () {
-            $scope.refresh();
-        }, function () {
-            $scope.showError("Couldn't Delete User", "There was an error deleting that User.  Please try again later.");
+        modalInstance.result.then(function () {
+            User.remove({
+                userId: "'" + $scope.deleteId + "'"
+            }, function () {
+                $scope.refresh();
+            }, function () {
+                $scope.showError("Couldn't Delete User", "There was an error deleting that User.  Please try again later.");
+            });
         });
     };
 
@@ -300,7 +307,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$uibModal', functi
             controller: "DeleteFormCtrl",
             resolve: {
                 name: function () {
-                    return imei.Name;
+                    return imei.CallSign;
                 }
             }
         });
