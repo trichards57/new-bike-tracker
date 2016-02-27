@@ -1,0 +1,89 @@
+﻿<div>
+    <nav class="navbar navbar-default sub-navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#/IMEIs">Manage IMEIs</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Search" ng-model="imeiFilter" />
+                        </div>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a role="button" ng-click="showNewImei()">New IMEI</a>
+                    </li>
+                    <li>
+                        <a ng-click="refresh()" role="button">
+                            Refresh <i class="glyphicon glyphicon-refresh"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <table class="table table-responsive">
+        <tr>
+            <th>
+                <a class="pointer" ng-click="updateSortBy('IMEI')">
+                    IMEI
+                    <i ng-if="showAscending('IMEI')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="!showAscending('IMEI')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                </a>
+            </th>
+            <th>
+                <a class="pointer" ng-click="updateSortBy('CallSign')">
+                    Call Sign
+                    <i ng-if="showAscending('CallSign')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="!showAscending('CallSign')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                </a>
+            </th>
+            <th>
+                <a class="pointer" ng-click="updateSortBy('Type')">
+                    Type
+                    <i ng-if="showAscending('Type')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="!showAscending('Type')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                </a>
+
+            </th>
+            <th>
+            </th>
+        </tr>
+
+        <tr ng-repeat="imei in imeis | orderBy:sortBy:sortReverse | filter:imeiFilter">
+            <td>
+                {{imei.IMEI}}
+            </td>
+            <td>
+                {{imei.CallSign}}
+            </td>
+            <td>
+                {{imei.Type}}
+            </td>
+            <td>
+                <a class="pointer" ng-click="showUpdateImei(imei.Id)">Edit</a> | <a class="pointer" ng-click="showDeleteConfirm(imei.Id)">Delete</a>
+            </td>
+        </tr>
+        <tr ng-show="loading">
+            <td colspan="4">
+                <div class="progress progress-striped active">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        Loading IMEIs
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

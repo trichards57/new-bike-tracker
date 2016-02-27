@@ -1,4 +1,8 @@
 ﻿using System.Web.Http;
+using System.Web.OData.Builder;
+using System.Web.OData.Extensions;
+using BikeTracker.Models;
+
 
 namespace BikeTracker
 {
@@ -16,8 +20,6 @@ namespace BikeTracker
         /// </remarks>
         public static void Register(HttpConfiguration config)
         {
-            // Web API configuration and services
-
             // Web API routes
             config.MapHttpAttributeRoutes();
 
@@ -26,6 +28,23 @@ namespace BikeTracker
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            // Web API configuration and services
+            var builder = new ODataConventionModelBuilder();
+            builder.EntitySet<IMEIToCallsign>("IMEI");
+            builder.EntitySet<UserAdminModel>("User");
+
+            builder.Namespace = "API";
+
+            var updateEmail = builder.EntityType<UserAdminModel>().Action("UpdateEmail");
+            updateEmail.Parameter<string>("email");
+
+            var register = builder.EntityType<UserAdminModel>().Collection.Action("Register");
+            register.Parameter<string>("email");
+            register.Parameter<string>("role");
+
+            config.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
+
         }
     }
 }

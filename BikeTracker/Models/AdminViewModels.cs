@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 
 namespace BikeTracker.Models
 {
@@ -18,7 +16,9 @@ namespace BikeTracker.Models
         [ReadOnly(true)]
         public string Role { get; set; }
 
+        [ReadOnly(true)]
+        public string RoleDisplayName { get; set; }
+
         public string RoleId { get; set; }
-        public IEnumerable<SelectListItem> Roles { get; set; }
     }
 }

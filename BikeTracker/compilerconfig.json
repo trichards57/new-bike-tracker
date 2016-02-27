@@ -1,0 +1,8 @@
+﻿[
+  {
+    "outputFile": "Content/theme.css",
+    "inputFile": "Content/theme.less",
+    "minify": { "enabled": true },
+    "includeInProject": true
+  }
+]

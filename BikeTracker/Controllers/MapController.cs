@@ -1,4 +1,5 @@
-﻿using BikeTracker.Services;
+﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Services;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Web.Mvc;
 
 namespace BikeTracker.Controllers
 {
-    [Authorize]
+    [AuthorizePasswordExpires]
     public class MapController : Controller
     {
         private ILocationService locationService;
