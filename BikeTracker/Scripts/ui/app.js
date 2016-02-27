@@ -7,7 +7,8 @@ var app = angular.module('app', [
     'ngRoute',
     'ngResource',
     'ui.validate',
-    'appControllers'
+    'appControllers',
+    'ui.bootstrap'
 ]);
 
 app.config(['$routeProvider', function ($routeProvider) {

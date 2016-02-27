@@ -5,26 +5,26 @@
 
 var appControllers = angular.module('appControllers', ['appServices']);
 
-appControllers.controller("DeleteFormCtrl", ["$scope", "$uibModalInstance", "name", function ($scope, $uibModalInstance, name) {
+appControllers.controller("DeleteFormCtrl", ["$scope", "$modalInstance", "name", function ($scope, $modalInstance, name) {
     "use strict";
     $scope.name = name;
 
     $scope.ok = function () {
-        $uibModalInstance.close();
+        $modalInstance.close();
     };
 
     $scope.cancel = function () {
-        $uibModalInstance.dismiss("cancel");
+        $modalInstance.dismiss("cancel");
     };
 }]);
 
-appControllers.controller("ErrorFormCtrl", ["$scope", "$uibModalInstance", "title", "message", function ($scope, $uibModalInstance, title, message) {
+appControllers.controller("ErrorFormCtrl", ["$scope", "$uibModalInstance", "title", "message", function ($scope, $modalInstance, title, message) {
     "use strict";
     $scope.title = title;
     $scope.message = message;
 
     $scope.close = function () {
-        $uibModalInstance.close();
+        $modalInstance.close();
     };
 }]);
 
@@ -34,7 +34,7 @@ appControllers.controller('ControlPanelCtrl', [function () {
     return;
 }]);
 
-appControllers.controller('AdminCtrl', ['$scope', 'User', '$uibModal', function ($scope, User, $uibModal) {
+appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', function ($scope, User, $modal) {
     "use strict";
     $scope.sortBy = 'UserName';
     $scope.sortReverse = false;
@@ -44,7 +44,7 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$uibModal', function 
     $scope.dialogRole = "";
 
     $scope.showError = function (title, message) {
-        $uibModal.open({
+        $modal.open({
             animation: true,
             templateUrl: "/Dialog/ErrorForm",
             controller: "ErrorFormCtrl",
@@ -155,20 +155,20 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$uibModal', function 
             return;
         }
 
-        var modalInstance = $uibModal.open({
+        var modalInstance = $modal.open({
             animation: true,
             templateUrl: "/Dialog/DeleteForm",
             controller: "DeleteFormCtrl",
             resolve: {
                 name: function () {
-                    return user.Name;
+                    return user.UserName;
                 }
             }
         });
 
         modalInstance.result.then(function () {
             User.remove({
-                userId: "'" + $scope.deleteId + "'"
+                userId: "'" + user.Id + "'"
             }, function () {
                 $scope.refresh();
             }, function () {
@@ -180,7 +180,7 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$uibModal', function 
     $scope.refresh();
 }]);
 
-appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$uibModal', function ($scope, IMEI, $uibModal) {
+appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', function ($scope, IMEI, $modal) {
     "use strict";
     $scope.sortBy = 'IMEI';
     $scope.sortReverse = false;
@@ -192,7 +192,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$uibModal', functi
     $scope.createMode = true;
 
     $scope.showError = function (title, message) {
-        $uibModal.open({
+        $modal.open({
             animation: true,
             templateUrl: "/Dialog/ErrorForm",
             controller: "ErrorFormCtrl",
@@ -301,7 +301,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$uibModal', functi
             return;
         }
 
-        var modalInstance = $uibModal.open({
+        var modalInstance = $modal.open({
             animation: true,
             templateUrl: "/Dialog/DeleteForm",
             controller: "DeleteFormCtrl",
@@ -314,7 +314,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$uibModal', functi
 
         modalInstance.result.then(function () {
             IMEI.remove({
-                imeiId: $scope.deleteId
+                imeiId: imei.Id
             }, function () {
                 $scope.refresh();
             }, function () {
