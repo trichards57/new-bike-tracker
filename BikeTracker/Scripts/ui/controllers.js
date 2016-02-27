@@ -28,14 +28,37 @@ appControllers.controller("ErrorFormCtrl", ["$scope", "$modalInstance", "title",
     };
 }]);
 
-appControllers.controller('ControlPanelCtrl', [function () {
+appControllers.controller('ControlPanelCtrl', ["$scope", "$window", function ($scope, $window) {
     "use strict";
 
-    return;
+    $scope.initialize = function () {
+        $scope.previousTitle = $window.document.title;
+        $window.document.title = "Administrator Control Panel - SJA Tracker";
+
+        $scope.$on("$destroy", function () {
+            $window.document.title = $scope.previousTitle;
+        });
+    };
+
+    $scope.initialize();
 }]);
 
-appControllers.controller('EditUserCtrl', ["$scope", "$modalInstance", "createMode", "email", "role", function ($scope, $modalInstance, createMode, email, role) {
+appControllers.controller('EditUserCtrl', ["$scope", "$modalInstance", "$window", "createMode", "email", "role", function ($scope, $modalInstance, $window, createMode, email, role) {
     "use strict";
+
+    $scope.initialize = function () {
+        $scope.previousTitle = $window.document.title;
+
+        if (createMode) {
+            $window.document.title = "New User - SJA Tracker";
+        } else {
+            $window.document.title = "Edit User - SJA Tracker";
+        }
+
+        $scope.$on("$destroy", function () {
+            $window.document.title = $scope.previousTitle;
+        });
+    };
 
     $scope.createMode = createMode;
     $scope.email = createMode
@@ -55,10 +78,22 @@ appControllers.controller('EditUserCtrl', ["$scope", "$modalInstance", "createMo
     $scope.cancel = function () {
         $modalInstance.dismiss("cancel");
     };
+
+    $scope.initialize();
 }]);
 
-appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', function ($scope, User, $modal) {
+appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', '$window', function ($scope, User, $modal, $window) {
     "use strict";
+
+    $scope.initialize = function () {
+        $scope.previousTitle = $window.document.title;
+        $window.document.title = "User Control Panel - SJA Tracker";
+
+        $scope.$on("$destroy", function () {
+            $window.document.title = $scope.previousTitle;
+        });
+    };
+
     $scope.sortBy = 'UserName';
     $scope.sortReverse = false;
     $scope.userFilter = '';
@@ -216,11 +251,27 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', function ($s
         });
     };
 
+    $scope.initialize();
     $scope.refresh();
 }]);
 
-appControllers.controller('EditImeiCtrl', ["$scope", "$modalInstance", "createMode", "imei", "callsign", "type", function ($scope, $modalInstance, createMode, imei, callsign, type) {
+appControllers.controller('EditImeiCtrl', ["$scope", "$modalInstance", "$window", "createMode", "imei", "callsign", "type", function ($scope, $modalInstance, $window, createMode, imei, callsign, type) {
+
     "use strict";
+
+    $scope.initialize = function () {
+        $scope.previousTitle = $window.document.title;
+
+        if (createMode) {
+            $window.document.title = "New IMEI - SJA Tracker";
+        } else {
+            $window.document.title = "Edit IMEI - SJA Tracker";
+        }
+
+        $scope.$on("$destroy", function () {
+            $window.document.title = $scope.previousTitle;
+        });
+    };
 
     $scope.createMode = createMode;
     $scope.imei = createMode
@@ -244,10 +295,22 @@ appControllers.controller('EditImeiCtrl', ["$scope", "$modalInstance", "createMo
     $scope.cancel = function () {
         $modalInstance.dismiss("cancel");
     };
+
+    $scope.initialize();
 }]);
 
-appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', function ($scope, IMEI, $modal) {
+appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', '$window', function ($scope, IMEI, $modal, $window) {
     "use strict";
+
+    $scope.initialize = function () {
+        $scope.previousTitle = $window.document.title;
+        $window.document.title = "IMEI Control Panel - SJA Tracker";
+
+        $scope.$on("$destroy", function () {
+            $window.document.title = $scope.previousTitle;
+        });
+    };
+
     $scope.sortBy = 'IMEI';
     $scope.sortReverse = false;
     $scope.imeiFilter = '';
@@ -374,7 +437,8 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', function 
 
     $scope.refresh = function () {
         $scope.loading = true;
-        $scope.imeis = IMEI.query({}, function () {
+        $scope.imeis = IMEI.query({
+        }, function () {
             $scope.loading = false;
         }, function () {
             $scope.showError("Couldn't Load IMEIs", "There was an error loading the IMEI list.  Please try again later.");
@@ -415,5 +479,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', function 
         });
     };
 
+
+    $scope.initialize();
     $scope.refresh();
 }]);
