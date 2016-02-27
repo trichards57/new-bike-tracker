@@ -122,7 +122,13 @@ namespace BikeTracker.Controllers.API
 
             var user = new ApplicationUser { UserName = email, Email = email, MustResetPassword = true };
 
-            var password = Membership.GeneratePassword(Math.Min(ApplicationUserManager.MinPasswordLength * 2, 128), 2);
+            string password;
+
+            do
+            {
+                password = Membership.GeneratePassword(Math.Min(ApplicationUserManager.MinPasswordLength * 2, 128), 2);
+            }
+            while (!(await UserManager.PasswordValidator.ValidateAsync(password)).Succeeded);
 
             var result = await UserManager.CreateAsync(user, password);
             if (result.Succeeded)

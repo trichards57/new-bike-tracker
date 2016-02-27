@@ -34,6 +34,29 @@ appControllers.controller('ControlPanelCtrl', [function () {
     return;
 }]);
 
+appControllers.controller('EditUserCtrl', ["$scope", "$modalInstance", "createMode", "email", "role", function ($scope, $modalInstance, createMode, email, role) {
+    "use strict";
+
+    $scope.createMode = createMode;
+    $scope.email = createMode
+        ? ""
+        : email;
+    $scope.role = createMode
+        ? "Normal"
+        : role;
+
+    $scope.ok = function () {
+        $modalInstance.close({
+            email: $scope.email,
+            role: $scope.role
+        });
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss("cancel");
+    };
+}]);
+
 appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', function ($scope, User, $modal) {
     "use strict";
     $scope.sortBy = 'UserName';
@@ -63,37 +86,7 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', function ($s
         return ($scope.sortBy !== param || ($scope.sortBy === param && !$scope.sortReverse));
     };
 
-    $scope.saveUser = function () {
-        var i = new User();
-
-        if ($scope.createMode) {
-            i.email = $scope.dialogEmail;
-            i.role = $scope.dialogRole;
-
-            i.$save([], function () {
-                $scope.refresh();
-            }, function () {
-                $scope.showError("Couldn't Create User", "There was an error creating that user.  Please try again later.");
-                $scope.refresh();
-            });
-        } else {
-            i.Id = $scope.updateId;
-            i.EmailAddress = $scope.dialogEmail;
-            i.Role = $scope.dialogRole;
-            i.$update({
-                userId: "'" + $scope.updateId + "'"
-            }, function () {
-                $scope.refresh();
-            }, function () {
-                $scope.showError("Couldn't Create User", "There was an error creating that user.  Please try again later.");
-                $scope.refresh();
-            });
-        }
-    };
-
     $scope.showUpdateUser = function (id) {
-        $scope.createMode = false;
-
         var user = $.grep($scope.users, function (e) {
             return e.Id === id;
         });
@@ -101,28 +94,74 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', function ($s
         if (user.length === 1) {
             user = user[0];
         } else {
+            $scope.showError("Couldn't Update User", "There was an error updating that user.  Please try again later.");
             return;
         }
 
-        $scope.updateId = id;
-        $scope.dialogEmail = user.EmailAddress;
-        $scope.dialogRole = user.Role;
+        var modalInstance = $modal.open({
+            animation: true,
+            templateUrl: "/Admin/EditForm",
+            controller: "EditUserCtrl",
+            resolve: {
+                createMode: function () {
+                    return false;
+                },
+                email: function () {
+                    return user.EmailAddress;
+                },
+                role: function () {
+                    return user.Role;
+                }
+            }
+        });
 
-        $scope.editForm.$setPristine();
+        modalInstance.result.then(function (res) {
+            var i = new User();
+            i.Id = user.Id;
+            i.EmailAddress = res.email;
+            i.Role = res.role;
 
-        $('#create-dialog').modal();
+            i.$update({
+                userId: "'" + i.Id + "'"
+            }, function () {
+                $scope.refresh();
+            }, function () {
+                $scope.showError("Couldn't Update User", "There was an error updating that user.  Please try again later.");
+                $scope.refresh();
+            });
+        });
     };
 
     $scope.showNewUser = function () {
-        $scope.dialogEmail = "";
-        $scope.dialogPassword = "";
-        $scope.dialogPasswordConfirm = "";
-        $scope.dialogRole = "";
-        $scope.createMode = true;
+        var modalInstance = $modal.open({
+            animation: true,
+            templateUrl: "/Admin/EditForm",
+            controller: "EditUserCtrl",
+            resolve: {
+                createMode: function () {
+                    return true;
+                },
+                email: function () {
+                    return "";
+                },
+                role: function () {
+                    return "";
+                }
+            }
+        });
 
-        $scope.editForm.$setPristine();
+        modalInstance.result.then(function (res) {
+            var i = new User();
+            i.email = res.email;
+            i.role = res.role;
 
-        $('#create-dialog').modal();
+            i.$save([], function () {
+                $scope.refresh();
+            }, function () {
+                $scope.showError("Couldn't Create User", "There was an error creating that user.  Please try again later.");
+                $scope.refresh();
+            });
+        });
     };
 
     $scope.updateSortBy = function (param) {
@@ -184,9 +223,15 @@ appControllers.controller('EditImeiCtrl', ["$scope", "$modalInstance", "createMo
     "use strict";
 
     $scope.createMode = createMode;
-    $scope.imei = createMode ? "" : imei;
-    $scope.callsign = createMode ? "" : callsign;
-    $scope.type = createMode ? "Unknown" : type;
+    $scope.imei = createMode
+        ? ""
+        : imei;
+    $scope.callsign = createMode
+        ? ""
+        : callsign;
+    $scope.type = createMode
+        ? "Unknown"
+        : type;
 
     $scope.ok = function () {
         $modalInstance.close({
