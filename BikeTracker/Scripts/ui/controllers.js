@@ -18,7 +18,7 @@ appControllers.controller("DeleteFormCtrl", ["$scope", "$modalInstance", "name",
     };
 }]);
 
-appControllers.controller("ErrorFormCtrl", ["$scope", "$uibModalInstance", "title", "message", function ($scope, $modalInstance, title, message) {
+appControllers.controller("ErrorFormCtrl", ["$scope", "$modalInstance", "title", "message", function ($scope, $modalInstance, title, message) {
     "use strict";
     $scope.title = title;
     $scope.message = message;
@@ -180,6 +180,27 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', function ($s
     $scope.refresh();
 }]);
 
+appControllers.controller('EditImeiCtrl', ["$scope", "$modalInstance", "createMode", "imei", "callsign", "type", function ($scope, $modalInstance, createMode, imei, callsign, type) {
+    "use strict";
+
+    $scope.createMode = createMode;
+    $scope.imei = createMode ? "" : imei;
+    $scope.callsign = createMode ? "" : callsign;
+    $scope.type = createMode ? "Unknown" : type;
+
+    $scope.ok = function () {
+        $modalInstance.close({
+            imei: $scope.imei,
+            callsign: $scope.callsign,
+            type: $scope.type
+        });
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss("cancel");
+    };
+}]);
+
 appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', function ($scope, IMEI, $modal) {
     "use strict";
     $scope.sortBy = 'IMEI';
@@ -211,35 +232,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', function 
         return ($scope.sortBy !== param || ($scope.sortBy === param && !$scope.sortReverse));
     };
 
-    $scope.saveImei = function () {
-        var i = new IMEI();
-        i.IMEI = $scope.dialogImei;
-        i.CallSign = $scope.dialogCallsign;
-        i.Type = $scope.dialogType;
-
-        if ($scope.createMode) {
-            i.$save([], function () {
-                $scope.refresh();
-            }, function () {
-                $scope.showError("Couldn't Create IMEI", "There was an error creating that IMEI.  Please try again later.");
-                $scope.refresh();
-            });
-        } else {
-            i.Id = $scope.updateId;
-            i.$update({
-                imeiId: $scope.updateId
-            }, function () {
-                $scope.refresh();
-            }, function () {
-                $scope.showError("Couldn't Update IMEI", "There was an error updating that IMEI.  Please try again later.");
-                $scope.refresh();
-            });
-        }
-    };
-
     $scope.showUpdateImei = function (id) {
-        $scope.createMode = false;
-
         var imei = $.grep($scope.imeis, function (e) {
             return e.Id === id;
         });
@@ -247,28 +240,82 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', function 
         if (imei.length === 1) {
             imei = imei[0];
         } else {
+            $scope.showError("Couldn't Update IMEI", "There was an error updating that IMEI.  Please try again later.");
             return;
         }
 
-        $scope.updateId = id;
-        $scope.dialogImei = imei.IMEI;
-        $scope.dialogCallsign = imei.CallSign;
-        $scope.dialogType = imei.Type;
+        var modalInstance = $modal.open({
+            animation: true,
+            templateUrl: "/IMEI/EditForm",
+            controller: "EditImeiCtrl",
+            resolve: {
+                createMode: function () {
+                    return false;
+                },
+                imei: function () {
+                    return imei.IMEI;
+                },
+                callsign: function () {
+                    return imei.CallSign;
+                },
+                type: function () {
+                    return imei.Type;
+                }
+            }
+        });
 
-        $scope.editForm.$setPristine();
+        modalInstance.result.then(function (res) {
+            var i = new IMEI();
+            i.IMEI = res.imei;
+            i.CallSign = res.callsign;
+            i.Type = res.type;
 
-        $('#edit-dialog').modal();
+            i.Id = id;
+            i.$update({
+                imeiId: id
+            }, function () {
+                $scope.refresh();
+            }, function () {
+                $scope.showError("Couldn't Update IMEI", "There was an error updating that IMEI.  Please try again later.");
+                $scope.refresh();
+            });
+        });
     };
 
     $scope.showNewImei = function () {
-        $scope.dialogImei = "";
-        $scope.dialogCallsign = "";
-        $scope.dialogType = "Unknown";
-        $scope.createMode = true;
+        var modalInstance = $modal.open({
+            animation: true,
+            templateUrl: "/IMEI/EditForm",
+            controller: "EditImeiCtrl",
+            resolve: {
+                createMode: function () {
+                    return true;
+                },
+                imei: function () {
+                    return "";
+                },
+                callsign: function () {
+                    return "";
+                },
+                type: function () {
+                    return "";
+                }
+            }
+        });
 
-        $scope.editForm.$setPristine();
+        modalInstance.result.then(function (res) {
+            var i = new IMEI();
+            i.IMEI = res.imei;
+            i.CallSign = res.callsign;
+            i.Type = res.type;
 
-        $('#edit-dialog').modal();
+            i.$save([], function () {
+                $scope.refresh();
+            }, function () {
+                $scope.showError("Couldn't Create IMEI", "There was an error creating that IMEI.  Please try again later.");
+                $scope.refresh();
+            });
+        });
     };
 
     $scope.updateSortBy = function (param) {

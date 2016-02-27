@@ -13,5 +13,10 @@ namespace BikeTracker.Controllers
         {
             return PartialView();
         }
+
+        public ActionResult EditForm()
+        {
+            return PartialView();
+        }
     }
 }

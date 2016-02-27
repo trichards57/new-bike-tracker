@@ -920,6 +920,7 @@
     <Content Include="Views\Admin\Home.cshtml" />
     <Content Include="Views\Dialog\DeleteForm.cshtml" />
     <Content Include="Views\Dialog\ErrorForm.cshtml" />
+    <Content Include="Views\IMEI\EditForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
