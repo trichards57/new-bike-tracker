@@ -37,7 +37,7 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User
             i.Id = $scope.updateId;
             i.EmailAddress = $scope.dialogEmail;
             i.Role = $scope.dialogRole;
-            i.$update({ userId: $scope.updateId },
+            i.$update({ userId: "'" + $scope.updateId + "'" },
                 function () { $scope.refresh(); },
                 function () {
                     $scope.errorTitle = "Couldn't Update User";
@@ -60,7 +60,7 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', function ($scope, User
             return;
 
         $scope.updateId = id;
-        $scope.dialogEmail = user.Email;
+        $scope.dialogEmail = user.EmailAddress;
         $scope.dialogRole = user.Role;
 
         $scope.editForm.$setPristine();

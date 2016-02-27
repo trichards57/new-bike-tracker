@@ -218,6 +218,20 @@ namespace BikeTracker
 
             return res;
         }
+
+        public override async Task<IdentityResult> SetEmailAsync(string userId, string email)
+        {
+            var res = await base.SetEmailAsync(userId, email);
+
+            if (res.Succeeded)
+            {
+                var user = await Store.FindByIdAsync(userId);
+                user.UserName = email;
+                await Store.UpdateAsync(user);
+            }
+
+            return res;
+        }
     }
 
     /// <summary>

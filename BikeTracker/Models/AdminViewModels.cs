@@ -16,6 +16,9 @@ namespace BikeTracker.Models
         [ReadOnly(true)]
         public string Role { get; set; }
 
+        [ReadOnly(true)]
+        public string RoleDisplayName { get; set; }
+
         public string RoleId { get; set; }
     }
 }

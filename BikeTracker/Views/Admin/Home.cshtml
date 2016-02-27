@@ -51,10 +51,10 @@
                 </a>
             </th>
             <th>
-                <a class="pointer" ng-click="updateSortBy('Role')">
+                <a class="pointer" ng-click="updateSortBy('RoleDisplayName')">
                     Role
-                    <i ng-if="showAscending('Role')" class="glyphicon glyphicon-sort-by-alphabet"></i>
-                    <i ng-if="!showAscending('Role')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                    <i ng-if="showAscending('RoleDisplayName')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="!showAscending('RoleDisplayName')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
                 </a>
             </th>
             <th>
@@ -69,7 +69,7 @@
                 {{user.EmailAddress}}
             </td>
             <td>
-                {{user.Role}}
+                {{user.RoleDisplayName}}
             </td>
             <td>
                 <a class="pointer" ng-click="showUpdateUser(user.Id)">Edit</a> | <a class="pointer" ng-click="showDeleteConfirm(user.Id)">Delete</a>

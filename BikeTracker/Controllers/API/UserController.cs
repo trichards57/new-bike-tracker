@@ -36,13 +36,16 @@ namespace BikeTracker.Controllers.API
         [EnableQuery]
         public IQueryable<UserAdminModel> GetUser()
         {
-            return db.Users.Select(u => new UserAdminModel
+            return db.Users
+                .Select(u => new { u, r = db.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId) })
+                .Select(d => new UserAdminModel
             {
-                Id = u.Id,
-                EmailAddress = u.Email,
-                Role = db.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId).DisplayName,
-                RoleId = u.Roles.FirstOrDefault().RoleId,
-                UserName = u.Email
+                Id = d.u.Id,
+                EmailAddress = d.u.Email,
+                Role = d.r.Name,
+                RoleId = d.r.Id,
+                RoleDisplayName = d.r.DisplayName,
+                UserName = d.u.UserName
             });
         }
 
@@ -50,14 +53,17 @@ namespace BikeTracker.Controllers.API
         [EnableQuery]
         public SingleResult<UserAdminModel> Get([FromODataUri] string key)
         {
-            return SingleResult.Create(db.Users.Where(applicationUser => applicationUser.Id == key).Select(u => new UserAdminModel
+            return SingleResult.Create(db.Users.Where(applicationUser => applicationUser.Id == key)
+                .Select(u => new { u, r = db.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId) })
+                .Select(d => new UserAdminModel
             {
-                Id = u.Id,
-                EmailAddress = u.Email,
-                Role = db.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId).DisplayName,
-                RoleId = u.Roles.FirstOrDefault().RoleId,
-                UserName = u.Email
-            }));
+                Id = d.u.Id,
+                EmailAddress = d.u.Email,
+                Role = d.r.DisplayName,
+                RoleId = d.r.Id,
+                RoleDisplayName = d.r.DisplayName,
+                UserName = d.u.UserName
+                }));
         }
 
         // PUT: odata/User(5)
