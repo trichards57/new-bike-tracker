@@ -237,6 +237,12 @@
     <Content Include="Content\multiple25.png" />
     <Content Include="Content\question30.png" />
     <Content Include="Content\smartphone86.png" />
+    <Content Include="Content\theme.css">
+      <DependentUpon>theme.less</DependentUpon>
+    </Content>
+    <Content Include="Content\theme.min.css">
+      <DependentUpon>theme.css</DependentUpon>
+    </Content>
     <Content Include="Content\transport66.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -400,6 +406,12 @@
     <Content Include="lib\angular-ui-validate\README.md" />
     <Content Include="lib\angular-bootstrap\.bower.json" />
     <Content Include="lib\angular-bootstrap\bower.json" />
+    <Content Include="Content\theme.less" />
+    <Content Include="Content\variables.less" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="package.json" />
     <Content Include="lib\angular\angular-csp.css" />
     <Content Include="lib\angular\angular.js" />
@@ -414,7 +426,7 @@
     <Content Include="lib\bootstrap\dist\js\bootstrap.min.js" />
     <Content Include="lib\bootstrap\dist\js\npm.js" />
     <Content Include="lib\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="lib\bootstrap\Gruntfile.js" />
+    <Content Include="lib\bootstrap\gruntfile.js" />
     <Content Include="lib\bootstrap\grunt\bs-commonjs-generator.js" />
     <Content Include="lib\bootstrap\grunt\bs-glyphicons-data-generator.js" />
     <Content Include="lib\bootstrap\grunt\bs-lessdoc-parser.js" />
