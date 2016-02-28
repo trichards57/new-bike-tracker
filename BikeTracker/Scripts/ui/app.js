@@ -22,6 +22,18 @@ app.config(['$routeProvider', function ($routeProvider) {
     }).when('/Admin', {
         templateUrl: '/Admin/Home',
         controller: 'AdminCtrl'
+    }).when('/Reports', {
+        templateUrl: '/Report/Home',
+        controller: 'ReportCtrl'
+    }).when('/Reports/UserActivity', {
+        templateUrl: '/Report/UserActivity',
+        controller: 'ReportCtrl'
+    }).when('/Reports/Locations', {
+        templateUrl: '/Report/Locations',
+        controller: 'ReportCtrl'
+    }).when('/Reports/Rates', {
+        templateUrl: '/Report/Rates',
+        controller: 'ReportCtrl'
     }).otherwise({
         redirectTo: '/'
     });

@@ -28,6 +28,21 @@ appControllers.controller("ErrorFormCtrl", ["$scope", "$modalInstance", "title",
     };
 }]);
 
+appControllers.controller('ReportCtrl', ["$scope", "$window", function ($scope, $window) {
+    "use strict";
+
+    $scope.initialize = function () {
+        $scope.previousTitle = $window.document.title;
+        $window.document.title = "Reports Control Panel - SJA Tracker";
+
+        $scope.$on("$destroy", function () {
+            $window.document.title = $scope.previousTitle;
+        });
+    };
+
+    $scope.initialize();
+}]);
+
 appControllers.controller('ControlPanelCtrl', ["$scope", "$window", function ($scope, $window) {
     "use strict";
 
