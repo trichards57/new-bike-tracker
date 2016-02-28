@@ -30,7 +30,7 @@ app.config(['$routeProvider', function ($routeProvider) {
         controller: 'ReportCtrl'
     }).when('/Reports/Locations', {
         templateUrl: '/Report/Locations',
-        controller: 'ReportCtrl'
+        controller: 'LocationReportCtrl'
     }).when('/Reports/Rates', {
         templateUrl: '/Report/Rates',
         controller: 'ReportCtrl'

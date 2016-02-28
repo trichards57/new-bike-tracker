@@ -1,6 +1,8 @@
 ﻿
 @{
     ViewBag.Title = "Map";
+    var version = typeof(Startup).Assembly.GetName().Version;
+    var versionString = $"{version.Major}.{version.Minor}.{version.Build}";
 }
 
 @section scripts {
@@ -27,7 +29,7 @@
         </div>
         <div class="row">
             <footer class="col-md-12">
-                <p>&copy; @DateTime.Now.Year - Tony Richards, @Html.ActionLink("Image Credits", "Policies", "Home")</p>
+                <p>SJA Tracker - Version @versionString - Copyright &copy; @DateTime.Now.Year - Tony Richards, @Html.ActionLink("Image Credits", "Policies", "Home")</p>
             </footer>
         </div>
     </div>

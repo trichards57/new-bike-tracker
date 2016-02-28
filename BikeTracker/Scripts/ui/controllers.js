@@ -1,9 +1,9 @@
 ﻿/*jslint
     browser: true
 */
-/*global angular $ */
+/*global angular $ Microsoft */
 
-var appControllers = angular.module('appControllers', ['appServices']);
+var appControllers = angular.module('appControllers', ['appServices', 'angularLoad']);
 
 appControllers.controller("DeleteFormCtrl", ["$scope", "$modalInstance", "name", function ($scope, $modalInstance, name) {
     "use strict";
@@ -26,6 +26,46 @@ appControllers.controller("ErrorFormCtrl", ["$scope", "$modalInstance", "title",
     $scope.close = function () {
         $modalInstance.close();
     };
+}]);
+
+appControllers.controller('LocationReportCtrl', ['$scope', '$window', 'angularLoad', '$modal', function ($scope, $window, angularLoad, $modal) {
+    "use strict";
+
+    $scope.initialize = function () {
+        $scope.previousTitle = $window.document.title;
+        $window.document.title = "Location Reports - SJA Tracker";
+
+        $scope.$on("$destroy", function () {
+            $window.document.title = $scope.previousTitle;
+        });
+    };
+
+    $scope.showError = function (title, message) {
+        $modal.open({
+            animation: true,
+            templateUrl: "/Dialog/ErrorForm",
+            controller: "ErrorFormCtrl",
+            resolve: {
+                title: function () {
+                    return title;
+                },
+                message: function () {
+                    return message;
+                }
+            }
+        });
+    };
+
+    var mapSettings = {
+        credentials: "ApfWme6djEwhx5JqGqyzMf8PrYvSmspgz_nsCamSsEab7AK46NNwhEGd840O1QH3",
+        center: new Microsoft.Maps.Location(51.45, -2.5833),
+        mapTypeId: Microsoft.Maps.MapTypeId.road,
+        zoom: 14
+    };
+    var map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), mapSettings);
+
+
+    $scope.initialize();
 }]);
 
 appControllers.controller('ReportCtrl', ["$scope", "$window", function ($scope, $window) {
