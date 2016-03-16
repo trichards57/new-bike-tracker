@@ -190,6 +190,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\API\IMEIController.cs" />
+    <Compile Include="Controllers\API\ReportController.cs" />
     <Compile Include="Controllers\API\UserController.cs" />
     <Compile Include="Controllers\ControlPanelController.cs" />
     <Compile Include="Controllers\DialogController.cs" />
@@ -225,9 +226,11 @@
     <Compile Include="Models\LocationModels.cs" />
     <Compile Include="Models\LocationViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\ReportModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IIMEIService.cs" />
     <Compile Include="Services\ILocationService.cs" />
+    <Compile Include="Services\IReportService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
