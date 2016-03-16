@@ -15,12 +15,10 @@ namespace BikeTracker.Controllers
         private ILocationService locationService;
         private IIMEIService imeiService;
 
-        public MapController() : this(null, null) { }
-
         public MapController(ILocationService locationService, IIMEIService imeiService)
         {
-            this.locationService = locationService ?? new LocationService();
-            this.imeiService = imeiService ?? new IMEIService();
+            this.locationService = locationService;
+            this.imeiService = imeiService;
         }
 
         // GET: Map

@@ -6,9 +6,9 @@ namespace BikeTracker.Controllers.API
     [Authorize(Roles = "GeneralAdmin")]
     public class ReportController : ApiController
     {
-        public Task<IHttpActionResult> GetCallsigns()
+        public IHttpActionResult GetCallsigns()
         {
-
+            return NotFound();
         }
     }
 }

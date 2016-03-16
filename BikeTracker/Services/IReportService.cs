@@ -13,9 +13,14 @@ namespace BikeTracker.Services
         Task<IEnumerable<LocationRecord>> GetCallsignRecord(string callsign, DateTimeOffset startTime, DateTimeOffset endTime);
     }
 
-    public class ReportService : IReportService, IDisposable
+    public class ReportService : IReportService
     {
-        private ApplicationDbContext dataContext = new ApplicationDbContext();
+        private ApplicationDbContext dataContext;
+
+        public ReportService(ApplicationDbContext context)
+        {
+            dataContext = context;
+        }
 
         public async Task<IEnumerable<string>> GetAllCallsigns()
         {
@@ -26,26 +31,6 @@ namespace BikeTracker.Services
         {
             var callsignRecords = dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.ReadingTime >= startTime && l.ReadingTime <= endTime);
             return await callsignRecords.ToListAsync();
-        }
-
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    dataContext.Dispose();
-                }
-
-                disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
         }
     }
 }

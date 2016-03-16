@@ -3,7 +3,7 @@
 */
 /*global angular $ Microsoft */
 
-var appControllers = angular.module('appControllers', ['appServices', 'angularLoad']);
+var appControllers = angular.module('appControllers', ['appServices']);
 
 appControllers.controller("DeleteFormCtrl", ["$scope", "$modalInstance", "name", function ($scope, $modalInstance, name) {
     "use strict";
@@ -28,7 +28,7 @@ appControllers.controller("ErrorFormCtrl", ["$scope", "$modalInstance", "title",
     };
 }]);
 
-appControllers.controller('LocationReportCtrl', ['$scope', '$window', 'angularLoad', '$modal', function ($scope, $window, angularLoad, $modal) {
+appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', function ($scope, $window, $modal) {
     "use strict";
 
     $scope.initialize = function () {

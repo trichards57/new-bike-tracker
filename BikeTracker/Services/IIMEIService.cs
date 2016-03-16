@@ -20,7 +20,12 @@ namespace BikeTracker.Services
 
     public class IMEIService : IIMEIService, IDisposable
     {
-        private ApplicationDbContext dataContext = new ApplicationDbContext();
+        private ApplicationDbContext dataContext;
+
+        public IMEIService(ApplicationDbContext context)
+        {
+            dataContext = context;
+        }
 
         public async Task DeleteIMEI(string imei)
         {
