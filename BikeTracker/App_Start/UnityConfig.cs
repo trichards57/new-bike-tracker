@@ -14,6 +14,7 @@ namespace BikeTracker
 
             container.RegisterType<IIMEIService, IMEIService>();
             container.RegisterType<ILocationService, LocationService>();
+            container.RegisterType<IReportService, ReportService>();
             container.RegisterType<ApplicationDbContext>(new InjectionFactory(c => new ApplicationDbContext()));
 
             DependencyResolver.SetResolver(new Unity.Mvc5.UnityDependencyResolver(container));

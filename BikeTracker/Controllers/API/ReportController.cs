@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using BikeTracker.Services;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace BikeTracker.Controllers.API
@@ -6,9 +7,16 @@ namespace BikeTracker.Controllers.API
     [Authorize(Roles = "GeneralAdmin")]
     public class ReportController : ApiController
     {
-        public IHttpActionResult GetCallsigns()
+        private IReportService reportService;
+
+        public ReportController(IReportService service)
         {
-            return NotFound();
+            reportService = service;
+        }
+
+        public async Task<IHttpActionResult> GetCallsigns()
+        {
+            return Json(await reportService.GetAllCallsigns());
         }
     }
 }
