@@ -10,6 +10,7 @@ namespace BikeTracker.Services
     public interface IReportService
     {
         Task<IEnumerable<string>> GetAllCallsigns();
+        Task<IEnumerable<DateTimeOffset>> GetReportDates();
         Task<IEnumerable<LocationRecord>> GetCallsignRecord(string callsign, DateTimeOffset startTime, DateTimeOffset endTime);
     }
 
@@ -31,6 +32,11 @@ namespace BikeTracker.Services
         {
             var callsignRecords = dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.ReadingTime >= startTime && l.ReadingTime <= endTime);
             return await callsignRecords.ToListAsync();
+        }
+
+        public async Task<IEnumerable<DateTimeOffset>> GetReportDates()
+        {
+            return await dataContext.LocationRecords.Select(l => DbFunctions.TruncateTime(l.ReadingTime)).Where(d => d.HasValue).Select(d => d.Value).Distinct().ToListAsync();
         }
     }
 }
