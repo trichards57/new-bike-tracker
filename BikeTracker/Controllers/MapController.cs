@@ -1,4 +1,5 @@
 ﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Models;
 using BikeTracker.Services;
 using System;
 using System.Globalization;
@@ -31,14 +32,14 @@ namespace BikeTracker.Controllers
         {
             var reportedIMEIs = await locationService.GetLocations();
 
-            return Json(reportedIMEIs.Select(r => new
+            return Json(reportedIMEIs.Select(r => new LocationViewModel
             {
-                r.Id,
-                r.Callsign,
-                r.ReadingTime,
-                r.Latitude,
-                r.Longitude,
-                r.Type
+                Id = r.Id,
+                Callsign = r.Callsign,
+                ReadingTime = r.ReadingTime,
+                Latitude = r.Latitude,
+                Longitude = r.Longitude,
+                Type = r.Type
             }), JsonRequestBehavior.AllowGet);
         }
 
@@ -58,10 +59,15 @@ namespace BikeTracker.Controllers
             if (time == null || date == null)
                 return Content("No Date or Time Given");
 
-            if (imei == null)
+            if (string.IsNullOrEmpty(imei))
                 return Content("No IMEI Given");
 
-            var readingTime = DateTimeOffset.ParseExact(string.Format("{0} {1}", date, time), "ddMMyy HHmmss.fff", CultureInfo.CurrentCulture);
+            DateTimeOffset readingTime;
+
+            var result = DateTimeOffset.TryParseExact(string.Format("{0} {1}", date, time), "ddMMyy HHmmss.fff", CultureInfo.InvariantCulture, DateTimeStyles.None, out readingTime);
+
+            if (!result)
+                return Content("Bad Date or Time Given");
 
             await locationService.RegisterLocation(imei, readingTime, DateTimeOffset.Now, lat.Value, lon.Value);
             var callsign = await imeiService.GetFromIMEI(imei);
