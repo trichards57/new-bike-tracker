@@ -135,6 +135,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AccountControllerTest.cs" />
+    <Compile Include="Controllers\IMEIControllerTests.cs" />
+    <Compile Include="Controllers\ControlPanelControllerTests.cs" />
+    <Compile Include="Controllers\AdminControllerTests.cs" />
     <Compile Include="Helpers\AccountMockHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />

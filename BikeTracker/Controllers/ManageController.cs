@@ -3,6 +3,7 @@ using BikeTracker.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.Practices.Unity;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -13,15 +14,18 @@ namespace BikeTracker.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IAuthenticationManager _authenticationManager;
 
+        [InjectionConstructor]
         public ManageController()
         {
         }
 
-        public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, IAuthenticationManager authenticationManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            _authenticationManager = authenticationManager;
         }
 
         public ApplicationSignInManager SignInManager
@@ -110,7 +114,7 @@ namespace BikeTracker.Controllers
         {
             get
             {
-                return HttpContext.GetOwinContext().Authentication;
+                return _authenticationManager ?? HttpContext.GetOwinContext().Authentication;
             }
         }
 
