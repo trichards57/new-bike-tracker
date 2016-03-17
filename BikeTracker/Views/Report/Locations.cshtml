@@ -7,20 +7,6 @@
 <div class="map-footer pull-right">
     <div class="container">
         <div class="row">
-            <div class="col-sm-4 map-footer-row">
-                <div class="text-success bg-success callsign-flag">WR123</div>
-                <div style="display:inline">Received less than 20 minutes ago</div>
-            </div>
-            <div class="col-sm-4 map-footer-row">
-                <div class="text-warning bg-warning callsign-flag">WR123</div>
-                <div style="display:inline;">Received less than 40 minutes ago</div>
-            </div>
-            <div class="col-sm-4 map-footer-row">
-                <div class="text-danger bg-danger callsign-flag">WR123</div>
-                <div style="display:inline;">Received less than 60 minutes ago</div>
-            </div>
-        </div>
-        <div class="row">
             <footer class="col-md-12">
                 <p>SJA Tracker - Version @versionString - Copyright &copy; @DateTime.Now.Year - Tony Richards, @Html.ActionLink("Image Credits", "Policies", "Home")</p>
             </footer>
@@ -31,35 +17,18 @@
     <h4>Callsigns</h4>
     <form class="form">
         <div class="form-group small-bottom-margin">
-            <label for="callsign-box">Jump to:</label>
-            <select class="form-control" name="callsign-box" id="callsign-box"></select>
+            <select class="form-control" name="callsign-box" id="callsign-box" ng-model="selectedCallsign">
+                <option ng-repeat="cs in callsigns" value="{{cs}}">{{cs}}</option>
+            </select>
         </div>
-        <div id="extra-controls" class="collapse">
-            <div class="form-group small-bottom-margin">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" id="hide-unknown" /> Hide unknown
-                    </label>
-                </div>
-            </div>
-            <div class="form-group small-bottom-margin">
-                <label for="landmark-box">Remove landmark:</label>
-                <select class="form-control" name="landmark-box" id="landmark-box"></select>
-            </div>
-            <div class="full-width-button">
-                <a href="#" role="button" id="delete-landmark" class="btn btn-danger full-width-button">Delete</a>
-            </div>
-            <hr class="small-hr" />
-            <div class="full-width-button">
-                <a href="#" role="button" id="refresh-button" class="btn btn-success full-width-button">
-                    Force Refresh
-                </a>
+        <div class="form-group small-bottom-margin">
+            <div class="input-group">
+                <input type="text" class="form-control" is-open="showDate" datepicker-options="dateOptions" datepicker-popup="shortDate" ng-model="selectedDate" />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
             </div>
         </div>
-        <div class="full-width-button">
-            <a data-toggle="collapse" href="#extra-controls" role="button" id="expand-button" class="btn btn-default full-width-button button-mini">
-                &hellip;
-            </a>
-        </div>
+        <button class="btn btn-primary full-width-button" ng-click="showDates()">Show Reports</button>
     </form>
 </div>

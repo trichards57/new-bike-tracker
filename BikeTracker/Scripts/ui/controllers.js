@@ -1,7 +1,23 @@
-﻿/*jslint
+﻿/*property
+    $on, $save, $update, CallSign, EmailAddress, IMEI, Id, Latitude, Location,
+    Longitude, Map, MapTypeId, Maps, Point, Pushpin, ReadingTime, Role, Type,
+    UserName, anchor, animation, callsign, callsigns, cancel, center, clear,
+    close, controller, createMode, credentials, data, dateOptions,
+    dialogCallsign, dialogEmail, dialogImei, dialogRole, dialogType, dismiss,
+    document, email, entities, forEach, format, formatYear, get,
+    getElementById, grep, height, htmlContent, imei, imeiFilter, imeiId, imeis,
+    initialize, length, loading, mapTypeId, message, module, name, ok, open,
+    openDate, preventDefault, previousTitle, push, query, refresh, remove,
+    resolve, result, road, role, selectedCallsign, selectedDate, showAscending,
+    showDate, showDates, showDeleteConfirm, showError, showNewImei,
+    showNewUser, showUpdateImei, showUpdateUser, showWeeks, sortBy,
+    sortReverse, startingDay, stopPropagation, templateUrl, then, title, type,
+    updateSortBy, userFilter, userId, users, width, zoom
+*/
+/*jslint
     browser: true
 */
-/*global angular $ Microsoft */
+/*global angular $ Microsoft moment */
 
 var appControllers = angular.module('appControllers', ['appServices']);
 
@@ -28,7 +44,7 @@ appControllers.controller("ErrorFormCtrl", ["$scope", "$modalInstance", "title",
     };
 }]);
 
-appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', function ($scope, $window, $modal) {
+appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', '$http', function ($scope, $window, $modal, $http) {
     "use strict";
 
     $scope.initialize = function () {
@@ -56,6 +72,32 @@ appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', 
         });
     };
 
+    $scope.callsigns = [];
+
+    $scope.selectedCallsign = '';
+
+    $scope.selectedDate = new Date();
+
+    $scope.openDate = function ($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        $scope.showDate = true;
+    };
+
+    $scope.dateOptions = {
+        formatYear: 'yy',
+        startingDay: 1,
+        showWeeks: false
+    };
+
+    $http.get("/api/Report/Callsigns").then(function (response) {
+        $scope.callsigns = response.data;
+        $scope.selectedCallsign = $scope.callsigns[0];
+    }, function () {
+        $scope.showError("Failed to Load Callsigns", "It wasn't possible to load the callsigns from the server.");
+    });
+
     var mapSettings = {
         credentials: "ApfWme6djEwhx5JqGqyzMf8PrYvSmspgz_nsCamSsEab7AK46NNwhEGd840O1QH3",
         center: new Microsoft.Maps.Location(51.45, -2.5833),
@@ -64,6 +106,35 @@ appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', 
     };
     var map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), mapSettings);
 
+    $scope.showDates = function () {
+
+        map.entities.clear();
+
+        var d = moment($scope.selectedDate).format("YYYYMMDD");
+
+        $http.get("/api/Report/CallsignLocations?callsign=" + $scope.selectedCallsign + "&startDate=" + d + "&endDate=" + d).then(function (response) {
+            var reports = response.data;
+
+            reports.forEach(function (dat) {
+                var content = "<div class='callsign-flag text-success bg-success'>";
+                var reportD = moment(dat.ReadingTime);
+                content += reportD.format('HH:mm');
+                content += "</div>";
+
+                var options = {
+                    width: null,
+                    height: null,
+                    htmlContent: content,
+                    anchor: new Microsoft.Maps.Point(22.5, 10)
+                };
+
+                var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(dat.Latitude, dat.Longitude), options);
+                map.entities.push(pin);
+            });
+        }, function () {
+            $scope.showError("Failed to Load Location Reports", "It wasn't possible to load the location reports from the server.");
+        });
+    };
 
     $scope.initialize();
 }]);

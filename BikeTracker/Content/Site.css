@@ -183,3 +183,7 @@ a.full-width-button {
             display:block;
         }
 }
+
+.input-group {
+    max-width: 280px;
+}
