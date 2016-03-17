@@ -1,6 +1,7 @@
 ﻿using BikeTracker.Models;
 using BikeTracker.Services;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -30,10 +31,27 @@ namespace BikeTracker.Controllers.API
         }
 
         [HttpGet, Route("api/Report/CallsignLocations")]
-        public async Task<IHttpActionResult> CallsignLocations(string callsign, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null)
+        public async Task<IHttpActionResult> CallsignLocations(string callsign, string startDate = null, string endDate = null)
         {
-            var start = startDate ?? DateTimeOffset.MinValue;
-            var stop = endDate ?? DateTimeOffset.Now;
+            var start = DateTimeOffset.MinValue;
+            var stop = DateTimeOffset.Now;
+
+            if (!string.IsNullOrWhiteSpace(startDate))
+            {
+                DateTimeOffset d;
+                var success = DateTimeOffset.TryParseExact(startDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+
+                if (success)
+                    start = d.Date;
+            }
+            if (!string.IsNullOrWhiteSpace(endDate))
+            {
+                DateTimeOffset d;
+                var success = DateTimeOffset.TryParseExact(endDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+
+                if (success)
+                    stop = d.Date.AddSeconds(86399);
+            }
 
             return Json((await reportService.GetCallsignRecord(callsign, start, stop)).Select(r => new CallsignLocationReport
             {
