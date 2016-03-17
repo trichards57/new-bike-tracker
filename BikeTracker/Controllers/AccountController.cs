@@ -18,6 +18,7 @@ namespace BikeTracker.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IAuthenticationManager _authManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -36,11 +37,12 @@ namespace BikeTracker.Controllers
         /// <remarks>
         /// This overload is used to allow dependency injection for testing.
         /// </remarks>
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, UrlHelper urlHelper)
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, UrlHelper urlHelper, IAuthenticationManager authManager = null)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             Url = urlHelper ?? Url;
+            _authManager = authManager;
         }
 
         /// <summary>
@@ -89,7 +91,7 @@ namespace BikeTracker.Controllers
         {
             get
             {
-                return HttpContext.GetOwinContext().Authentication;
+                return _authManager ?? HttpContext.GetOwinContext().Authentication;
             }
         }
 
@@ -237,6 +239,8 @@ namespace BikeTracker.Controllers
 
                 case SignInStatus.Failure:
                 default:
+                    // This should only be reached if something breaks internally in the SignInManager
+                    // as the code above already checks the username and password is valid.
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
             }
@@ -267,7 +271,7 @@ namespace BikeTracker.Controllers
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
-            return code == null ? View("Error") : View();
+            return string.IsNullOrWhiteSpace(code) ? View("Error") : View();
         }
 
         /// <summary>
@@ -316,30 +320,6 @@ namespace BikeTracker.Controllers
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_userManager != null)
-                {
-                    _userManager.Dispose();
-                    _userManager = null;
-                }
-
-                if (_signInManager != null)
-                {
-                    _signInManager.Dispose();
-                    _signInManager = null;
-                }
-            }
-
-            base.Dispose(disposing);
         }
 
         /// <summary>

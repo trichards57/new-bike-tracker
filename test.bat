@@ -1,2 +1,3 @@
-.\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -target:"D:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" -targetargs:"\"C:\Users\trich_000\Source\Repos\Bike Tracker\BikeTracker.Tests\bin\Debug\BikeTracker.Tests.dll\"  /Logger:trx" -output:".\TestResults\TestResults.xml" -mergebyhash -filter:"+[BikeTracker*]* -[BikeTracker.Tests]*" -register:user
+msbuild /v:m /maxcpucount
+.\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -target:vstest.console.exe -targetargs:"\".\BikeTracker.Tests\bin\Debug\BikeTracker.Tests.dll\"  /Logger:trx" -output:".\TestResults\TestResults.xml" -mergebyhash -filter:"+[BikeTracker*]* -[BikeTracker.Tests]*" -register:user -coverbytest:"*.Tests.dll"
 .\packages\ReportGenerator.2.4.4.0\tools\ReportGenerator.exe -reports:.\TestResults\TestResults.xml -targetdir:.\TestResults\Report -historydir:.\TestResults\Report\History
