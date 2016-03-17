@@ -1,22 +1,23 @@
 ﻿/*property
-    $on, $save, $update, CallSign, EmailAddress, IMEI, Id, Location, Map,
-    MapTypeId, Maps, Role, Type, UserName, animation, callsign, callsigns,
-    cancel, center, close, controller, createMode, credentials, data,
-    dateOptions, dialogCallsign, dialogEmail, dialogImei, dialogRole,
-    dialogType, dismiss, document, email, formatYear, get, getElementById,
-    grep, imei, imeiFilter, imeiId, imeis, initialize, length, loading,
-    mapTypeId, message, module, name, ok, open, openDate, preventDefault,
-    previousTitle, query, refresh, remove, resolve, result, road, role,
-    selectedCallsign, selectedDate, showAscending, showDate, showDates,
-    showDeleteConfirm, showError, showNewImei, showNewUser, showUpdateImei,
-    showUpdateUser, showWeeks, sortBy, sortReverse, startingDay,
-    stopPropagation, templateUrl, then, title, type, updateSortBy, userFilter,
-    userId, users, zoom
+    $on, $save, $update, CallSign, EmailAddress, IMEI, Id, Latitude, Location,
+    Longitude, Map, MapTypeId, Maps, Point, Pushpin, ReadingTime, Role, Type,
+    UserName, anchor, animation, callsign, callsigns, cancel, center, clear,
+    close, controller, createMode, credentials, data, dateOptions,
+    dialogCallsign, dialogEmail, dialogImei, dialogRole, dialogType, dismiss,
+    document, email, entities, forEach, format, formatYear, get,
+    getElementById, grep, height, htmlContent, imei, imeiFilter, imeiId, imeis,
+    initialize, length, loading, mapTypeId, message, module, name, ok, open,
+    openDate, preventDefault, previousTitle, push, query, refresh, remove,
+    resolve, result, road, role, selectedCallsign, selectedDate, showAscending,
+    showDate, showDates, showDeleteConfirm, showError, showNewImei,
+    showNewUser, showUpdateImei, showUpdateUser, showWeeks, sortBy,
+    sortReverse, startingDay, stopPropagation, templateUrl, then, title, type,
+    updateSortBy, userFilter, userId, users, width, zoom
 */
 /*jslint
     browser: true
 */
-/*global angular $ Microsoft */
+/*global angular $ Microsoft moment */
 
 var appControllers = angular.module('appControllers', ['appServices']);
 
@@ -94,7 +95,7 @@ appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', 
         $scope.callsigns = response.data;
         $scope.selectedCallsign = $scope.callsigns[0];
     }, function () {
-        $scope.showError("Failed to Load Callsigns", "It wasn't possible to load the callsigns from the server.")
+        $scope.showError("Failed to Load Callsigns", "It wasn't possible to load the callsigns from the server.");
     });
 
     var mapSettings = {
@@ -121,14 +122,17 @@ appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', 
                 content += "</div>";
 
                 var options = {
-                    width: null, height: null, htmlContent: content, anchor: new Microsoft.Maps.Point(22.5, 10)
+                    width: null,
+                    height: null,
+                    htmlContent: content,
+                    anchor: new Microsoft.Maps.Point(22.5, 10)
                 };
 
                 var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(dat.Latitude, dat.Longitude), options);
                 map.entities.push(pin);
             });
         }, function () {
-            $scope.showError("Failed to Load Location Reports", "It wasn't possible to load the location reports from the server.")
+            $scope.showError("Failed to Load Location Reports", "It wasn't possible to load the location reports from the server.");
         });
     };
 

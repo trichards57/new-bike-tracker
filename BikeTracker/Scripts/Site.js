@@ -5,6 +5,8 @@ var refreshTimeout = [];
 var fadeTime = 5;
 
 $(document).ready(function () {
+    "use strict";
+
     $('#callsign-box').change(function () {
         $('#callsign-box option:selected').each(function (i, s) {
             var loc = $(s).val();
@@ -34,10 +36,10 @@ $(document).ready(function () {
                     setTimeout(function () { $('#landmark-delete-alert').removeClass('in'); }, fadeTime * 1000);
                     setTimeout(function () { $('#landmark-delete-alert').addClass('collapse'); }, (fadeTime + 2) * 1000);
                     refresh();
-                })
+                });
             }
         });
-    })
+    });
 
     $('#hide-unknown').change(function (e) {
         hideUnknown = $('#hide-unknown').prop('checked');
@@ -51,8 +53,9 @@ $(document).ready(function () {
     });
 
     $('#landmarkSave').click(function (e) {
-        if ($('#landmarkName').val() == null || $.trim($('#landmarkName').val()) === '')
+        if ($('#landmarkName').val() == null || $.trim($('#landmarkName').val()) === '') {
             return;
+        }
 
         var name = $.trim($('#landmarkName').val());
         var lat = $.trim($('#landmarkLatitude').val());
@@ -75,7 +78,7 @@ $(document).ready(function () {
             clearTimeout(refreshTimeout);
             refresh();
         });
-    })
+    });
 
     $('#landmarkName').on('input', function () {
         if ($('#landmarkName').val() == null || $.trim($('#landmarkName').val()) === '')
@@ -103,12 +106,16 @@ $(document).ready(function () {
 });
 
 function centreLocation(position) {
+    "use strict";
+
     map.setView({
         center: new Microsoft.Maps.Location(position.coords.latitude, position.coords.longitude)
     });
 }
 
 function refresh() {
+    "use strict";
+
     $.get('/Map/GetLocations', function (data) {
 
         map.entities.clear();
@@ -118,7 +125,6 @@ function refresh() {
             value: 'empty',
             text: 'Pick Callsign'
         }));
-
 
         for (var i = 0; i < data.length; i++) {
             var dat = data[i];
