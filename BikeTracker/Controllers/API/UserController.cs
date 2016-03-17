@@ -16,7 +16,12 @@ namespace BikeTracker.Controllers.API
     [Authorize(Roles = "GeneralAdmin")]
     public class UserController : ODataController
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext db;
+
+        public UserController(ApplicationDbContext context)
+        {
+            db = context;
+        }
 
         /// <summary>
         /// Gets the user manager.

@@ -22,18 +22,10 @@ namespace BikeTracker.Controllers.API
         /// <summary>
         /// Initializes a new instance of the <see cref="IMEIController"/> class.
         /// </summary>
-        public IMEIController() : this(null) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IMEIController"/> class.
-        /// </summary>
         /// <param name="imeiService">The IMEI service to use.</param>
-        /// <remarks>
-        /// This overload is used to allow dependency injection for testing.
-        /// </remarks>
         public IMEIController(IIMEIService imeiService)
         {
-            this.imeiService = imeiService ?? new IMEIService();
+            this.imeiService = imeiService;
         }
 
         // GET: odata/IMEI
