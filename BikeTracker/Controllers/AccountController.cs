@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.Practices.Unity;
 using System;
 using System.Threading.Tasks;
 using System.Web;
@@ -21,6 +22,7 @@ namespace BikeTracker.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
         /// </summary>
+        [InjectionConstructor]
         public AccountController()
         {
         }

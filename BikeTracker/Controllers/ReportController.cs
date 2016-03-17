@@ -12,38 +12,24 @@ namespace BikeTracker.Controllers
         /// <summary>
         /// Displays the list of reports available to the user
         /// </summary>
-        public ActionResult Index()
+        public ActionResult Home()
         {
-            return View();
+            return PartialView();
         }
 
-        /// <summary>
-        /// Report that shows all of the LocationRecords for given callsign
-        /// </summary>
-        public ActionResult LocationReport()
+        public ActionResult UserActivity()
         {
-            return View();
+            return PartialView();
         }
 
-        /// <summary>
-        /// Report that shows the reliability measures for a given callsign
-        /// </summary>
-        /// <remarks>
-        /// Measures include:
-        /// * Number of location reports received on time
-        /// * Number of location reports received that did not include a location
-        /// </remarks>
-        public ActionResult ReliabilityReport()
+        public ActionResult Locations()
         {
-            return View();
+            return PartialView();
         }
 
-        /// <summary>
-        /// Report that shows all of the activities logged for a given user.
-        /// </summary>
-        public ActionResult UserActivityReport()
+        public ActionResult Rates()
         {
-            return View();
+            return PartialView();
         }
     }
 }

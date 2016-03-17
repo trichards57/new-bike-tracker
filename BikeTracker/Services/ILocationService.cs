@@ -15,16 +15,15 @@ namespace BikeTracker.Services
         Task<IEnumerable<Landmark>> GetLandmarks();
     }
 
-    public class LocationService : ILocationService, IDisposable
+    public class LocationService : ILocationService
     {
-        private ApplicationDbContext dataContext = new ApplicationDbContext();
+        private ApplicationDbContext dataContext;
         private IIMEIService imeiService;
 
-        public LocationService() : this(null) { }
-
-        public LocationService(IIMEIService imeiService)
+        public LocationService(IIMEIService imeiService, ApplicationDbContext dataContext)
         {
-            this.imeiService = imeiService ?? new IMEIService();
+            this.imeiService = imeiService;
+            this.dataContext = dataContext;
         }
 
         public Task<IEnumerable<LocationRecord>> GetLocations()
@@ -53,28 +52,6 @@ namespace BikeTracker.Services
 
             dataContext.LocationRecords.Add(locationData);
             await dataContext.SaveChangesAsync();
-        }
-
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    dataContext.Dispose();
-                }
-
-                disposedValue = true;
-            }
-        }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
         }
 
         public async Task RegisterLandmark(string name, decimal latitude, decimal longitude, DateTimeOffset? expiry = null)
