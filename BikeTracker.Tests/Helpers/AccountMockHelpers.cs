@@ -6,8 +6,14 @@ using Microsoft.Owin.Security;
 using Moq;
 using Ploeh.AutoFixture;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net.Mail;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Helpers
@@ -30,6 +36,7 @@ namespace BikeTracker.Tests.Helpers
         public static readonly string UnconfirmedGoodUsername;
         public static readonly ApplicationUser ConfirmedGoodUser;
         public static readonly ApplicationUser UnconfirmedGoodUser;
+        public static readonly ClaimsIdentity ConfirmedClaimsIdentity;
 
         static AccountMockHelpers()
         {
@@ -60,6 +67,32 @@ namespace BikeTracker.Tests.Helpers
                 UserName = UnconfirmedGoodUsername,
                 EmailConfirmed = false
             };
+
+            ConfirmedClaimsIdentity = new ClaimsIdentity();
+            ConfirmedClaimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, ConfirmedGoodId));
+        }
+
+        public static ManageController CreateManageController()
+        {
+            var userManager = CreateMockUserManager();
+            var signInManager = CreateMockSignInManager();
+            var httpContext = CreateMockHttpContext();
+
+            var controller = new ManageController(userManager.Object, signInManager.Object);
+            var context = new ControllerContext();
+            context.HttpContext = httpContext.Object;
+            controller.ControllerContext = context;
+
+            return controller;
+        }
+
+        public static Mock<HttpContextBase> CreateMockHttpContext()
+        {
+            var context = new Mock<HttpContextBase>(MockBehavior.Strict);
+            
+            context.SetupGet(h => h.User.Identity).Returns(ConfirmedClaimsIdentity);
+
+            return context;
         }
 
         public static AccountController CreateAccountController()
@@ -89,6 +122,10 @@ namespace BikeTracker.Tests.Helpers
                                       It.IsAny<bool>(),
                                       It.Is<bool>(b => b == false)))
                 .ReturnsAsync(SignInStatus.Success);
+
+            signInManager.Setup(m =>
+                m.SignInAsync(It.Is<ApplicationUser>(u => u == ConfirmedGoodUser), It.IsAny<bool>(), It.IsAny<bool>()))
+                .Returns(Task.FromResult<object>(null));
 
             return signInManager;
         }
@@ -163,6 +200,10 @@ namespace BikeTracker.Tests.Helpers
                                 .Returns(Task.FromResult<ApplicationUser>(null));
 
             userManager.Setup(m =>
+                m.FindByIdAsync(It.Is<string>(s => s == ConfirmedGoodId)))
+                                .Returns(Task.FromResult(ConfirmedGoodUser));
+
+            userManager.Setup(m =>
                 m.IsEmailConfirmedAsync(It.Is<string>(s => s == ConfirmedGoodId)))
                                 .Returns(Task.FromResult(true));
             userManager.Setup(m =>
@@ -183,7 +224,40 @@ namespace BikeTracker.Tests.Helpers
             userManager.Setup(m =>
                 m.ResetPasswordAsync(It.Is<string>(s => s == ConfirmedGoodId), It.Is<string>(s => s == BadToken), It.Is<string>(s => s == ConfirmedGoodPassword)))
                 .Returns(Task.FromResult(new IdentityResult("Bad Token.")));
+
+            userManager.Setup(m =>
+                m.ChangePasswordAsync(It.Is<string>(s => s == ConfirmedGoodId), It.Is<string>(s => s == UnconfirmedGoodPassword), It.Is<string>(s => s == ConfirmedGoodPassword)))
+                .Returns(Task.FromResult(IdentityResult.Success));
+            userManager.Setup(m =>
+                m.ChangePasswordAsync(It.Is<string>(s => s == ConfirmedGoodId), It.Is<string>(s => s == BadPassword), It.Is<string>(s => s == ConfirmedGoodPassword)))
+                .Returns(Task.FromResult(new IdentityResult("Old password was wrong.")));
+            userManager.Setup(m =>
+                m.ChangePasswordAsync(It.Is<string>(s => s == ConfirmedGoodId), It.Is<string>(s => s == UnconfirmedGoodPassword), It.Is<string>(s => s == BadPassword)))
+                .Returns(Task.FromResult(new IdentityResult("New password isn't good enough.")));
+
             return userManager;
+        }
+
+        public static void Validate(object model, Controller controller)
+        {
+            var results = new List<ValidationResult>();
+            var validationContext = new ValidationContext(model, null, null);
+            Validator.TryValidateObject(model, validationContext, results, true);
+
+            if (model is IValidatableObject) (model as IValidatableObject).Validate(validationContext);
+
+            foreach (var v in results)
+            {
+                if (!v.MemberNames.Any())
+                {
+                    controller.ModelState.AddModelError("model", v.ErrorMessage);
+                }
+                else
+                {
+                    foreach (var m in v.MemberNames)
+                        controller.ModelState.AddModelError(m, v.ErrorMessage);
+                }
+            }
         }
     }
 }

@@ -18,12 +18,6 @@ namespace BikeTracker.Tests.Controllers
     [TestClass]
     public class AccountControllerTest
     {
-
-        public AccountControllerTest()
-        {
-        }
-
-
         [TestMethod]
         public void StartLoginEmptyReturnUrl()
         {
@@ -58,13 +52,7 @@ namespace BikeTracker.Tests.Controllers
 
             var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
 
-            var vals = Validate(loginModel);
-
-            foreach (var v in vals)
-            {
-                foreach (var m in v.MemberNames)
-                    controller.ModelState.AddModelError(m, v.ErrorMessage);
-            }
+            AccountMockHelpers.Validate(loginModel, controller);
 
             var result = await controller.Login(loginModel, returnUrl);
 
@@ -547,20 +535,7 @@ namespace BikeTracker.Tests.Controllers
                 Email = AccountMockHelpers.ConfirmedGoodUsername
             };
 
-            var vals = Validate(model);
-
-            foreach (var v in vals)
-            {
-                if (!v.MemberNames.Any())
-                { 
-                    controller.ModelState.AddModelError("model", v.ErrorMessage);
-                }
-                else
-                {
-                    foreach (var m in v.MemberNames)
-                        controller.ModelState.AddModelError(m, v.ErrorMessage);
-                }
-            }
+            AccountMockHelpers.Validate(model, controller);
 
             var result = await controller.ResetPassword(model);
             var view = result as ViewResult;
@@ -607,13 +582,7 @@ namespace BikeTracker.Tests.Controllers
                 Email = AccountMockHelpers.ConfirmedGoodUsername
             };
 
-            var vals = Validate(model);
-
-            foreach (var v in vals)
-            {
-                foreach (var m in v.MemberNames)
-                    controller.ModelState.AddModelError(m, v.ErrorMessage);
-            }
+            AccountMockHelpers.Validate(model, controller);
 
             var result = await controller.ForgotPassword(model);
             var redirect = result as RedirectToRouteResult;
@@ -638,13 +607,7 @@ namespace BikeTracker.Tests.Controllers
                 Email = AccountMockHelpers.BadUsername
             };
 
-            var vals = Validate(model);
-
-            foreach (var v in vals)
-            {
-                foreach (var m in v.MemberNames)
-                    controller.ModelState.AddModelError(m, v.ErrorMessage);
-            }
+            AccountMockHelpers.Validate(model, controller);
 
             var result = await controller.ForgotPassword(model);
             var redirect = result as RedirectToRouteResult;
@@ -670,13 +633,7 @@ namespace BikeTracker.Tests.Controllers
                 Email = AccountMockHelpers.UnconfirmedGoodUsername
             };
 
-            var vals = Validate(model);
-
-            foreach (var v in vals)
-            {
-                foreach (var m in v.MemberNames)
-                    controller.ModelState.AddModelError(m, v.ErrorMessage);
-            }
+            AccountMockHelpers.Validate(model, controller);
 
             var result = await controller.ForgotPassword(model);
             var redirect = result as RedirectToRouteResult;
@@ -702,13 +659,7 @@ namespace BikeTracker.Tests.Controllers
                 Email = null,
             };
 
-            var vals = Validate(model);
-
-            foreach (var v in vals)
-            {
-                foreach (var m in v.MemberNames)
-                    controller.ModelState.AddModelError(m, v.ErrorMessage);
-            }
+            AccountMockHelpers.Validate(model, controller);
 
             var result = await controller.ForgotPassword(model);
             var view = result as ViewResult;
@@ -716,15 +667,5 @@ namespace BikeTracker.Tests.Controllers
             Assert.IsNotNull(view);
         }
 
-        private List<ValidationResult> Validate(object model)
-        {
-            var results = new List<ValidationResult>();
-            var validationContext = new ValidationContext(model, null, null);
-            Validator.TryValidateObject(model, validationContext, results, true);
-
-            if (model is IValidatableObject) (model as IValidatableObject).Validate(validationContext);
-
-            return results;
-        }
     }
 }
