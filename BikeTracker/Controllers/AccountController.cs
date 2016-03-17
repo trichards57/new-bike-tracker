@@ -106,7 +106,7 @@ namespace BikeTracker.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
-            if (userId == null || code == null)
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
             {
                 return View("Error");
             }

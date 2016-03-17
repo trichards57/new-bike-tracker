@@ -5,8 +5,11 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Ploeh.AutoFixture;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -18,41 +21,59 @@ namespace BikeTracker.Tests.Controllers
     [TestClass]
     public class AccountControllerTest
     {
-        private const string BadPassword = "Pass4321";
-        private const string BadUsername = "tony.richards@bath.edu";
-        private const string ConfirmedGoodId = "49DA7831-E0B6-4948-914D-D2C52BC81C0F";
-        private const string ConfirmedGoodPassword = "Pass1234";
-        private const string ConfirmedGoodUsername = "trichards57@gmail.com";
-        private const string ExternalUri = "http://www.google.com";
-        private const string LocalUri = "http://localhost:1234";
-        private const string UnconfirmedGoodId = "3021EF55-0171-41BD-8665-6B0A56A70A1F";
-        private const string UnconfirmedGoodPassword = "Pass.5678";
-        private const string UnconfirmedGoodUsername = "trichards58@gmail.com";
+        private readonly Fixture fixture = new Fixture();
+        private readonly string BadPassword;
+        private readonly string BadUsername;
+        private readonly string BadId;
+        private readonly string ConfirmedGoodId;
+        private readonly string ConfirmedGoodPassword;
+        private readonly string ConfirmedGoodUsername;
+        private readonly string GoodToken;
+        private readonly string BadToken;
+        private readonly string ExternalUri;
+        private readonly string LocalUri;
+        private readonly string UnconfirmedGoodId;
+        private readonly string UnconfirmedGoodPassword;
+        private readonly string UnconfirmedGoodUsername;
+        private readonly ApplicationUser ConfirmedGoodUser;
+        private readonly ApplicationUser UnconfirmedGoodUser;
 
-        private readonly ApplicationUser ConfirmedGoodUser = new ApplicationUser
+        public AccountControllerTest()
         {
-            Id = ConfirmedGoodId,
-            Email = ConfirmedGoodUsername,
-            UserName = ConfirmedGoodUsername,
-            EmailConfirmed = true
-        };
+            BadPassword = fixture.Create<string>();
+            BadUsername = fixture.Create<MailAddress>().Address;
+            BadId = fixture.Create<string>();
+            ConfirmedGoodId = fixture.Create<Guid>().ToString("D");
+            ConfirmedGoodPassword = fixture.Create<string>();
+            ConfirmedGoodUsername = fixture.Create<MailAddress>().Address;
+            GoodToken = fixture.Create<string>();
+            BadToken = fixture.Create<string>();
+            ExternalUri = fixture.Create<Uri>().ToString();
+            LocalUri = fixture.Create<Uri>().ToString();
+            UnconfirmedGoodId = fixture.Create<Guid>().ToString("D");
+            UnconfirmedGoodPassword = fixture.Create<string>();
+            UnconfirmedGoodUsername = fixture.Create<MailAddress>().Address;
+            ConfirmedGoodUser = new ApplicationUser
+            {
+                Id = ConfirmedGoodId,
+                Email = ConfirmedGoodUsername,
+                UserName = ConfirmedGoodUsername,
+                EmailConfirmed = true
+            };
+            UnconfirmedGoodUser = new ApplicationUser
+            {
+                Id = UnconfirmedGoodId,
+                Email = UnconfirmedGoodUsername,
+                UserName = UnconfirmedGoodUsername,
+                EmailConfirmed = false
+            };
+        }
 
-        private readonly ApplicationUser UnconfirmedGoodUser = new ApplicationUser
-        {
-            Id = UnconfirmedGoodId,
-            Email = UnconfirmedGoodUsername,
-            UserName = UnconfirmedGoodUsername,
-            EmailConfirmed = false
-        };
 
         [TestMethod]
         public void StartLoginEmptyReturnUrl()
         {
-            var userManager = CreateMockUserManager();
-            var signInManager = CreateMockSignInManager();
-            var urlHelper = CreateMockUrlHelper();
-
-            var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
+            var controller = CreateController();
             var result = controller.Login(null) as ViewResult;
             Assert.IsNotNull(result);
             Assert.IsNull(result.ViewBag.ReturnUrl);
@@ -61,11 +82,7 @@ namespace BikeTracker.Tests.Controllers
         [TestMethod]
         public void StartLoginLocalReturnUrl()
         {
-            var userManager = CreateMockUserManager();
-            var signInManager = CreateMockSignInManager();
-            var urlHelper = CreateMockUrlHelper();
-
-            var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
+            var controller = CreateController();
             var result = controller.Login(LocalUri) as ViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(LocalUri, result.ViewBag.ReturnUrl);
@@ -292,6 +309,128 @@ namespace BikeTracker.Tests.Controllers
             await SubmitLogin(loginModel, ExternalUri, Result.RedirectToHome);
         }
 
+        [TestMethod]
+        public async Task ConfirmEmailGoodToken()
+        {
+            var userManager = CreateMockUserManager();
+            var signInManager = CreateMockSignInManager();
+            var urlHelper = CreateMockUrlHelper();
+
+            var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
+
+            var res = await controller.ConfirmEmail(ConfirmedGoodId, GoodToken);
+
+            userManager.Verify(a => a.ConfirmEmailAsync(ConfirmedGoodId, GoodToken));
+            var view = res as ViewResult;
+
+            Assert.IsNotNull(view);
+            Assert.AreNotEqual("Error", view.ViewName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmEmailNonExistentUser()
+        {
+            var controller = CreateController();
+
+            var res = await controller.ConfirmEmail(BadId, GoodToken);
+
+            var view = res as ViewResult;
+
+            Assert.IsNotNull(view);
+            Assert.AreEqual("Error", view.ViewName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmEmailBadToken()
+        {
+            var userManager = CreateMockUserManager();
+            var signInManager = CreateMockSignInManager();
+            var urlHelper = CreateMockUrlHelper();
+
+            var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
+
+            var res = await controller.ConfirmEmail(UnconfirmedGoodId, BadToken);
+
+            userManager.Verify(a => a.ConfirmEmailAsync(UnconfirmedGoodId, BadToken));
+            var view = res as ViewResult;
+
+            Assert.IsNotNull(view);
+            Assert.AreEqual("Error", view.ViewName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmEmailNoUser()
+        {
+            var controller = CreateController();
+
+            var res = await controller.ConfirmEmail(null, GoodToken);
+
+            var view = res as ViewResult;
+
+            Assert.IsNotNull(view);
+            Assert.AreEqual("Error", view.ViewName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmEmailEmptyUser()
+        {
+            var controller = CreateController();
+
+            var res = await controller.ConfirmEmail(string.Empty, GoodToken);
+
+            var view = res as ViewResult;
+
+            Assert.IsNotNull(view);
+            Assert.AreEqual("Error", view.ViewName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmEmailNoToken()
+        {
+            var controller = CreateController();
+
+            var res = await controller.ConfirmEmail(ConfirmedGoodId, null);
+
+            var view = res as ViewResult;
+
+            Assert.IsNotNull(view);
+            Assert.AreEqual("Error", view.ViewName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmEmailEmptyToken()
+        {
+            var controller = CreateController();
+
+            var res = await controller.ConfirmEmail(ConfirmedGoodId, string.Empty);
+
+            var view = res as ViewResult;
+
+            Assert.IsNotNull(view);
+            Assert.AreEqual("Error", view.ViewName);
+        }
+
+
+        [TestMethod]
+        public void StartForgotPassword()
+        {
+            var controller = CreateController();
+            var result = controller.ForgotPassword();
+
+            var view = result as ViewResult;
+
+            Assert.IsNotNull(view);
+        }
+
+        private AccountController CreateController()
+        {
+            var userManager = CreateMockUserManager();
+            var signInManager = CreateMockSignInManager();
+            var urlHelper = CreateMockUrlHelper();
+
+            return new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
+        }
+
         private Mock<ApplicationSignInManager> CreateMockSignInManager()
         {
             var userManager = CreateMockUserManager();
@@ -348,6 +487,21 @@ namespace BikeTracker.Tests.Controllers
                                                       It.Is<string>(s => s == ConfirmedGoodId ||
                                                                          s == UnconfirmedGoodId)))
                 .Returns(Task.FromResult<object>(null));
+
+            userManager.Setup(m =>
+                m.ConfirmEmailAsync(It.Is<string>(s => s == ConfirmedGoodId),
+                                    It.Is<string>(s => s == GoodToken)))
+                                    .Returns(Task.FromResult(IdentityResult.Success));
+
+            userManager.Setup(m =>
+                m.ConfirmEmailAsync(It.Is<string>(s => s == UnconfirmedGoodId),
+                                    It.Is<string>(s => s == BadToken)))
+                                    .Returns(Task.FromResult(new IdentityResult("Bad Token")));
+
+            userManager.Setup(m =>
+                m.ConfirmEmailAsync(It.Is<string>(s => s == BadId),
+                                    It.IsAny<string>()))
+                                    .Throws(new InvalidOperationException());
 
             return userManager;
         }
