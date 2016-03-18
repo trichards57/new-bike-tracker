@@ -1,4 +1,4 @@
-﻿using BikeTracker.Models;
+﻿using BikeTracker.Models.LocationModels;
 using BikeTracker.Services;
 using System.Linq;
 using System.Net;

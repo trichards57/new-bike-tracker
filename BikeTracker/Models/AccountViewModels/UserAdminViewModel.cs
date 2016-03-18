@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace BikeTracker.Models
+namespace BikeTracker.Models.AccountViewModels
 {
-    public class UserAdminModel
+    public class UserAdminViewModel
     {
         public string Id { get; set; }
 

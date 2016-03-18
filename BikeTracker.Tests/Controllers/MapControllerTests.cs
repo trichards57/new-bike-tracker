@@ -1,5 +1,6 @@
 ﻿using BikeTracker.Controllers;
 using BikeTracker.Models;
+using BikeTracker.Models.LocationModels;
 using BikeTracker.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

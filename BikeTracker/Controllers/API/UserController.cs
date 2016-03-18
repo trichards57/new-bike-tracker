@@ -1,4 +1,7 @@
 ﻿using BikeTracker.Models;
+using BikeTracker.Models.AccountViewModels;
+using BikeTracker.Models.Contexts;
+using BikeTracker.Models.IdentityModels;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -39,11 +42,11 @@ namespace BikeTracker.Controllers.API
 
         // GET: odata/User
         [EnableQuery]
-        public IQueryable<UserAdminModel> GetUser()
+        public IQueryable<UserAdminViewModel> GetUser()
         {
             return db.Users
                 .Select(u => new { u, r = db.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId) })
-                .Select(d => new UserAdminModel
+                .Select(d => new UserAdminViewModel
             {
                 Id = d.u.Id,
                 EmailAddress = d.u.Email,
@@ -56,11 +59,11 @@ namespace BikeTracker.Controllers.API
 
         // GET: odata/User(5)
         [EnableQuery]
-        public SingleResult<UserAdminModel> Get([FromODataUri] string key)
+        public SingleResult<UserAdminViewModel> Get([FromODataUri] string key)
         {
             return SingleResult.Create(db.Users.Where(applicationUser => applicationUser.Id == key)
                 .Select(u => new { u, r = db.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId) })
-                .Select(d => new UserAdminModel
+                .Select(d => new UserAdminViewModel
             {
                 Id = d.u.Id,
                 EmailAddress = d.u.Email,
@@ -72,7 +75,7 @@ namespace BikeTracker.Controllers.API
         }
 
         // PUT: odata/User(5)
-        public async Task<IHttpActionResult> Put([FromODataUri] string key, UserAdminModel update)
+        public async Task<IHttpActionResult> Put([FromODataUri] string key, UserAdminViewModel update)
         {
             Validate(update);
 

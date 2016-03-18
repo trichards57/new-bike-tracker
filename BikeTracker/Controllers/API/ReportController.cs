@@ -1,4 +1,5 @@
 ﻿using BikeTracker.Models;
+using BikeTracker.Models.ReportViewModels;
 using BikeTracker.Services;
 using System;
 using System.Globalization;
@@ -53,7 +54,7 @@ namespace BikeTracker.Controllers.API
                     stop = d.Date.AddSeconds(86399);
             }
 
-            return Json((await reportService.GetCallsignRecord(callsign, start, stop)).Select(r => new CallsignLocationReport
+            return Json((await reportService.GetCallsignRecord(callsign, start, stop)).Select(r => new CallsignLocationReportViewModel
             {
                 Latitude = r.Latitude,
                 Longitude = r.Longitude,

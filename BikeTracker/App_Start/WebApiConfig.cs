@@ -1,8 +1,9 @@
-﻿using System.Web.Http;
+﻿using BikeTracker.Models;
+using BikeTracker.Models.AccountViewModels;
+using BikeTracker.Models.LocationModels;
+using System.Web.Http;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
-using BikeTracker.Models;
-
 
 namespace BikeTracker
 {
@@ -32,14 +33,14 @@ namespace BikeTracker
             // Web API configuration and services
             var builder = new ODataConventionModelBuilder();
             builder.EntitySet<IMEIToCallsign>("IMEI");
-            builder.EntitySet<UserAdminModel>("User");
+            builder.EntitySet<UserAdminViewModel>("User");
 
             builder.Namespace = "API";
 
-            var updateEmail = builder.EntityType<UserAdminModel>().Action("UpdateEmail");
+            var updateEmail = builder.EntityType<UserAdminViewModel>().Action("UpdateEmail");
             updateEmail.Parameter<string>("email");
 
-            var register = builder.EntityType<UserAdminModel>().Collection.Action("Register");
+            var register = builder.EntityType<UserAdminViewModel>().Collection.Action("Register");
             register.Parameter<string>("email");
             register.Parameter<string>("role");
 

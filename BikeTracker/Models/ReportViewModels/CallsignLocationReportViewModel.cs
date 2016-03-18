@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace BikeTracker.Models
+namespace BikeTracker.Models.ReportViewModels
 {
-    public class CallsignLocationReport
+    public class CallsignLocationReportViewModel
     {
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }

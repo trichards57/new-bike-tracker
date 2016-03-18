@@ -1,8 +1,8 @@
-using System.Web.Mvc;
-using Microsoft.Practices.Unity;
+using BikeTracker.Models.Contexts;
 using BikeTracker.Services;
-using BikeTracker.Models;
+using Microsoft.Practices.Unity;
 using System.Web.Http;
+using System.Web.Mvc;
 
 namespace BikeTracker
 {

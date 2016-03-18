@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.Owin.Security;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BikeTracker.Models
+namespace BikeTracker.Models.AccountViewModels
 {
     public class ChangePasswordViewModel
     {

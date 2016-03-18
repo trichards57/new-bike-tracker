@@ -1,23 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BikeTracker.Models
+namespace BikeTracker.Models.AccountViewModels
 {
-    public class LoginViewModel
-    {
-        [Required]
-        [Display(Name = "Email")]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; }
-
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }
-    }
-
     public class ResetPasswordViewModel
     {
         [Required]
@@ -37,13 +21,5 @@ namespace BikeTracker.Models
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
-    }
-
-    public class ForgotPasswordViewModel
-    {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
     }
 }

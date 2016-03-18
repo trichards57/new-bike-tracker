@@ -1,4 +1,5 @@
 ﻿using BikeTracker.Models;
+using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;

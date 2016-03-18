@@ -1,12 +1,9 @@
 ﻿using BikeTracker.Controllers;
-using BikeTracker.Models;
+using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Tests.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 

@@ -1,5 +1,6 @@
 ﻿using BikeTracker.Migrations;
 using BikeTracker.Models;
+using BikeTracker.Models.Contexts;
 using Microsoft.Owin;
 using Owin;
 using System.Data.Entity;

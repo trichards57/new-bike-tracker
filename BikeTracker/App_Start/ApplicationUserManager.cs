@@ -1,56 +1,15 @@
-﻿using Amazon.SimpleEmail;
-using Amazon.SimpleEmail.Model;
-using BikeTracker.Models;
+﻿using BikeTracker.Models;
+using BikeTracker.Models.Contexts;
+using BikeTracker.Models.IdentityModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
-using Microsoft.Owin.Security;
 using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace BikeTracker
 {
-    // Configure the application sign-in manager which is used in this application.
-    /// <summary>
-    /// Subclass of SignInManager, set up to use <see cref="ApplicationUser"/> instead of IdentityUser.
-    /// </summary>
-    public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApplicationSignInManager"/> class.
-        /// </summary>
-        /// <param name="userManager">The user manager to use.</param>
-        /// <param name="authenticationManager">The authentication manager to use.</param>
-        public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
-            : base(userManager, authenticationManager)
-        {
-        }
-
-        /// <summary>
-        /// Creates an <see cref="ApplicationSignInManager"/>
-        /// </summary>
-        /// <param name="options">The options used to create the <see cref="ApplicationSignInManager"/>.</param>
-        /// <param name="context">The context that supports the <see cref="ApplicationSignInManager"/>.</param>
-        /// <returns>A new instance of <see cref="ApplicationSignInManager"/> configured using the specified options.</returns>
-        public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
-        {
-            return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
-        }
-
-        /// <summary>
-        /// Creates a ClaimsIdentity from the provided <see cref="ApplicationUser"/>.
-        /// </summary>
-        /// <param name="user">The <see cref="ApplicationUser"/>.</param>
-        /// <returns>A ClaimsIdentity for the user.</returns>
-        public override Task<ClaimsIdentity> CreateUserIdentityAsync(ApplicationUser user)
-        {
-            return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
-        }
-    }
-
     /// <summary>
     /// Subclass of UserManager, set up to use <see cref="ApplicationUser"/> instead of IdentityUser.
     /// Used to support user management for the website.
@@ -231,55 +190,6 @@ namespace BikeTracker
             }
 
             return res;
-        }
-    }
-
-    /// <summary>
-    /// Service to handle sending emails from the website
-    /// </summary>
-    public class EmailService : IIdentityMessageService
-    {
-        /// <summary>
-        /// The standard From email address to use for all emails.
-        /// </summary>
-        private const string FromEmail = "Tony Richards <tony.richards@bath.edu>";
-
-        /// <summary>
-        /// Asynchronously sends the provided IdentityMessage.
-        /// </summary>
-        /// <param name="message">The message to send.</param>
-        /// <remarks>
-        /// Sends the provided message using Amazon's Simple Email Service Client.
-        ///
-        /// If it is passed on ApplicationMessage, it will use it to populate
-        /// both the HTML body and the plain text body.  Otherwise, it will only
-        /// populate the message body and let Amazon SES work out how to format
-        /// it properly.
-        ///
-        /// Requires environment variable AWS_ACCESS_KEY_ID.
-        /// </remarks>
-        public Task SendAsync(IdentityMessage message)
-        {
-            var subject = new Content(message.Subject);
-
-            var applicationMessage = message as ApplicationMessage;
-
-            var body = new Body();
-            body.Text = new Content(message.Body);
-            if (applicationMessage != null)
-                body.Html = new Content(applicationMessage.HtmlBody);
-
-            var toEmail = new Destination(new List<string> { message.Destination });
-
-            var email = new Message(subject, body);
-            var request = new SendEmailRequest(FromEmail, toEmail, email);
-            var region = Amazon.RegionEndpoint.EUWest1;
-
-            var client = new AmazonSimpleEmailServiceClient(region);
-
-            client.SendEmail(request);
-
-            return Task.FromResult(0);
         }
     }
 }

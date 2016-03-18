@@ -1,4 +1,6 @@
 ﻿using BikeTracker.Models;
+using BikeTracker.Models.Contexts;
+using BikeTracker.Models.IdentityModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
