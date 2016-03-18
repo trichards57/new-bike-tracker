@@ -51,8 +51,8 @@ namespace BikeTracker.Tests.Controllers
         {
             var result = new Mock<ILocationService>(MockBehavior.Strict);
 
-            result.Setup(l => l.GetLocations()).Returns(Task.FromResult(Locations));
-            result.Setup(l => l.GetLandmarks()).Returns(Task.FromResult(Landmarks));
+            result.Setup(l => l.GetLocations()).ReturnsAsync(Locations);
+            result.Setup(l => l.GetLandmarks()).ReturnsAsync(Landmarks);
             result.Setup(LocationRegisterExpression).Returns(Task.FromResult<object>(null));
             result.Setup(l => l.RegisterLandmark(It.Is<string>(s => s == TestLandmark), It.Is<decimal>(s => s == TestLatitude), It.Is<decimal>(s => s == TestLongitude), null))
                 .Returns(Task.FromResult<object>(null));
@@ -67,11 +67,11 @@ namespace BikeTracker.Tests.Controllers
             var result = new Mock<IIMEIService>(MockBehavior.Strict);
 
             result.Setup(l => l.GetFromIMEI(It.Is<string>(s => s == TestIMEI)))
-                .Returns(Task.FromResult(new IMEIToCallsign
+                .ReturnsAsync(new IMEIToCallsign
                 {
                     CallSign = TestCallsign,
                     IMEI = TestIMEI
-                }));
+                });
 
             return result;
         }

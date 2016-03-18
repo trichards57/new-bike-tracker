@@ -107,7 +107,7 @@ namespace BikeTracker.Tests.Helpers
         {
             var userManager = CreateMockUserManager();
             var authManger = new Mock<IAuthenticationManager>(MockBehavior.Strict);
-            var signInManager = new Mock<ISignInManager>(MockBehavior.Strict, userManager.Object, authManger.Object);
+            var signInManager = new Mock<ISignInManager>(MockBehavior.Strict);
 
             signInManager.Setup(m =>
                 m.PasswordSignInAsync(It.IsAny<string>(),
@@ -153,10 +153,9 @@ namespace BikeTracker.Tests.Helpers
             return urlHelper;
         }
 
-        public static Mock<ApplicationUserManager> CreateMockUserManager()
+        public static Mock<IUserManager> CreateMockUserManager()
         {
-            var userStore = new Mock<IUserStore<ApplicationUser, string>>(MockBehavior.Strict);
-            var userManager = new Mock<ApplicationUserManager>(MockBehavior.Strict, userStore.Object);
+            var userManager = new Mock<IUserManager>(MockBehavior.Strict);
             userManager.Setup(m => m.FindAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(null);
             userManager.Setup(m =>
@@ -176,12 +175,12 @@ namespace BikeTracker.Tests.Helpers
             userManager.Setup(m =>
                 m.ConfirmEmailAsync(It.Is<string>(s => s == ConfirmedGoodId),
                                     It.Is<string>(s => s == GoodToken)))
-                                    .Returns(Task.FromResult(IdentityResult.Success));
+                                    .ReturnsAsync(IdentityResult.Success);
 
             userManager.Setup(m =>
                 m.ConfirmEmailAsync(It.Is<string>(s => s == UnconfirmedGoodId),
                                     It.Is<string>(s => s == BadToken)))
-                                    .Returns(Task.FromResult(new IdentityResult("Bad Token")));
+                                    .ReturnsAsync(new IdentityResult("Bad Token"));
 
             userManager.Setup(m =>
                 m.ConfirmEmailAsync(It.Is<string>(s => s == BadId),
@@ -190,24 +189,24 @@ namespace BikeTracker.Tests.Helpers
 
             userManager.Setup(m =>
                 m.FindByNameAsync(It.Is<string>(s => s == ConfirmedGoodUsername)))
-                                .Returns(Task.FromResult(ConfirmedGoodUser));
+                                .ReturnsAsync(ConfirmedGoodUser);
             userManager.Setup(m =>
                 m.FindByNameAsync(It.Is<string>(s => s == UnconfirmedGoodUsername)))
-                                .Returns(Task.FromResult(UnconfirmedGoodUser));
+                                .ReturnsAsync(UnconfirmedGoodUser);
             userManager.Setup(m =>
                 m.FindByNameAsync(It.Is<string>(s => s == BadUsername)))
-                                .Returns(Task.FromResult<ApplicationUser>(null));
+                                .ReturnsAsync(null);
 
             userManager.Setup(m =>
                 m.FindByIdAsync(It.Is<string>(s => s == ConfirmedGoodId)))
-                                .Returns(Task.FromResult(ConfirmedGoodUser));
+                                .ReturnsAsync(ConfirmedGoodUser);
 
             userManager.Setup(m =>
                 m.IsEmailConfirmedAsync(It.Is<string>(s => s == ConfirmedGoodId)))
-                                .Returns(Task.FromResult(true));
+                                .ReturnsAsync(true);
             userManager.Setup(m =>
                 m.IsEmailConfirmedAsync(It.Is<string>(s => s == UnconfirmedGoodId)))
-                                .Returns(Task.FromResult(false));
+                                .ReturnsAsync(false);
 
             userManager.Setup(m =>
                 m.GeneratePasswordResetEmailAsync(It.IsAny<UrlHelper>(), It.Is<string>(s => s == ConfirmedGoodId)))
@@ -215,24 +214,24 @@ namespace BikeTracker.Tests.Helpers
 
             userManager.Setup(m =>
                 m.ResetPasswordAsync(It.Is<string>(s => s == ConfirmedGoodId), It.Is<string>(s => s == GoodToken), It.Is<string>(s => s == ConfirmedGoodPassword)))
-                .Returns(Task.FromResult(IdentityResult.Success));
+                .ReturnsAsync(IdentityResult.Success);
 
             userManager.Setup(m =>
                 m.ResetPasswordAsync(It.Is<string>(s => s == ConfirmedGoodId), It.Is<string>(s => s == GoodToken), It.Is<string>(s => s == BadPassword)))
-                .Returns(Task.FromResult(new IdentityResult("Password isn't good enough.")));
+                .ReturnsAsync(new IdentityResult("Password isn't good enough."));
             userManager.Setup(m =>
                 m.ResetPasswordAsync(It.Is<string>(s => s == ConfirmedGoodId), It.Is<string>(s => s == BadToken), It.Is<string>(s => s == ConfirmedGoodPassword)))
-                .Returns(Task.FromResult(new IdentityResult("Bad Token.")));
+                .ReturnsAsync(new IdentityResult("Bad Token."));
 
             userManager.Setup(m =>
                 m.ChangePasswordAsync(It.Is<string>(s => s == ConfirmedGoodId), It.Is<string>(s => s == UnconfirmedGoodPassword), It.Is<string>(s => s == ConfirmedGoodPassword)))
-                .Returns(Task.FromResult(IdentityResult.Success));
+                .ReturnsAsync(IdentityResult.Success);
             userManager.Setup(m =>
                 m.ChangePasswordAsync(It.Is<string>(s => s == ConfirmedGoodId), It.Is<string>(s => s == BadPassword), It.Is<string>(s => s == ConfirmedGoodPassword)))
-                .Returns(Task.FromResult(new IdentityResult("Old password was wrong.")));
+                .ReturnsAsync(new IdentityResult("Old password was wrong."));
             userManager.Setup(m =>
                 m.ChangePasswordAsync(It.Is<string>(s => s == ConfirmedGoodId), It.Is<string>(s => s == UnconfirmedGoodPassword), It.Is<string>(s => s == BadPassword)))
-                .Returns(Task.FromResult(new IdentityResult("New password isn't good enough.")));
+                .ReturnsAsync(new IdentityResult("New password isn't good enough."));
 
             return userManager;
         }
