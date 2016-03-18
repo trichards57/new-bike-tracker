@@ -10,9 +10,9 @@ namespace BikeTracker.Services
 {
     public class ReportService : IReportService
     {
-        private ApplicationDbContext dataContext;
+        private ILocationIMEIContext dataContext;
 
-        public ReportService(ApplicationDbContext context)
+        public ReportService(ILocationIMEIContext context)
         {
             dataContext = context;
         }

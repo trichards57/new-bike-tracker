@@ -1,11 +1,13 @@
-﻿using BikeTracker.Models;
-using BikeTracker.Models.AccountViewModels;
+﻿using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Models.Contexts;
 using BikeTracker.Models.IdentityModels;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Practices.Unity;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -19,11 +21,16 @@ namespace BikeTracker.Controllers.API
     [Authorize(Roles = "GeneralAdmin")]
     public class UserController : ODataController
     {
-        private ApplicationDbContext db;
+        private ApplicationUserManager userManager;
+        private ApplicationRoleManager roleManager;
 
-        public UserController(ApplicationDbContext context)
+        [InjectionConstructor]
+        public UserController() { }
+
+        public UserController(ApplicationUserManager userManager, ApplicationRoleManager roleManager)
         {
-            db = context;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
         }
 
         /// <summary>
@@ -36,42 +43,65 @@ namespace BikeTracker.Controllers.API
         {
             get
             {
-                return HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                return userManager ?? HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+        }
+
+        public RoleManager<ApplicationRole> RoleManager
+        {
+            get
+            {
+                return roleManager ?? HttpContext.Current.Request.GetOwinContext().GetUserManager<RoleManager<ApplicationRole>>();
             }
         }
 
         // GET: odata/User
         [EnableQuery]
-        public IQueryable<UserAdminViewModel> GetUser()
+        public async Task<IQueryable<UserAdminViewModel>> GetUser()
         {
-            return db.Users
-                .Select(u => new { u, r = db.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId) })
-                .Select(d => new UserAdminViewModel
-            {
-                Id = d.u.Id,
-                EmailAddress = d.u.Email,
-                Role = d.r.Name,
-                RoleId = d.r.Id,
-                RoleDisplayName = d.r.DisplayName,
-                UserName = d.u.UserName
+            var users = await UserManager.Users.ToListAsync();
+
+            var userRoleTask = users.Select(async user => {
+                var roles = await UserManager.GetRolesAsync(user.Id);
+                var role = roles.FirstOrDefault();
+                var roleDetails = await RoleManager.FindByNameAsync(role);
+                return new { user, role = roleDetails };
             });
+
+            var userRole = await Task.WhenAll(userRoleTask);
+
+            return userRole.Select(d => new UserAdminViewModel
+                {
+                    Id = d.user.Id,
+                    EmailAddress = d.user.Email,
+                    Role = d.role.Name,
+                    RoleDisplayName = d.role.DisplayName,
+                    RoleId = d.role.Id,
+                    UserName = d.user.UserName
+                }).AsQueryable();
         }
 
         // GET: odata/User(5)
         [EnableQuery]
-        public SingleResult<UserAdminViewModel> Get([FromODataUri] string key)
+        public async Task<SingleResult<UserAdminViewModel>> Get([FromODataUri] string key)
         {
-            return SingleResult.Create(db.Users.Where(applicationUser => applicationUser.Id == key)
-                .Select(u => new { u, r = db.Roles.FirstOrDefault(r => r.Id == u.Roles.FirstOrDefault().RoleId) })
-                .Select(d => new UserAdminViewModel
+            var user = await UserManager.FindByIdAsync(key);
+            var roles = await UserManager.GetRolesAsync(key);
+            var role = roles.FirstOrDefault();
+            var roleDetails = await RoleManager.FindByNameAsync(role);
+
+            return SingleResult.Create(new[]
             {
-                Id = d.u.Id,
-                EmailAddress = d.u.Email,
-                Role = d.r.DisplayName,
-                RoleId = d.r.Id,
-                RoleDisplayName = d.r.DisplayName,
-                UserName = d.u.UserName
-                }));
+                new UserAdminViewModel
+                {
+                    Id = user.Id,
+                    EmailAddress = user.Email,
+                    Role = roleDetails.Name,
+                    RoleDisplayName = roleDetails.DisplayName,
+                    RoleId = roleDetails.Id,
+                    UserName = user.UserName
+                }
+            }.AsQueryable());
         }
 
         // PUT: odata/User(5)
@@ -125,7 +155,7 @@ namespace BikeTracker.Controllers.API
             if (!addr.IsValid(email))
                 return BadRequest("email is not valid");
 
-            if (!db.Roles.Any(r => r.Name == role))
+            if (await RoleManager.RoleExistsAsync(role))
                 role = DefaultRole;
 
             var user = new ApplicationUser { UserName = email, Email = email, MustResetPassword = true };
@@ -160,15 +190,6 @@ namespace BikeTracker.Controllers.API
                 await UserManager.DeleteAsync(user);
 
             return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using BikeTracker.Controllers.API;
-using BikeTracker.Models;
 using BikeTracker.Models.Contexts;
 using BikeTracker.Models.IdentityModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,6 +7,7 @@ using Ploeh.AutoFixture;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BikeTracker.Tests.Controllers.API
 {
@@ -24,34 +24,20 @@ namespace BikeTracker.Tests.Controllers.API
 
         private UserController CreateController()
         {
-            var dataContext = new Mock<ApplicationDbContext>(MockBehavior.Strict);
-            var userSet = new Mock<DbSet<ApplicationUser>>(MockBehavior.Strict);
+            var userManager = new Mock<ApplicationUserManager>(MockBehavior.Strict);
+            var roleManager = new Mock<ApplicationRoleManager>(MockBehavior.Strict);
 
-            var userQueryable = Users.AsQueryable();
-
-            userSet.As<IQueryable<ApplicationUser>>().Setup(m => m.Provider).Returns(userQueryable.Provider);
-            userSet.As<IQueryable<ApplicationUser>>().Setup(m => m.Expression).Returns(userQueryable.Expression);
-            userSet.As<IQueryable<ApplicationUser>>().Setup(m => m.ElementType).Returns(userQueryable.ElementType);
-            userSet.As<IQueryable<ApplicationUser>>().Setup(m => m.GetEnumerator()).Returns(userQueryable.GetEnumerator());
-
-            dataContext.SetupGet(d => d.Users).Returns(userSet.Object);
-            dataContext.SetupGet(d => d.IMEIToCallsigns);
-            dataContext.SetupGet(d => d.Landmarks);
-            dataContext.SetupGet(d => d.LocationRecords);
-            dataContext.SetupGet(d => d.RequireUniqueEmail);
-            dataContext.SetupGet(d => d.Roles);
-
-            var controller = new UserController(dataContext.Object);
+            var controller = new UserController(userManager.Object, roleManager.Object);
 
             return controller;
         }
 
         [TestMethod]
-        public void GetUser()
+        public async Task GetUser()
         {
             var controller = CreateController();
 
-            var users = controller.GetUser();
+            var users = await controller.GetUser();
 
             foreach (var u in users)
             {
