@@ -24,8 +24,8 @@ namespace BikeTracker.Tests.Controllers.API
 
         private UserController CreateController()
         {
-            var userManager = new Mock<ApplicationUserManager>(MockBehavior.Strict);
-            var roleManager = new Mock<ApplicationRoleManager>(MockBehavior.Strict);
+            var userManager = new Mock<IUserManager>(MockBehavior.Strict);
+            var roleManager = new Mock<IRoleManager>(MockBehavior.Strict);
 
             var controller = new UserController(userManager.Object, roleManager.Object);
 

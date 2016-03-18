@@ -103,11 +103,11 @@ namespace BikeTracker.Tests.Helpers
             return new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
         }
 
-        public static Mock<ApplicationSignInManager> CreateMockSignInManager()
+        public static Mock<ISignInManager> CreateMockSignInManager()
         {
             var userManager = CreateMockUserManager();
             var authManger = new Mock<IAuthenticationManager>(MockBehavior.Strict);
-            var signInManager = new Mock<ApplicationSignInManager>(MockBehavior.Strict, userManager.Object, authManger.Object);
+            var signInManager = new Mock<ISignInManager>(MockBehavior.Strict, userManager.Object, authManger.Object);
 
             signInManager.Setup(m =>
                 m.PasswordSignInAsync(It.IsAny<string>(),

@@ -7,7 +7,7 @@ using Microsoft.Owin;
 
 namespace BikeTracker
 {
-    public class ApplicationRoleManager : RoleManager<ApplicationRole>
+    public class ApplicationRoleManager : RoleManager<ApplicationRole>, IRoleManager
     {
         public ApplicationRoleManager(IRoleStore<ApplicationRole, string> store)
             : base(store)

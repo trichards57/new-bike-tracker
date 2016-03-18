@@ -21,13 +21,13 @@ namespace BikeTracker.Controllers.API
     [Authorize(Roles = "GeneralAdmin")]
     public class UserController : ODataController
     {
-        private ApplicationUserManager userManager;
-        private ApplicationRoleManager roleManager;
+        private IUserManager userManager;
+        private IRoleManager roleManager;
 
         [InjectionConstructor]
         public UserController() { }
 
-        public UserController(ApplicationUserManager userManager, ApplicationRoleManager roleManager)
+        public UserController(IUserManager userManager, IRoleManager roleManager)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
@@ -39,7 +39,7 @@ namespace BikeTracker.Controllers.API
         /// <value>
         /// The user manager.
         /// </value>
-        public ApplicationUserManager UserManager
+        public IUserManager UserManager
         {
             get
             {
@@ -47,11 +47,11 @@ namespace BikeTracker.Controllers.API
             }
         }
 
-        public RoleManager<ApplicationRole> RoleManager
+        public IRoleManager RoleManager
         {
             get
             {
-                return roleManager ?? HttpContext.Current.Request.GetOwinContext().GetUserManager<RoleManager<ApplicationRole>>();
+                return roleManager ?? HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
             }
         }
 

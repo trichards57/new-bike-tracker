@@ -11,7 +11,7 @@ namespace BikeTracker
     /// <summary>
     /// Subclass of SignInManager, set up to use <see cref="ApplicationUser"/> instead of IdentityUser.
     /// </summary>
-    public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
+    public class ApplicationSignInManager : SignInManager<ApplicationUser, string>, ISignInManager
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationSignInManager"/> class.

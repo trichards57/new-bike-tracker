@@ -223,6 +223,9 @@
     <Compile Include="App_Start\ApplicationUserManager.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\EmailService.cs" />
+    <Compile Include="App_Start\IRoleManager.cs" />
+    <Compile Include="App_Start\ISignInManager.cs" />
+    <Compile Include="App_Start\IUserManager.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />

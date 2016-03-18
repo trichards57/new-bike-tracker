@@ -16,8 +16,8 @@ namespace BikeTracker.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        private ISignInManager _signInManager;
+        private IUserManager _userManager;
         private IAuthenticationManager _authManager;
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace BikeTracker.Controllers
         /// <remarks>
         /// This overload is used to allow dependency injection for testing.
         /// </remarks>
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, UrlHelper urlHelper, IAuthenticationManager authManager = null)
+        public AccountController(IUserManager userManager, ISignInManager signInManager, UrlHelper urlHelper, IAuthenticationManager authManager = null)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -51,7 +51,7 @@ namespace BikeTracker.Controllers
         /// <value>
         /// The sign in manager.
         /// </value>
-        public ApplicationSignInManager SignInManager
+        public ISignInManager SignInManager
         {
             get
             {
@@ -69,7 +69,7 @@ namespace BikeTracker.Controllers
         /// <value>
         /// The user manager.
         /// </value>
-        public ApplicationUserManager UserManager
+        public IUserManager UserManager
         {
             get
             {

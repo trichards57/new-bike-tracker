@@ -13,7 +13,7 @@ namespace BikeTracker
     /// Subclass of UserManager, set up to use <see cref="ApplicationUser"/> instead of IdentityUser.
     /// Used to support user management for the website.
     /// </summary>
-    public class ApplicationUserManager : UserManager<ApplicationUser, string>
+    public class ApplicationUserManager : UserManager<ApplicationUser, string>, IUserManager
     {
         public const int MinPasswordLength = 6;
 

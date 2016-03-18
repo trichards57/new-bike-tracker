@@ -13,21 +13,21 @@ namespace BikeTracker.Controllers
 {
     public class ManageController : Controller
     {
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        private ISignInManager _signInManager;
+        private IUserManager _userManager;
 
         [InjectionConstructor]
         public ManageController()
         {
         }
 
-        public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public ManageController(IUserManager userManager, ISignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
         }
 
-        public ApplicationSignInManager SignInManager
+        public ISignInManager SignInManager
         {
             get
             {
@@ -39,7 +39,7 @@ namespace BikeTracker.Controllers
             }
         }
 
-        public ApplicationUserManager UserManager
+        public IUserManager UserManager
         {
             get
             {
