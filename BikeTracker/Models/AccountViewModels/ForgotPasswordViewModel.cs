@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BikeTracker.Controllers.Filters;
+using System.ComponentModel.DataAnnotations;
 
 namespace BikeTracker.Models.AccountViewModels
 {
+    [IgnoreCoverage]
     public class ForgotPasswordViewModel
     {
         [Required]

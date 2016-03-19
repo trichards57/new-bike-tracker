@@ -1,4 +1,5 @@
-﻿using BikeTracker.Models.LocationModels;
+﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Models.LocationModels;
 using System.Data.Entity;
 using System.Threading.Tasks;
 

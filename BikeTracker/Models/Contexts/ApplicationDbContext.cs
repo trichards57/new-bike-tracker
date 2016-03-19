@@ -1,4 +1,5 @@
-﻿using BikeTracker.Models.IdentityModels;
+﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Models.IdentityModels;
 using BikeTracker.Models.LocationModels;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Configuration;
@@ -7,7 +8,7 @@ using System.Data.Entity;
 namespace BikeTracker.Models.Contexts
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
-
+    [IgnoreCoverage]
     public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>,
         ILocationIMEIContext
     {

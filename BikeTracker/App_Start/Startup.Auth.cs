@@ -1,4 +1,4 @@
-﻿using BikeTracker.Models;
+﻿using BikeTracker.Controllers.Filters;
 using BikeTracker.Models.Contexts;
 using BikeTracker.Models.IdentityModels;
 using Microsoft.AspNet.Identity;
@@ -10,6 +10,7 @@ using System;
 
 namespace BikeTracker
 {
+    [IgnoreCoverage]
     public partial class Startup
     {
         private static bool IsAjaxRequest(IOwinRequest request)

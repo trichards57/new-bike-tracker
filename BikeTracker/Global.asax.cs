@@ -1,10 +1,12 @@
-﻿using System.Web;
+﻿using BikeTracker.Controllers.Filters;
+using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace BikeTracker
 {
+    [IgnoreCoverage]
     public class MvcApplication : HttpApplication
     {
         protected void Application_Start()

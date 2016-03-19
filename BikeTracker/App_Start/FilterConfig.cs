@@ -1,10 +1,12 @@
-﻿using System.Web.Mvc;
+﻿using BikeTracker.Controllers.Filters;
+using System.Web.Mvc;
 
 namespace BikeTracker
 {
     /// <summary>
     /// Setup class to configure the main routing filters
     /// </summary>
+    [IgnoreCoverage]
     public class FilterConfig
     {
         /// <summary>

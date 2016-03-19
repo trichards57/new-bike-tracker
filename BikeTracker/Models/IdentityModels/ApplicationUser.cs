@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using BikeTracker.Controllers.Filters;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BikeTracker.Models.IdentityModels
 {
+    [IgnoreCoverage]
     public class ApplicationUser : IdentityUser
     {
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser, string> manager)

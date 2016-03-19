@@ -1,3 +1,4 @@
+using BikeTracker.Controllers.Filters;
 using BikeTracker.Models.Contexts;
 using BikeTracker.Services;
 using Microsoft.Practices.Unity;
@@ -6,6 +7,7 @@ using System.Web.Mvc;
 
 namespace BikeTracker
 {
+    [IgnoreCoverage]
     public static class UnityConfig
     {
         public static void RegisterComponents()

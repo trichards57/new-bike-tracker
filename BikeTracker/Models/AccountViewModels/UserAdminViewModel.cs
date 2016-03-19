@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using BikeTracker.Controllers.Filters;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace BikeTracker.Models.AccountViewModels
 {
+    [IgnoreCoverage]
     public class UserAdminViewModel
     {
         public string Id { get; set; }

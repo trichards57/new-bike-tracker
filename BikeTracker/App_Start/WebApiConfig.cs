@@ -1,4 +1,4 @@
-﻿using BikeTracker.Models;
+﻿using BikeTracker.Controllers.Filters;
 using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Models.LocationModels;
 using System.Web.Http;
@@ -10,6 +10,7 @@ namespace BikeTracker
     /// <summary>
     /// Setup class for the Web API elements of the website
     /// </summary>
+    [IgnoreCoverage]
     public static class WebApiConfig
     {
         /// <summary>

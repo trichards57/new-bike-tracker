@@ -1,8 +1,10 @@
-﻿using BikeTracker.Models.LocationModels;
+﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Models.LocationModels;
 using System;
 
 namespace BikeTracker.Models
 {
+    [IgnoreCoverage]
     public class LocationViewModel
     {
         public int Id { get; set; }

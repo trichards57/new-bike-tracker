@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BikeTracker.Controllers.Filters;
+using System.ComponentModel.DataAnnotations;
 
 namespace BikeTracker.Models.LocationModels
 {
+    [IgnoreCoverage]
     public class IMEIToCallsign
     {
         public int Id { get; set; }
