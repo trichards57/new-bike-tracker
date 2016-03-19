@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Practices.Unity;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Entity;
@@ -13,6 +14,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 using System.Web.OData;
 using System.Web.Security;
 
@@ -61,7 +63,8 @@ namespace BikeTracker.Controllers.API
         {
             var users = await UserManager.Users.ToListAsync();
 
-            var userRoleTask = users.Select(async user => {
+            var userRoleTask = users.Select(async user =>
+            {
                 var roles = await UserManager.GetRolesAsync(user.Id);
                 var role = roles.FirstOrDefault();
                 var roleDetails = await RoleManager.FindByNameAsync(role);
@@ -71,14 +74,14 @@ namespace BikeTracker.Controllers.API
             var userRole = await Task.WhenAll(userRoleTask);
 
             return userRole.Select(d => new UserAdminViewModel
-                {
-                    Id = d.user.Id,
-                    EmailAddress = d.user.Email,
-                    Role = d.role.Name,
-                    RoleDisplayName = d.role.DisplayName,
-                    RoleId = d.role.Id,
-                    UserName = d.user.UserName
-                }).AsQueryable();
+            {
+                Id = d.user.Id,
+                EmailAddress = d.user.Email,
+                Role = d.role.Name,
+                RoleDisplayName = d.role.DisplayName,
+                RoleId = d.role.Id,
+                UserName = d.user.UserName
+            }).AsQueryable();
         }
 
         // GET: odata/User(5)
@@ -86,22 +89,27 @@ namespace BikeTracker.Controllers.API
         public async Task<SingleResult<UserAdminViewModel>> Get([FromODataUri] string key)
         {
             var user = await UserManager.FindByIdAsync(key);
-            var roles = await UserManager.GetRolesAsync(key);
-            var role = roles.FirstOrDefault();
-            var roleDetails = await RoleManager.FindByNameAsync(role);
-
-            return SingleResult.Create(new[]
+            if (user != null)
             {
-                new UserAdminViewModel
+                var roles = await UserManager.GetRolesAsync(key);
+                var role = roles.FirstOrDefault();
+                var roleDetails = await RoleManager.FindByNameAsync(role);
+
+                return SingleResult.Create(new List<UserAdminViewModel>
                 {
-                    Id = user.Id,
-                    EmailAddress = user.Email,
-                    Role = roleDetails.Name,
-                    RoleDisplayName = roleDetails.DisplayName,
-                    RoleId = roleDetails.Id,
-                    UserName = user.UserName
-                }
-            }.AsQueryable());
+                    new UserAdminViewModel
+                    {
+                        Id = user.Id,
+                        EmailAddress = user.Email,
+                        Role = roleDetails.Name,
+                        RoleDisplayName = roleDetails.DisplayName,
+                        RoleId = roleDetails.Id,
+                        UserName = user.UserName
+                    }
+                }.AsQueryable());
+            }
+
+            return SingleResult.Create(new List<UserAdminViewModel>().AsQueryable());
         }
 
         // PUT: odata/User(5)
@@ -149,13 +157,21 @@ namespace BikeTracker.Controllers.API
                 role = DefaultRole;
 
             if (string.IsNullOrEmpty(email))
-                return BadRequest("email must be provided");
+            {
+                var modelState = new ModelStateDictionary();
+                modelState.AddModelError("email", "email must be provided");
+                return BadRequest(modelState);
+            }
 
             var addr = new EmailAddressAttribute();
             if (!addr.IsValid(email))
-                return BadRequest("email is not valid");
+            {
+                var modelState = new ModelStateDictionary();
+                modelState.AddModelError("email", "email is not valid");
+                return BadRequest(modelState);
+            }
 
-            if (await RoleManager.RoleExistsAsync(role))
+            if (!(await RoleManager.RoleExistsAsync(role)))
                 role = DefaultRole;
 
             var user = new ApplicationUser { UserName = email, Email = email, MustResetPassword = true };
@@ -172,7 +188,7 @@ namespace BikeTracker.Controllers.API
             if (result.Succeeded)
             {
                 var id = (await UserManager.FindByEmailAsync(email)).Id;
-                await UserManager.AddToRoleAsync(user.Id, role);
+                await UserManager.AddToRoleAsync(id, role);
 
                 await UserManager.GenerateEmailConfirmationEmailAsync(new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext), id, password);
 

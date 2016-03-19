@@ -11,8 +11,8 @@ namespace BikeTracker
     {
         Task<IdentityResult> AddToRoleAsync(string userId, string role);
         Task<IdentityResult> ConfirmEmailAsync(string userId, string token);
-        Task<IdentityResult> CreateAsync(ApplicationUser userId, string password);
-        Task<IdentityResult> DeleteAsync(ApplicationUser userId);
+        Task<IdentityResult> CreateAsync(ApplicationUser user, string password);
+        Task<IdentityResult> DeleteAsync(ApplicationUser user);
         Task<ApplicationUser> FindAsync(string username, string password);
         Task<ApplicationUser> FindByEmailAsync(string email);
         Task<ApplicationUser> FindByIdAsync(string userId);
