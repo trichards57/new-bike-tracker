@@ -1,9 +1,11 @@
-﻿using BikeTracker.Services;
+﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Services;
 using System;
 using System.Collections.Generic;
 
 namespace BikeTracker.Models.LoggingModels
 {
+    [IgnoreCoverage]
     public class LogEntry
     {
         public virtual int Id { get; set; }

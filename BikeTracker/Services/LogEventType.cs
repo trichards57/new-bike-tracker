@@ -8,4 +8,9 @@
         UserUpdated,
         UserDeleted
     }
+
+    public enum LogPropertyType
+    {
+        NewUser
+    }
 }

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BikeTracker.Models.Contexts
 {
-    interface ILoggingContext
+    public interface ILoggingContext
     {
         DbSet<LogEntry> LogEntries { get; }
         DbSet<LogEntryProperty> LogProperties { get; }
