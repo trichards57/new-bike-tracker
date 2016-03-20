@@ -96,7 +96,7 @@ namespace BikeTracker.Tests.Controllers.API
         }
 
         [TestMethod]
-        public async Task GeCallsignLocationsDefaultDates()
+        public async Task GetCallsignLocationsDefaultDates()
         {
             var controller = CreateController();
 

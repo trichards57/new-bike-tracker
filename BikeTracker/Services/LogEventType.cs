@@ -11,7 +11,7 @@
 
     public enum LogPropertyType
     {
-        NewUser,
+        Username,
         PropertyChange
     }
 }

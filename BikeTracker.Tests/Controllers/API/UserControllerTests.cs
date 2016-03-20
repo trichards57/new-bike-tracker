@@ -123,6 +123,7 @@ namespace BikeTracker.Tests.Controllers.API
 
             service.Setup(l => l.LogUserCreated(TestUsername, TestGoodEmail)).Returns(Task.FromResult<object>(null));
             service.Setup(l => l.LogUserUpdated(TestUsername, It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult<object>(null));
+            service.Setup(l => l.LogUserDeleted(TestUsername, It.IsAny<string>())).Returns(Task.FromResult<object>(null));
 
             return service;
         }
@@ -422,10 +423,16 @@ namespace BikeTracker.Tests.Controllers.API
             var logService = GetMockLogService();
             var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
 
+            var principal = CreateMockPrincipal();
+            controller.User = principal.Object;
+
             var res = await controller.Delete(id);
 
             if (expectSuccess)
+            {
                 userManager.Verify(u => u.DeleteAsync(testUser));
+                logService.Verify(l => l.LogUserDeleted(TestUsername, testUser.UserName));
+            }
 
             Assert.IsInstanceOfType(res, typeof(StatusCodeResult));
 

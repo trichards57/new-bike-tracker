@@ -37,7 +37,7 @@ namespace BikeTracker.Services
             };
             var logProperty = new LogEntryProperty
             {
-                PropertyType = LogPropertyType.NewUser,
+                PropertyType = LogPropertyType.Username,
                 PropertyValue = newUser
             };
             logEntry.Properties.Add(logProperty);
@@ -46,9 +46,34 @@ namespace BikeTracker.Services
             await context.SaveChangesAsync();
         }
 
-        public Task LogUserDeleted(string deletingUser, string deletedUser)
+        public async Task LogUserDeleted(string deletingUser, string deletedUser)
         {
-            throw new NotImplementedException();
+            if (deletingUser == null)
+                throw new ArgumentNullException(nameof(deletingUser));
+            if (deletedUser == null)
+                throw new ArgumentNullException(nameof(deletedUser));
+
+            if (string.IsNullOrWhiteSpace(deletingUser))
+                throw new ArgumentException("parameter cannot be empty", nameof(deletingUser));
+
+            if (string.IsNullOrWhiteSpace(deletedUser))
+                throw new ArgumentException("parameter cannot be empty", nameof(deletedUser));
+
+            var logEntry = new LogEntry
+            {
+                Date = DateTimeOffset.Now,
+                SourceUser = deletingUser,
+                Type = LogEventType.UserDeleted
+            };
+            var logProperty = new LogEntryProperty
+            {
+                PropertyType = LogPropertyType.Username,
+                PropertyValue = deletedUser
+            };
+            logEntry.Properties.Add(logProperty);
+
+            context.LogEntries.Add(logEntry);
+            await context.SaveChangesAsync();
         }
 
         public Task LogUserLoggedIn(string username)

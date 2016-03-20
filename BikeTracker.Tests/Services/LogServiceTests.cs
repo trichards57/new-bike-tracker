@@ -18,6 +18,7 @@ namespace BikeTracker.Tests.Services
         private readonly Fixture Fixture = new Fixture();
         private readonly string TestUsername;
         private readonly string TestNewUser;
+        private readonly string TestDeleteUser;
         private const int TimeTolerance = 2;
         private readonly List<string> TestChanges;
 
@@ -25,6 +26,7 @@ namespace BikeTracker.Tests.Services
         {
             TestUsername = Fixture.Create<string>();
             TestNewUser = Fixture.Create<string>();
+            TestDeleteUser = Fixture.Create<string>();
             TestChanges = new List<string>(Fixture.CreateMany<string>());
         }
 
@@ -67,7 +69,7 @@ namespace BikeTracker.Tests.Services
             {
                 logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => le.SourceUser == creatingUser
                       && le.Type == LogEventType.UserCreated
-                      && le.Properties.Count(lep => lep.PropertyType == LogPropertyType.NewUser && lep.PropertyValue == newUser) == 1
+                      && le.Properties.Count(lep => lep.PropertyType == LogPropertyType.Username && lep.PropertyValue == newUser) == 1
                       && le.Properties.Count == 1
                       && (le.Date - DateTimeOffset.Now).TotalSeconds < TimeTolerance)));
                 context.Verify(c => c.SaveChangesAsync());
@@ -177,5 +179,62 @@ namespace BikeTracker.Tests.Services
         {
             await LogUserUpdates(TestUsername, null, false);
         }
+
+        private async Task LogUserDeleted(string deletingUser, string deletedUser, bool expectSuccess = true)
+        {
+            var logEntrySet = CreateMockLogEntrySet();
+            var logPropertySet = CreateMockLogPropertySet();
+            var context = CreateLoggingContext(logEntrySet.Object, logPropertySet.Object);
+
+            var service = new LogService(context.Object);
+
+            await service.LogUserDeleted(deletingUser, deletedUser);
+
+            if (expectSuccess)
+            {
+                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => le.SourceUser == deletingUser
+                      && le.Type == LogEventType.UserDeleted
+                      && le.Properties.Count(lep => lep.PropertyType == LogPropertyType.Username && lep.PropertyValue == deletedUser) == 1
+                      && le.Properties.Count == 1
+                      && (le.Date - DateTimeOffset.Now).TotalSeconds < TimeTolerance)));
+                context.Verify(c => c.SaveChangesAsync());
+            }
+            else
+            {
+                logEntrySet.Verify(l => l.Add(It.IsAny<LogEntry>()), Times.Never);
+                context.Verify(c => c.SaveChangesAsync(), Times.Never);
+            }
+        }
+
+        [TestMethod]
+        public async Task LogUserDeletedGoodData()
+        {
+            await LogUserDeleted(TestUsername, TestDeleteUser);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogUserDeletedEmptySourceUser()
+        {
+            await LogUserDeleted(string.Empty, TestDeleteUser, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogUserDeletedNoSourceUser()
+        {
+            await LogUserDeleted(null, TestDeleteUser, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogUserDeletedEmptyDeletedUser()
+        {
+            await LogUserDeleted(TestUsername, string.Empty, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogUserDeletedNoDeletedUser()
+        {
+            await LogUserDeleted(TestUsername, null, false);
+        }
+
     }
 }

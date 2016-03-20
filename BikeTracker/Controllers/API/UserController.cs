@@ -216,7 +216,10 @@ namespace BikeTracker.Controllers.API
         {
             var user = await UserManager.FindByIdAsync(key);
             if (user != null)
+            {
                 await UserManager.DeleteAsync(user);
+                await logService.LogUserDeleted(User.Identity.GetUserName(), user.UserName);
+            }
 
             return StatusCode(HttpStatusCode.NoContent);
         }
