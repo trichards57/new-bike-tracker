@@ -222,6 +222,10 @@
     <Compile Include="App_Start\ApplicationSignInManager.cs" />
     <Compile Include="App_Start\ApplicationUserManager.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="Migrations\201603201812414_StartLogging.cs" />
+    <Compile Include="Migrations\201603201812414_StartLogging.Designer.cs">
+      <DependentUpon>201603201812414_StartLogging.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Contexts\ILoggingContext.cs" />
     <Compile Include="Models\LoggingModels\LogEntry.cs" />
     <Compile Include="Models\LoggingModels\LogEntryProperty.cs" />
@@ -1024,6 +1028,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602032117390_AddedMustResetPassword.resx">
       <DependentUpon>201602032117390_AddedMustResetPassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603201812414_StartLogging.resx">
+      <DependentUpon>201603201812414_StartLogging.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
