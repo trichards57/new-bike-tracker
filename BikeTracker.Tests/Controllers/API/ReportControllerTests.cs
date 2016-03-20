@@ -117,7 +117,7 @@ namespace BikeTracker.Tests.Controllers.API
         }
 
         [TestMethod]
-        public async Task GeCallsignLocationsBadStartDate()
+        public async Task GetCallsignLocationsBadStartDate()
         {
             var controller = CreateController();
 
@@ -138,7 +138,7 @@ namespace BikeTracker.Tests.Controllers.API
         }
 
         [TestMethod]
-        public async Task GeCallsignLocationsBadEndDate()
+        public async Task GetCallsignLocationsBadEndDate()
         {
             var controller = CreateController();
 

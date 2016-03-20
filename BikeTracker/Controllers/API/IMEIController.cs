@@ -45,13 +45,6 @@ namespace BikeTracker.Controllers.API
         // PUT: odata/IMEI(5)
         public async Task<IHttpActionResult> Put([FromODataUri] int key, Delta<IMEIToCallsign> patch)
         {
-            Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var imeiToCallsign = await imeiService.GetFromId(key);
             if (imeiToCallsign == null)
             {
@@ -59,6 +52,13 @@ namespace BikeTracker.Controllers.API
             }
 
             patch.Put(imeiToCallsign);
+
+            Validate(imeiToCallsign);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
 
@@ -76,30 +76,6 @@ namespace BikeTracker.Controllers.API
             await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
 
             return Created(await imeiService.GetFromIMEI(imeiToCallsign.IMEI));
-        }
-
-        // PATCH: odata/IMEI(5)
-        [AcceptVerbs("PATCH", "MERGE")]
-        public async Task<IHttpActionResult> Patch([FromODataUri] int key, Delta<IMEIToCallsign> patch)
-        {
-            Validate(patch.GetEntity());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var imeiToCallsign = await imeiService.GetFromId(key);
-            if (imeiToCallsign == null)
-            {
-                return NotFound();
-            }
-
-            patch.Put(imeiToCallsign);
-
-            await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
-
-            return Updated(await imeiService.GetFromIMEI(imeiToCallsign.IMEI));
         }
 
         // DELETE: odata/IMEI(5)
