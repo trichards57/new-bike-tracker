@@ -13,7 +13,7 @@ namespace BikeTracker.Tests.Controllers
     /// Summary description for AccountControllerTest
     /// </summary>
     [TestClass]
-    public class AccountControllerTest
+    public class AccountControllerTests
     {
         [TestMethod]
         public void StartLoginEmptyReturnUrl()

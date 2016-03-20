@@ -147,7 +147,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\AccountControllerTest.cs" />
+    <Compile Include="Controllers\AccountControllerTests.cs" />
+    <Compile Include="Controllers\API\ReportControllerTests.cs" />
     <Compile Include="Controllers\API\UserControllerTests.cs" />
     <Compile Include="Controllers\ReportControllerTests.cs" />
     <Compile Include="Controllers\MapControllerTests.cs" />
