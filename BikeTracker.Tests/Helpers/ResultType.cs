@@ -4,6 +4,7 @@
     {
         Success,
         ModelError,
-        BadRequest
+        BadRequest,
+        NotFoundError
     }
 }

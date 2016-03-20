@@ -196,6 +196,8 @@ namespace BikeTracker.Controllers.API
 
                 await UserManager.GenerateEmailConfirmationEmailAsync(new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext), id, password);
 
+                await logService.LogUserCreated(User.Identity.GetUserName(), user.UserName);
+
                 return Ok();
             }
 
