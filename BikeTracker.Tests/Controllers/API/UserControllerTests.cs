@@ -1,6 +1,7 @@
 ﻿using BikeTracker.Controllers.API;
 using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Models.IdentityModels;
+using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -112,11 +113,19 @@ namespace BikeTracker.Tests.Controllers.API
             return roleManager;
         }
 
+        private Mock<ILogService> GetMockLogService()
+        {
+            var service = new Mock<ILogService>(MockBehavior.Strict);
+
+            return service;
+        }
+
         private UserController CreateController()
         {
             var userManager = GetMockUserManager();
             var roleManager = GetMockRoleManager();
-            var controller = new UserController(userManager.Object, roleManager.Object);
+            var logService = GetMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
 
             return controller;
         }
@@ -176,7 +185,8 @@ namespace BikeTracker.Tests.Controllers.API
             var userManager = GetMockUserManager();
             var roleManager = GetMockRoleManager();
             var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
+            var logService = GetMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 
             var request = new HttpRequest("", "http://localhost", "");
@@ -209,7 +219,8 @@ namespace BikeTracker.Tests.Controllers.API
             var userManager = GetMockUserManager();
             var roleManager = GetMockRoleManager();
             var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
+            var logService = GetMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 
             var request = new HttpRequest("", "http://localhost", "");
@@ -242,7 +253,8 @@ namespace BikeTracker.Tests.Controllers.API
             var userManager = GetMockUserManager();
             var roleManager = GetMockRoleManager();
             var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
+            var logService = GetMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 
             var request = new HttpRequest("", "http://localhost", "");
@@ -274,7 +286,8 @@ namespace BikeTracker.Tests.Controllers.API
             var userManager = GetMockUserManager();
             var roleManager = GetMockRoleManager();
             var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
+            var logService = GetMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 
             var request = new HttpRequest("", "http://localhost", "");
@@ -306,7 +319,8 @@ namespace BikeTracker.Tests.Controllers.API
             var userManager = GetMockUserManager();
             var roleManager = GetMockRoleManager();
             var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
+            var logService = GetMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 
             var request = new HttpRequest("", "http://localhost", "");
@@ -332,13 +346,13 @@ namespace BikeTracker.Tests.Controllers.API
             userManager.Verify(u => u.AddToRoleAsync(TestUser.Id, GoodRole.Name));
         }
 
-        [TestMethod]
-        public async Task RegisterGoodData()
+        private async Task RegisterUser(string role, string email, string id = null, ResultType expectedResult = ResultType.Success, bool useDefaultRole = false)
         {
             var userManager = GetMockUserManager();
             var roleManager = GetMockRoleManager();
             var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
+            var logService = GetMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 
             var request = new HttpRequest("", "http://localhost", "");
@@ -347,218 +361,104 @@ namespace BikeTracker.Tests.Controllers.API
 
 
             var parameters = new ODataActionParameters();
-            parameters.Add("role", GoodRole.Name);
-            parameters.Add("email", TestGoodEmail);
+            parameters.Add("role", role);
+            parameters.Add("email", email);
 
             var res = await controller.Register(parameters);
 
-            userManager.Verify(u => u.CreateAsync(It.Is<ApplicationUser>(a => a.Email == TestGoodEmail && a.UserName == TestGoodEmail && a.MustResetPassword), It.IsNotNull<string>()));
-            userManager.Verify(u => u.AddToRoleAsync(TestUser.Id, GoodRole.Name));
-            userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), TestUser.Id, It.IsNotNull<string>()));
+            var expectedRole = role;
+            if (useDefaultRole)
+                expectedRole = DefaultRole;
 
-            Assert.IsInstanceOfType(res, typeof(OkResult));
+            switch (expectedResult)
+            {
+                case ResultType.Success:
+                    userManager.Verify(u => u.CreateAsync(It.Is<ApplicationUser>(a => a.Email == email && a.UserName == email && a.MustResetPassword), It.IsNotNull<string>()));
+                    userManager.Verify(u => u.AddToRoleAsync(id, expectedRole));
+                    userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), id, It.IsNotNull<string>()));
+                    Assert.IsInstanceOfType(res, typeof(OkResult));
+                    break;
+                case ResultType.ModelError:
+                    userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsAny<UrlHelper>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+                    Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+                    break;
+            }
+        }
+
+        [TestMethod]
+        public async Task RegisterGoodData()
+        {
+            await RegisterUser(GoodRole.Name, TestGoodEmail, TestUser.Id);
         }
 
         [TestMethod]
         public async Task RegisterDuplicateEmail()
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
-            controller.Configuration = configuration.Object;
-
-            var request = new HttpRequest("", "http://localhost", "");
-            var context = new HttpContext(request, new HttpResponse(new StringWriter()));
-            HttpContext.Current = context;
-
-
-            var parameters = new ODataActionParameters();
-            parameters.Add("role", GoodRole.Name);
-            parameters.Add("email", TestUser.Email);
-
-            var res = await controller.Register(parameters);
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+            await RegisterUser(GoodRole.Name, TestUser.Email, expectedResult: ResultType.ModelError);
         }
-
 
         [TestMethod]
         public async Task RegisterBadEmail()
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
-            controller.Configuration = configuration.Object;
-
-            var request = new HttpRequest("", "http://localhost", "");
-            var context = new HttpContext(request, new HttpResponse(new StringWriter()));
-            HttpContext.Current = context;
-
-
-            var parameters = new ODataActionParameters();
-            parameters.Add("role", GoodRole.Name);
-            parameters.Add("email", TestBadEmail);
-
-            var res = await controller.Register(parameters);
-
-            userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), TestUser.Id, It.IsNotNull<string>()), Times.Never);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+            await RegisterUser(GoodRole.Name, TestBadEmail, expectedResult: ResultType.ModelError);
         }
 
         [TestMethod]
         public async Task RegisterEmptyEmail()
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
-            controller.Configuration = configuration.Object;
-
-            var request = new HttpRequest("", "http://localhost", "");
-            var context = new HttpContext(request, new HttpResponse(new StringWriter()));
-            HttpContext.Current = context;
-
-
-            var parameters = new ODataActionParameters();
-            parameters.Add("role", GoodRole.Name);
-            parameters.Add("email", string.Empty);
-
-            var res = await controller.Register(parameters);
-
-            userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), TestUser.Id, It.IsNotNull<string>()), Times.Never);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+            await RegisterUser(GoodRole.Name, string.Empty, expectedResult: ResultType.ModelError);
         }
 
         [TestMethod]
         public async Task RegisterNullEmail()
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
-            controller.Configuration = configuration.Object;
-
-            var request = new HttpRequest("", "http://localhost", "");
-            var context = new HttpContext(request, new HttpResponse(new StringWriter()));
-            HttpContext.Current = context;
-
-
-            var parameters = new ODataActionParameters();
-            parameters.Add("role", GoodRole.Name);
-            parameters.Add("email", null);
-
-            var res = await controller.Register(parameters);
-
-            userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), TestUser.Id, It.IsNotNull<string>()), Times.Never);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+            await RegisterUser(GoodRole.Name, null, expectedResult: ResultType.ModelError);
         }
 
         [TestMethod]
         public async Task RegisterBadRole()
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
-            controller.Configuration = configuration.Object;
-
-            var request = new HttpRequest("", "http://localhost", "");
-            var context = new HttpContext(request, new HttpResponse(new StringWriter()));
-            HttpContext.Current = context;
-
-            var parameters = new ODataActionParameters();
-            parameters.Add("role", BadRole.Name);
-            parameters.Add("email", TestGoodEmail);
-
-            var res = await controller.Register(parameters);
-
-            userManager.Verify(u => u.CreateAsync(It.Is<ApplicationUser>(a => a.Email == TestGoodEmail && a.UserName == TestGoodEmail && a.MustResetPassword), It.IsNotNull<string>()));
-            userManager.Verify(u => u.AddToRoleAsync(TestUser.Id, DefaultRole));
-            userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), TestUser.Id, It.IsNotNull<string>()));
-
-            Assert.IsInstanceOfType(res, typeof(OkResult));
+            await RegisterUser(BadRole.Name, TestGoodEmail, TestUser.Id, useDefaultRole: true);
         }
 
         [TestMethod]
         public async Task RegisterEmptyRole()
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
-            controller.Configuration = configuration.Object;
-
-            var request = new HttpRequest("", "http://localhost", "");
-            var context = new HttpContext(request, new HttpResponse(new StringWriter()));
-            HttpContext.Current = context;
-
-            var parameters = new ODataActionParameters();
-            parameters.Add("role", string.Empty);
-            parameters.Add("email", TestGoodEmail);
-
-            var res = await controller.Register(parameters);
-
-            userManager.Verify(u => u.CreateAsync(It.Is<ApplicationUser>(a => a.Email == TestGoodEmail && a.UserName == TestGoodEmail && a.MustResetPassword), It.IsNotNull<string>()));
-            userManager.Verify(u => u.AddToRoleAsync(TestUser.Id, DefaultRole));
-            userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), TestUser.Id, It.IsNotNull<string>()));
-
-            Assert.IsInstanceOfType(res, typeof(OkResult));
+            await RegisterUser(string.Empty, TestGoodEmail, TestUser.Id, useDefaultRole: true);
         }
 
         [TestMethod]
         public async Task RegisterNullRole()
         {
+            await RegisterUser(null, TestGoodEmail, TestUser.Id, useDefaultRole: true);
+        }
+
+        private async Task DeleteUser(string id, bool expectSuccess = true, ApplicationUser testUser = null)
+        {
             var userManager = GetMockUserManager();
             var roleManager = GetMockRoleManager();
-            var configuration = new Mock<HttpConfiguration>();
-            var controller = new UserController(userManager.Object, roleManager.Object);
-            controller.Configuration = configuration.Object;
+            var logService = GetMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
 
-            var request = new HttpRequest("", "http://localhost", "");
-            var context = new HttpContext(request, new HttpResponse(new StringWriter()));
-            HttpContext.Current = context;
+            var res = await controller.Delete(id);
 
-            var parameters = new ODataActionParameters();
-            parameters.Add("role", null);
-            parameters.Add("email", TestGoodEmail);
+            if (expectSuccess)
+                userManager.Verify(u => u.DeleteAsync(testUser));
 
-            var res = await controller.Register(parameters);
-
-            userManager.Verify(u => u.CreateAsync(It.Is<ApplicationUser>(a => a.Email == TestGoodEmail && a.UserName == TestGoodEmail && a.MustResetPassword), It.IsNotNull<string>()));
-            userManager.Verify(u => u.AddToRoleAsync(TestUser.Id, DefaultRole));
-            userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), TestUser.Id, It.IsNotNull<string>()));
-
-            Assert.IsInstanceOfType(res, typeof(OkResult));
+            Assert.IsInstanceOfType(res, typeof(StatusCodeResult));
+            
         }
 
         [TestMethod]
         public async Task DeleteGoodUser()
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var controller = new UserController(userManager.Object, roleManager.Object);
-
-            var res = await controller.Delete(TestUser.Id);
-
-            userManager.Verify(u => u.DeleteAsync(TestUser));
-
-            Assert.IsInstanceOfType(res, typeof(StatusCodeResult));
+            await DeleteUser(TestUser.Id, testUser: TestUser);
         }
 
         [TestMethod]
         public async Task DeleteBadUser()
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var controller = new UserController(userManager.Object, roleManager.Object);
-
-            var res = await controller.Delete(BadUserId);
-
-            Assert.IsInstanceOfType(res, typeof(StatusCodeResult));
+            await DeleteUser(BadUserId, expectSuccess: false);
         }
     }
 }

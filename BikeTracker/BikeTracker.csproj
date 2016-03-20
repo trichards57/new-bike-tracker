@@ -222,6 +222,9 @@
     <Compile Include="App_Start\ApplicationSignInManager.cs" />
     <Compile Include="App_Start\ApplicationUserManager.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="Models\Contexts\ILoggingContext.cs" />
+    <Compile Include="Models\LoggingModels\LogEntry.cs" />
+    <Compile Include="Models\LoggingModels\LogEntryProperty.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="App_Start\IRoleManager.cs" />
     <Compile Include="App_Start\ISignInManager.cs" />
@@ -284,9 +287,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IIMEIService.cs" />
     <Compile Include="Services\ILocationService.cs" />
+    <Compile Include="Services\ILogService.cs" />
     <Compile Include="Services\IMEIService.cs" />
     <Compile Include="Services\IReportService.cs" />
     <Compile Include="Services\LocationService.cs" />
+    <Compile Include="Services\LogEventType.cs" />
+    <Compile Include="Services\LogService.cs" />
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

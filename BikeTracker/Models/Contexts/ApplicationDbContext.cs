@@ -4,13 +4,15 @@ using BikeTracker.Models.LocationModels;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Configuration;
 using System.Data.Entity;
+using BikeTracker.Models.LoggingModels;
+using System;
 
 namespace BikeTracker.Models.Contexts
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     [IgnoreCoverage]
     public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>,
-        ILocationIMEIContext
+        ILocationIMEIContext, ILoggingContext
     {
         public static string GetRDSConnection()
         {
@@ -41,6 +43,8 @@ namespace BikeTracker.Models.Contexts
         public virtual DbSet<IMEIToCallsign> IMEIToCallsigns { get; set; }
         public virtual DbSet<LocationRecord> LocationRecords { get; set; }
         public virtual DbSet<Landmark> Landmarks { get; set; }
+        public virtual DbSet<LogEntry> LogEntries { get; set; }
+        public virtual DbSet<LogEntryProperty> LogProperties { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

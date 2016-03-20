@@ -1,6 +1,8 @@
-﻿using BikeTracker.Models.AccountViewModels;
+﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Models.Contexts;
 using BikeTracker.Models.IdentityModels;
+using BikeTracker.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Practices.Unity;
@@ -25,14 +27,16 @@ namespace BikeTracker.Controllers.API
     {
         private IUserManager userManager;
         private IRoleManager roleManager;
+        private ILogService logService;
 
-        [InjectionConstructor]
+        [InjectionConstructor, IgnoreCoverage]
         public UserController() { }
 
-        public UserController(IUserManager userManager, IRoleManager roleManager)
+        public UserController(IUserManager userManager, IRoleManager roleManager, ILogService logService)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
+            this.logService = logService;
         }
 
         /// <summary>
