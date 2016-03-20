@@ -1,15 +1,17 @@
 ﻿using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
+using BikeTracker.Controllers.Filters;
 using BikeTracker.Models.IdentityModels;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BikeTracker
+namespace BikeTracker.Services
 {
     /// <summary>
     /// Service to handle sending emails from the website
     /// </summary>
+    [IgnoreCoverage]
     public class EmailService : IIdentityMessageService
     {
         /// <summary>

@@ -1,9 +1,7 @@
 ﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Models;
 using BikeTracker.Models.AccountViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
 using Microsoft.Practices.Unity;
 using System.Threading.Tasks;
 using System.Web;
@@ -16,7 +14,7 @@ namespace BikeTracker.Controllers
         private ISignInManager _signInManager;
         private IUserManager _userManager;
 
-        [InjectionConstructor]
+        [InjectionConstructor, IgnoreCoverage]
         public ManageController()
         {
         }

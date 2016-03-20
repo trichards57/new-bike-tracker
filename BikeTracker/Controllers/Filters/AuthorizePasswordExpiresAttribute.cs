@@ -5,6 +5,7 @@ using System.Web.Mvc;
 
 namespace BikeTracker.Controllers.Filters
 {
+    [IgnoreCoverage]
     public class AuthorizePasswordExpiresAttribute : AuthorizeAttribute
     {
         public override void OnAuthorization(AuthorizationContext filterContext)
@@ -23,6 +24,7 @@ namespace BikeTracker.Controllers.Filters
         }
     }
 
+    [IgnoreCoverage]
     public class AllowAnonymousPasswordExpiresAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)

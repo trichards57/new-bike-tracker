@@ -1,5 +1,7 @@
-﻿using BikeTracker.Models.Contexts;
+﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Models.Contexts;
 using BikeTracker.Models.IdentityModels;
+using BikeTracker.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
@@ -13,6 +15,7 @@ namespace BikeTracker
     /// Subclass of UserManager, set up to use <see cref="ApplicationUser"/> instead of IdentityUser.
     /// Used to support user management for the website.
     /// </summary>
+    [IgnoreCoverage]
     public class ApplicationUserManager : UserManager<ApplicationUser, string>, IUserManager
     {
         public const int MinPasswordLength = 6;
@@ -38,7 +41,7 @@ namespace BikeTracker
         ///
         /// * Non-alphanumeric usernames are allowed
         /// * User email addresses must be unique
-        /// * Passwords must be at least 6 characters long, including a digit, a symbol and upper- and lower-case letters
+        /// * Passwords must be at least <see cref="MinPasswordLength"/> characters long, including a digit, a symbol and upper- and lower-case letters
         /// * User lockout is enabled and defaults to 5 minutes lockout after 5 failed attempts
         /// * <see cref="EmailService"/> is used to send emails
         /// * DataProtectorTokenProvider is used to generate email confirmation tokens

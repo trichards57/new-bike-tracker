@@ -1,4 +1,5 @@
-﻿using BikeTracker.Models.AccountViewModels;
+﻿using BikeTracker.Controllers.Filters;
+using BikeTracker.Models.AccountViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -23,7 +24,7 @@ namespace BikeTracker.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
         /// </summary>
-        [InjectionConstructor]
+        [InjectionConstructor, IgnoreCoverage]
         public AccountController()
         {
         }
