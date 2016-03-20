@@ -122,6 +122,7 @@ namespace BikeTracker.Tests.Controllers.API
             var service = new Mock<ILogService>(MockBehavior.Strict);
 
             service.Setup(l => l.LogUserCreated(TestUsername, TestGoodEmail)).Returns(Task.FromResult<object>(null));
+            service.Setup(l => l.LogUserUpdated(TestUsername, It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult<object>(null));
 
             return service;
         }
@@ -194,6 +195,9 @@ namespace BikeTracker.Tests.Controllers.API
             var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 
+            var principal = CreateMockPrincipal();
+            controller.User = principal.Object;
+
             var request = new HttpRequest("", "http://localhost", "");
             var context = new HttpContext(request, new HttpResponse(new StringWriter()));
             HttpContext.Current = context;
@@ -236,6 +240,13 @@ namespace BikeTracker.Tests.Controllers.API
                         userManager.Verify(u => u.RemoveFromRolesAsync(id, It.Is<string[]>(s => s.SequenceEqual(oldRoles))), Times.Never);
                         userManager.Verify(u => u.AddToRoleAsync(id, role.Name), Times.Never);
                     }
+
+                    if (changeEmail || changeRole)
+                        logService.Verify(l => l.LogUserUpdated(TestUsername, It.Is<IEnumerable<string>>(s => CheckUpdateProperties(s, changeRole, changeEmail))));
+                    else
+                        logService.Verify(l => l.LogUserUpdated(TestUsername, It.IsAny<IEnumerable<string>>()), Times.Never);
+
+
                     break;
                 case ResultType.ModelError:
                     Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
@@ -246,6 +257,22 @@ namespace BikeTracker.Tests.Controllers.API
                     userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), id), Times.Never);
                     break;
             }
+        }
+
+        private bool CheckUpdateProperties(IEnumerable<string> properties, bool changeRole, bool changeEmail)
+        {
+            var res = true;
+            if (changeEmail)
+                res &= properties.Contains("Email");
+            else
+                res &= !properties.Contains("Email");
+
+            if (changeRole)
+                res &= properties.Contains("Role");
+            else
+                res &= !properties.Contains("Role");
+
+            return res;
         }
 
         [TestMethod]
@@ -276,6 +303,12 @@ namespace BikeTracker.Tests.Controllers.API
         public async Task PutUserGoodRoleOnly()
         {
             await PutUser(TestUser.Id, TestUser.Email, GoodRole, TestRoleResult, changeEmail: false);
+        }
+
+        [TestMethod]
+        public async Task PutUserNoChanges()
+        {
+            await PutUser(TestUser.Id, TestUser.Email, TestRoles.First(), TestRoleResult, changeEmail: false, changeRole: false);
         }
 
         private Mock<IPrincipal> CreateMockPrincipal()
@@ -328,6 +361,7 @@ namespace BikeTracker.Tests.Controllers.API
                     break;
                 case ResultType.ModelError:
                     userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsAny<UrlHelper>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+                    logService.Verify(l => l.LogUserCreated(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
                     Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
                     break;
             }

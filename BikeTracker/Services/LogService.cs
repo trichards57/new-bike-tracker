@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BikeTracker.Models.Contexts;
 using BikeTracker.Models.LoggingModels;
+using System.Linq;
 
 namespace BikeTracker.Services
 {
@@ -27,7 +28,6 @@ namespace BikeTracker.Services
 
             if (string.IsNullOrWhiteSpace(newUser))
                 throw new ArgumentException("parameter cannot be empty", nameof(newUser));
-
 
             var logEntry = new LogEntry
             {
@@ -56,9 +56,36 @@ namespace BikeTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task LogUserUpdated(string updatingUser, IEnumerable<string> changedProperties)
+        public async Task LogUserUpdated(string updatingUser, IEnumerable<string> changedProperties)
         {
-            throw new NotImplementedException();
+            if (updatingUser == null)
+                throw new ArgumentNullException(nameof(updatingUser));
+            if (changedProperties == null)
+                throw new ArgumentNullException(nameof(changedProperties));
+
+            if (string.IsNullOrWhiteSpace(updatingUser))
+                throw new ArgumentException("parameter cannot be empty", nameof(updatingUser));
+
+            if (!changedProperties.Any())
+                throw new ArgumentException("parameter cannot be empty", nameof(changedProperties));
+
+            var logEntry = new LogEntry
+            {
+                Date = DateTimeOffset.Now,
+                SourceUser = updatingUser,
+                Type = LogEventType.UserUpdated
+            };
+            var logProperties = changedProperties.Select(c => new LogEntryProperty
+            {
+                PropertyType = LogPropertyType.PropertyChange,
+                PropertyValue = c
+            });
+
+            foreach (var lp in logProperties)
+                logEntry.Properties.Add(lp);
+
+            context.LogEntries.Add(logEntry);
+            await context.SaveChangesAsync();
         }
     }
 }

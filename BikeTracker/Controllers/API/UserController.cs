@@ -132,10 +132,13 @@ namespace BikeTracker.Controllers.API
                 return NotFound();
             }
 
+            var changes = new List<string>();
+            
             if (user.Email != update.EmailAddress)
             {
                 await UserManager.SetEmailAsync(key, update.EmailAddress);
                 await UserManager.GenerateEmailConfirmationEmailAsync(new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext), key);
+                changes.Add("Email");
             }
 
             if (!await UserManager.IsInRoleAsync(key, update.Role))
@@ -143,7 +146,11 @@ namespace BikeTracker.Controllers.API
                 var roles = await UserManager.GetRolesAsync(key);
                 await UserManager.RemoveFromRolesAsync(key, roles.ToArray());
                 await UserManager.AddToRoleAsync(key, update.Role);
+                changes.Add("Role");
             }
+
+            if (changes.Count > 0)
+                await logService.LogUserUpdated(User.Identity.GetUserName(), changes);
 
             return Ok();
         }
