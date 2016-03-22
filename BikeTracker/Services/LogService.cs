@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BikeTracker.Models.Contexts;
 using BikeTracker.Models.LoggingModels;
 using System.Linq;
+using BikeTracker.Models.LocationModels;
 
 namespace BikeTracker.Services
 {
@@ -14,6 +15,11 @@ namespace BikeTracker.Services
         public LogService(ILoggingContext context)
         {
             this.context = context;
+        }
+
+        public Task LogImeiRegistered(string registeringUser, string imei, string callsign, VehicleType type)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task LogUserCreated(string creatingUser, string newUser)
@@ -37,7 +43,7 @@ namespace BikeTracker.Services
             };
             var logProperty = new LogEntryProperty
             {
-                PropertyType = LogPropertyType.Username,
+                PropertyType = LogPropertyType.Imei,
                 PropertyValue = newUser
             };
             logEntry.Properties.Add(logProperty);
@@ -67,7 +73,7 @@ namespace BikeTracker.Services
             };
             var logProperty = new LogEntryProperty
             {
-                PropertyType = LogPropertyType.Username,
+                PropertyType = LogPropertyType.Imei,
                 PropertyValue = deletedUser
             };
             logEntry.Properties.Add(logProperty);

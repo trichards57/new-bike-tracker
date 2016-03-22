@@ -9,10 +9,8 @@ using System.Web.Mvc;
 
 namespace BikeTracker.Controllers
 {
-    public class ManageController : Controller
+    public class ManageController : UserBaseController
     {
-        private ISignInManager _signInManager;
-        private IUserManager _userManager;
 
         [InjectionConstructor, IgnoreCoverage]
         public ManageController()
@@ -20,33 +18,8 @@ namespace BikeTracker.Controllers
         }
 
         public ManageController(IUserManager userManager, ISignInManager signInManager)
+            : base(userManager, signInManager)
         {
-            UserManager = userManager;
-            SignInManager = signInManager;
-        }
-
-        public ISignInManager SignInManager
-        {
-            get
-            {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-            }
-            private set
-            {
-                _signInManager = value;
-            }
-        }
-
-        public IUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
         }
 
         //

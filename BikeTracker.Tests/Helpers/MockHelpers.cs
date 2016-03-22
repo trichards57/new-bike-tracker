@@ -13,31 +13,32 @@ using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Helpers
 {
-    public class AccountMockHelpers
+    public class MockHelpers
     {
-        private static readonly Fixture fixture = new Fixture();
-        public static readonly string BadPassword;
-        public static readonly string BadUsername;
         public static readonly string BadId;
+        public static readonly string BadPassword;
+        public static readonly string BadToken;
+        public static readonly string BadUsername;
+        public static readonly ClaimsIdentity ConfirmedClaimsIdentity;
         public static readonly string ConfirmedGoodId;
         public static readonly string ConfirmedGoodPassword;
+        public static readonly ApplicationUser ConfirmedGoodUser;
         public static readonly string ConfirmedGoodUsername;
-        public static readonly string GoodToken;
-        public static readonly string BadToken;
         public static readonly string ExternalUri;
+        public static readonly string GoodToken;
         public static readonly string LocalUri;
         public static readonly string UnconfirmedGoodId;
         public static readonly string UnconfirmedGoodPassword;
-        public static readonly string UnconfirmedGoodUsername;
-        public static readonly ApplicationUser ConfirmedGoodUser;
         public static readonly ApplicationUser UnconfirmedGoodUser;
-        public static readonly ClaimsIdentity ConfirmedClaimsIdentity;
+        public static readonly string UnconfirmedGoodUsername;
+        private static readonly Fixture fixture = new Fixture();
 
-        static AccountMockHelpers()
+        static MockHelpers()
         {
             BadPassword = fixture.Create<string>();
             BadUsername = fixture.Create<MailAddress>().Address;
@@ -71,6 +72,15 @@ namespace BikeTracker.Tests.Helpers
             ConfirmedClaimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, ConfirmedGoodId));
         }
 
+        public static AccountController CreateAccountController()
+        {
+            var userManager = CreateMockUserManager();
+            var signInManager = CreateMockSignInManager();
+            var urlHelper = CreateMockUrlHelper();
+
+            return new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
+        }
+
         public static ManageController CreateManageController()
         {
             var userManager = CreateMockUserManager();
@@ -85,22 +95,22 @@ namespace BikeTracker.Tests.Helpers
             return controller;
         }
 
+        public static Mock<IAuthenticationManager> CreateMockAuthenticationManager()
+        {
+            var authManager = new Mock<IAuthenticationManager>(MockBehavior.Strict);
+
+            authManager.Setup(a => a.SignOut(It.Is<string>(s => s == DefaultAuthenticationTypes.ApplicationCookie)));
+
+            return authManager;
+        }
+
         public static Mock<HttpContextBase> CreateMockHttpContext()
         {
             var context = new Mock<HttpContextBase>(MockBehavior.Strict);
-            
+
             context.SetupGet(h => h.User.Identity).Returns(ConfirmedClaimsIdentity);
 
             return context;
-        }
-
-        public static AccountController CreateAccountController()
-        {
-            var userManager = CreateMockUserManager();
-            var signInManager = CreateMockSignInManager();
-            var urlHelper = CreateMockUrlHelper();
-
-            return new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
         }
 
         public static Mock<ISignInManager> CreateMockSignInManager()
@@ -127,15 +137,6 @@ namespace BikeTracker.Tests.Helpers
                 .Returns(Task.FromResult<object>(null));
 
             return signInManager;
-        }
-
-        public static Mock<IAuthenticationManager> CreateMockAuthenticationManager()
-        {
-            var authManager = new Mock<IAuthenticationManager>(MockBehavior.Strict);
-
-            authManager.Setup(a => a.SignOut(It.Is<string>(s => s == DefaultAuthenticationTypes.ApplicationCookie)));
-
-            return authManager;
         }
 
         public static Mock<UrlHelper> CreateMockUrlHelper()
@@ -173,7 +174,7 @@ namespace BikeTracker.Tests.Helpers
                 .Returns(Task.FromResult<object>(null));
 
             userManager.Setup(m =>
-                m.ConfirmEmailAsync(It.Is<string>(s => s == ConfirmedGoodId),
+                m.ConfirmEmailAsync(It.Is<string>(s => s == UnconfirmedGoodId),
                                     It.Is<string>(s => s == GoodToken)))
                                     .ReturnsAsync(IdentityResult.Success);
 
@@ -236,7 +237,17 @@ namespace BikeTracker.Tests.Helpers
             return userManager;
         }
 
+        public static void Validate(object model, ApiController controller)
+        {
+            Validate(model, controller.ModelState.AddModelError);
+        }
+
         public static void Validate(object model, Controller controller)
+        {
+            Validate(model, controller.ModelState.AddModelError);
+        }
+
+        private static void Validate(object model, Action<string, string> storeResult)
         {
             var results = new List<ValidationResult>();
             var validationContext = new ValidationContext(model, null, null);
@@ -248,12 +259,12 @@ namespace BikeTracker.Tests.Helpers
             {
                 if (!v.MemberNames.Any())
                 {
-                    controller.ModelState.AddModelError("model", v.ErrorMessage);
+                    storeResult("model", v.ErrorMessage);
                 }
                 else
                 {
                     foreach (var m in v.MemberNames)
-                        controller.ModelState.AddModelError(m, v.ErrorMessage);
+                        storeResult(m, v.ErrorMessage);
                 }
             }
         }

@@ -15,10 +15,8 @@ namespace BikeTracker.Controllers
     /// Controller which handles account management.
     /// </summary>
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : UserBaseController
     {
-        private ISignInManager _signInManager;
-        private IUserManager _userManager;
         private IAuthenticationManager _authManager;
 
         /// <summary>
@@ -39,47 +37,10 @@ namespace BikeTracker.Controllers
         /// This overload is used to allow dependency injection for testing.
         /// </remarks>
         public AccountController(IUserManager userManager, ISignInManager signInManager, UrlHelper urlHelper, IAuthenticationManager authManager = null)
+            : base(userManager, signInManager)
         {
-            UserManager = userManager;
-            SignInManager = signInManager;
             Url = urlHelper ?? Url;
             _authManager = authManager;
-        }
-
-        /// <summary>
-        /// Gets the sign in manager.
-        /// </summary>
-        /// <value>
-        /// The sign in manager.
-        /// </value>
-        public ISignInManager SignInManager
-        {
-            get
-            {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-            }
-            private set
-            {
-                _signInManager = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the user manager.
-        /// </summary>
-        /// <value>
-        /// The user manager.
-        /// </value>
-        public IUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
         }
 
         /// <summary>

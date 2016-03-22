@@ -13,7 +13,7 @@ namespace BikeTracker.Tests.Controllers
         [TestMethod]
         public void Index()
         {
-            var controller = AccountMockHelpers.CreateManageController();
+            var controller = MockHelpers.CreateManageController();
 
             var result = controller.Index(null);
 
@@ -25,7 +25,7 @@ namespace BikeTracker.Tests.Controllers
         [TestMethod]
         public void StartChangePassword()
         {
-            var controller = AccountMockHelpers.CreateManageController();
+            var controller = MockHelpers.CreateManageController();
 
             var result = controller.ChangePassword();
 
@@ -37,13 +37,13 @@ namespace BikeTracker.Tests.Controllers
         [TestMethod]
         public async Task ChangePasswordGoodData()
         {
-            var controller = AccountMockHelpers.CreateManageController();
+            var controller = MockHelpers.CreateManageController();
 
             var model = new ChangePasswordViewModel
             {
-                OldPassword = AccountMockHelpers.UnconfirmedGoodPassword,
-                NewPassword = AccountMockHelpers.ConfirmedGoodPassword,
-                ConfirmPassword = AccountMockHelpers.ConfirmedGoodPassword
+                OldPassword = MockHelpers.UnconfirmedGoodPassword,
+                NewPassword = MockHelpers.ConfirmedGoodPassword,
+                ConfirmPassword = MockHelpers.ConfirmedGoodPassword
             };
 
             var result = await controller.ChangePassword(model);
@@ -57,13 +57,13 @@ namespace BikeTracker.Tests.Controllers
         [TestMethod]
         public async Task ChangePasswordWrongPassword()
         {
-            var controller = AccountMockHelpers.CreateManageController();
+            var controller = MockHelpers.CreateManageController();
 
             var model = new ChangePasswordViewModel
             {
-                OldPassword = AccountMockHelpers.BadPassword,
-                NewPassword = AccountMockHelpers.ConfirmedGoodPassword,
-                ConfirmPassword = AccountMockHelpers.ConfirmedGoodPassword
+                OldPassword = MockHelpers.BadPassword,
+                NewPassword = MockHelpers.ConfirmedGoodPassword,
+                ConfirmPassword = MockHelpers.ConfirmedGoodPassword
             };
 
             var result = await controller.ChangePassword(model);
@@ -76,13 +76,13 @@ namespace BikeTracker.Tests.Controllers
         [TestMethod]
         public async Task ChangePasswordBadNewPassword()
         {
-            var controller = AccountMockHelpers.CreateManageController();
+            var controller = MockHelpers.CreateManageController();
 
             var model = new ChangePasswordViewModel
             {
-                OldPassword = AccountMockHelpers.UnconfirmedGoodPassword,
-                NewPassword = AccountMockHelpers.BadPassword,
-                ConfirmPassword = AccountMockHelpers.BadPassword
+                OldPassword = MockHelpers.UnconfirmedGoodPassword,
+                NewPassword = MockHelpers.BadPassword,
+                ConfirmPassword = MockHelpers.BadPassword
             };
 
             var result = await controller.ChangePassword(model);
@@ -95,16 +95,16 @@ namespace BikeTracker.Tests.Controllers
         [TestMethod]
         public async Task ChangePasswordNewPasswordMismatch()
         {
-            var controller = AccountMockHelpers.CreateManageController();
+            var controller = MockHelpers.CreateManageController();
 
             var model = new ChangePasswordViewModel
             {
-                OldPassword = AccountMockHelpers.UnconfirmedGoodPassword,
-                NewPassword = AccountMockHelpers.ConfirmedGoodPassword,
-                ConfirmPassword = AccountMockHelpers.BadPassword
+                OldPassword = MockHelpers.UnconfirmedGoodPassword,
+                NewPassword = MockHelpers.ConfirmedGoodPassword,
+                ConfirmPassword = MockHelpers.BadPassword
             };
 
-            AccountMockHelpers.Validate(model, controller);
+            MockHelpers.Validate(model, controller);
 
             var result = await controller.ChangePassword(model);
 

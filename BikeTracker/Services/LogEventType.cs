@@ -6,12 +6,16 @@
         UserLogIn,
         UserCreated,
         UserUpdated,
-        UserDeleted
+        UserDeleted,
+        ImeiRegistered
     }
 
     public enum LogPropertyType
     {
-        Username,
-        PropertyChange
+        Imei,
+        PropertyChange,
+        Callsign,
+        VehicleType,
+        Username
     }
 }

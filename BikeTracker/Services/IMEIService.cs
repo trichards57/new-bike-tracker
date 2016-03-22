@@ -19,16 +19,43 @@ namespace BikeTracker.Services
         public async Task DeleteIMEI(string imei)
         {
             var callsign = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
-            if (callsign != null)
+
+            await DeleteIMEI(callsign);
+        }
+
+        public async Task DeleteIMEIById(int id)
+        {
+            var callsign = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
+
+            await DeleteIMEI(callsign);
+        }
+
+        public Task<IEnumerable<IMEIToCallsign>> GetAllAsync()
+        {
+            return Task.FromResult<IEnumerable<IMEIToCallsign>>(dataContext.IMEIToCallsigns);
+        }
+
+        public async Task<IMEIToCallsign> GetFromId(int id)
+        {
+            return await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
+        }
+
+        public Task<IQueryable<IMEIToCallsign>> GetFromIdQueryable(int id)
+        {
+            return Task.FromResult(dataContext.IMEIToCallsigns.Where(i => i.Id == id));
+        }
+
+        public async Task<IMEIToCallsign> GetFromIMEI(string imei)
+        {
+            var iToC = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
+
+            if (iToC == null)
             {
-                var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == callsign.CallSign && l.Expired == false);
-
-                foreach (var l in oldLocations)
-                    l.Expired = true;
-
-                dataContext.IMEIToCallsigns.Remove(callsign);
-                await dataContext.SaveChangesAsync();
+                await RegisterCallsign(imei);
+                iToC = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
             }
+
+            return iToC;
         }
 
         public async Task RegisterCallsign(string imei, string callsign = null, VehicleType? type = null)
@@ -63,48 +90,18 @@ namespace BikeTracker.Services
             }
         }
 
-        public Task<IEnumerable<IMEIToCallsign>> GetAllAsync()
+        private async Task DeleteIMEI(IMEIToCallsign imei)
         {
-            return Task.FromResult<IEnumerable<IMEIToCallsign>>(dataContext.IMEIToCallsigns);
-        }
+            if (imei == null)
+                return;
 
-        public async Task<IMEIToCallsign> GetFromIMEI(string imei)
-        {
-            var iToC = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
+            var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == imei.CallSign && l.Expired == false);
 
-            if (iToC == null)
-            {
-                await RegisterCallsign(imei);
-                iToC = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
-            }
+            foreach (var l in oldLocations)
+                l.Expired = true;
 
-            return iToC;
-        }
-
-        public async Task<IMEIToCallsign> GetFromId(int id)
-        {
-            return await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
-        }
-
-        public async Task DeleteIMEIById(int id)
-        {
-            var callsign = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
-            if (callsign != null)
-            {
-                var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == callsign.CallSign && l.Expired == false);
-
-                foreach (var l in oldLocations)
-                    l.Expired = true;
-
-                dataContext.IMEIToCallsigns.Remove(callsign);
-                await dataContext.SaveChangesAsync();
-            }
-
-        }
-
-        public Task<IQueryable<IMEIToCallsign>> GetFromIdQueryable(int id)
-        {
-            return Task.FromResult(dataContext.IMEIToCallsigns.Where(i => i.Id == id));
+            dataContext.IMEIToCallsigns.Remove(imei);
+            await dataContext.SaveChangesAsync();
         }
     }
 }

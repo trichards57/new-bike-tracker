@@ -20,12 +20,12 @@ namespace BikeTracker.Tests.Controllers.API
     [TestClass]
     public class IMEIControllerTests
     {
+        private readonly string BadCallsign;
+        private readonly int BadId;
         private readonly Fixture Fixture = new Fixture();
+        private readonly IMEIToCallsign TestCallsign;
         private readonly List<IMEIToCallsign> TestCallsigns;
         private readonly int TestId;
-        private readonly int BadId;
-        private readonly IMEIToCallsign TestCallsign;
-        private readonly string BadCallsign;
 
         public IMEIControllerTests()
         {
@@ -34,6 +34,14 @@ namespace BikeTracker.Tests.Controllers.API
             BadId = Fixture.Create<int>();
             TestCallsign = Fixture.Create<IMEIToCallsign>();
             BadCallsign = Fixture.Create<string>();
+        }
+
+        public IMEIController CreateController()
+        {
+            var service = CreateMockIMEIService();
+            var controller = new IMEIController(service.Object);
+
+            return controller;
         }
 
         public Mock<IIMEIService> CreateMockIMEIService()
@@ -52,12 +60,21 @@ namespace BikeTracker.Tests.Controllers.API
             return service;
         }
 
-        public IMEIController CreateController()
+        [TestMethod]
+        public async Task DeleteCallsign()
         {
             var service = CreateMockIMEIService();
             var controller = new IMEIController(service.Object);
+            var config = new Mock<HttpConfiguration>();
+            controller.Configuration = config.Object;
 
-            return controller;
+            var res = await controller.Delete(TestId);
+
+            var result = res as StatusCodeResult;
+
+            Assert.IsNotNull(result);
+
+            Assert.AreEqual(HttpStatusCode.NoContent, result.StatusCode);
         }
 
         [TestMethod]
@@ -86,296 +103,134 @@ namespace BikeTracker.Tests.Controllers.API
         }
 
         [TestMethod]
-        public async Task PutIMEIToCallsignGoodData()
+        public async Task PostIMEIToCallsignBadCallsign()
         {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var delta = new Delta<IMEIToCallsign>();
-            delta.TrySetPropertyValue("IMEI", TestCallsign.IMEI);
-            delta.TrySetPropertyValue("CallSign", TestCallsign.CallSign);
-            delta.TrySetPropertyValue("Type", TestCallsign.Type);
-
-            var res = await controller.Put(TestId, delta);
-
-            Assert.IsInstanceOfType(res, typeof(UpdatedODataResult<IMEIToCallsign>));
-
-            service.Verify(i => i.RegisterCallsign(TestCallsign.IMEI, TestCallsign.CallSign, TestCallsign.Type));
-        }
-
-        [TestMethod]
-        public async Task PutIMEIToCallsignNoIMEI()
-        {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var delta = new Delta<IMEIToCallsign>();
-            delta.TrySetPropertyValue("CallSign", TestCallsign.CallSign);
-            delta.TrySetPropertyValue("Type", TestCallsign.Type);
-
-            var res = await controller.Put(TestId, delta);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
-        }
-
-        [TestMethod]
-        public async Task PutIMEIToCallsignNoCallsign()
-        {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var delta = new Delta<IMEIToCallsign>();
-            delta.TrySetPropertyValue("IMEI", TestCallsign.IMEI);
-            delta.TrySetPropertyValue("Type", TestCallsign.Type);
-
-            var res = await controller.Put(TestId, delta);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
-        }
-
-        [TestMethod]
-        public async Task PutIMEIToCallsignNoType()
-        {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var delta = new Delta<IMEIToCallsign>();
-            delta.TrySetPropertyValue("IMEI", TestCallsign.IMEI);
-            delta.TrySetPropertyValue("CallSign", TestCallsign.CallSign);
-
-            var res = await controller.Put(TestId, delta);
-
-            Assert.IsInstanceOfType(res, typeof(UpdatedODataResult<IMEIToCallsign>));
-
-            service.Verify(i => i.RegisterCallsign(TestCallsign.IMEI, TestCallsign.CallSign, VehicleType.Unknown));
-        }
-
-        [TestMethod]
-        public async Task PutIMEIToCallsignBadId()
-        {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var delta = new Delta<IMEIToCallsign>();
-            delta.TrySetPropertyValue("IMEI", TestCallsign.IMEI);
-            delta.TrySetPropertyValue("CallSign", TestCallsign.CallSign);
-            delta.TrySetPropertyValue("Type", TestCallsign.Type);
-
-            var res = await controller.Put(BadId, delta);
-
-            Assert.IsInstanceOfType(res, typeof(NotFoundResult));
-        }
-
-        [TestMethod]
-        public async Task PutIMEIToCallsignBadCallsign()
-        {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var delta = new Delta<IMEIToCallsign>();
-            delta.TrySetPropertyValue("IMEI", TestCallsign.IMEI);
-            delta.TrySetPropertyValue("CallSign", BadCallsign);
-            delta.TrySetPropertyValue("Type", TestCallsign.Type);
-
-            var res = await controller.Put(TestId, delta);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
-        }
-
-        [TestMethod]
-        public async Task PostIMEIToCallsignGoodData()
-        {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var res = await controller.Post(TestCallsign);
-
-            Assert.IsInstanceOfType(res, typeof(CreatedODataResult<IMEIToCallsign>));
-
-            service.Verify(i => i.RegisterCallsign(TestCallsign.IMEI, TestCallsign.CallSign, TestCallsign.Type));
-        }
-
-        [TestMethod]
-        public async Task PostIMEIToCallsignNoIMEI()
-        {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var callsign = new IMEIToCallsign
-            {
-                CallSign = TestCallsign.CallSign,
-                IMEI = null,
-                Type = TestCallsign.Type
-            };
-
-            Validate(callsign, controller);
-
-            var res = await controller.Post(callsign);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
-        }
-
-        [TestMethod]
-        public async Task PostIMEIToCallsignEmptyIMEI()
-        {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var callsign = new IMEIToCallsign
-            {
-                CallSign = TestCallsign.CallSign,
-                IMEI = string.Empty,
-                Type = TestCallsign.Type
-            };
-
-            Validate(callsign, controller);
-
-            var res = await controller.Post(callsign);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
-        }
-
-        [TestMethod]
-        public async Task PostIMEIToCallsignNoCallsign()
-        {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var callsign = new IMEIToCallsign
-            {
-                CallSign = null,
-                IMEI = TestCallsign.IMEI,
-                Type = TestCallsign.Type
-            };
-
-            Validate(callsign, controller);
-
-            var res = await controller.Post(callsign);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+            await PostIMEIToCallsign(BadCallsign, TestCallsign.IMEI, TestCallsign.Type, ResultType.ModelError);
         }
 
         [TestMethod]
         public async Task PostIMEIToCallsignEmptyCallsign()
         {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var callsign = new IMEIToCallsign
-            {
-                CallSign = string.Empty,
-                IMEI = TestCallsign.IMEI,
-                Type = TestCallsign.Type
-            };
-
-            Validate(callsign, controller);
-
-            var res = await controller.Post(callsign);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+            await PostIMEIToCallsign(string.Empty, TestCallsign.IMEI, TestCallsign.Type, ResultType.ModelError);
         }
 
         [TestMethod]
-        public async Task PostIMEIToCallsignNoType()
+        public async Task PostIMEIToCallsignEmptyIMEI()
         {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var callsign = new IMEIToCallsign
-            {
-                CallSign = TestCallsign.CallSign,
-                IMEI = TestCallsign.IMEI,
-            };
-
-            var res = await controller.Post(callsign);
-
-            Assert.IsInstanceOfType(res, typeof(CreatedODataResult<IMEIToCallsign>));
-
-            service.Verify(i => i.RegisterCallsign(TestCallsign.IMEI, TestCallsign.CallSign, VehicleType.Unknown));
+            await PostIMEIToCallsign(TestCallsign.CallSign, string.Empty, TestCallsign.Type, ResultType.ModelError);
         }
 
         [TestMethod]
-        public async Task PostIMEIToCallsignBadCallsign()
+        public async Task PostIMEIToCallsignGoodData()
         {
-            var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
-            var config = new Mock<HttpConfiguration>();
-            controller.Configuration = config.Object;
-
-            var callsign = new IMEIToCallsign
-            {
-                CallSign = BadCallsign,
-                IMEI = TestCallsign.IMEI,
-                Type = TestCallsign.Type
-            };
-
-            Validate(callsign, controller);
-
-            var res = await controller.Post(callsign);
-
-            Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+            await PostIMEIToCallsign(TestCallsign.CallSign, TestCallsign.IMEI, TestCallsign.Type);
         }
 
         [TestMethod]
-        public async Task DeleteCallsign()
+        public async Task PostIMEIToCallsignNoCallsign()
+        {
+            await PostIMEIToCallsign(null, TestCallsign.IMEI, TestCallsign.Type, ResultType.ModelError);
+        }
+
+        [TestMethod]
+        public async Task PostIMEIToCallsignNoIMEI()
+        {
+            await PostIMEIToCallsign(TestCallsign.CallSign, null, TestCallsign.Type, ResultType.ModelError);
+        }
+
+        [TestMethod]
+        public async Task PutIMEIToCallsignBadCallsign()
+        {
+            await PutIMEIToCallsign(TestId, BadCallsign, TestCallsign.IMEI, TestCallsign.Type, ResultType.ModelError);
+        }
+
+        [TestMethod]
+        public async Task PutIMEIToCallsignBadId()
+        {
+            await PutIMEIToCallsign(BadId, TestCallsign.CallSign, TestCallsign.IMEI, TestCallsign.Type, ResultType.NotFoundError);
+        }
+
+        [TestMethod]
+        public async Task PutIMEIToCallsignGoodData()
+        {
+            await PutIMEIToCallsign(TestId, TestCallsign.CallSign, TestCallsign.IMEI, TestCallsign.Type);
+        }
+
+        [TestMethod]
+        public async Task PutIMEIToCallsignNoCallsign()
+        {
+            await PutIMEIToCallsign(TestId, null, TestCallsign.IMEI, TestCallsign.Type, ResultType.ModelError);
+        }
+
+        [TestMethod]
+        public async Task PutIMEIToCallsignNoIMEI()
+        {
+            await PutIMEIToCallsign(TestId, TestCallsign.CallSign, null, TestCallsign.Type, ResultType.ModelError);
+        }
+
+
+        private async Task PostIMEIToCallsign(string callsign, string imei, VehicleType type, ResultType expectedResult = ResultType.Success)
         {
             var service = CreateMockIMEIService();
             var controller = new IMEIController(service.Object);
             var config = new Mock<HttpConfiguration>();
             controller.Configuration = config.Object;
 
-            var res = await controller.Delete(TestId);
+            var imeiToCallsign = new IMEIToCallsign
+            {
+                CallSign = callsign,
+                IMEI = imei,
+                Type = type
+            };
 
-            var result = res as StatusCodeResult;
+            MockHelpers.Validate(imeiToCallsign, controller);
 
-            Assert.IsNotNull(result);
+            var res = await controller.Post(imeiToCallsign);
 
-            Assert.AreEqual(HttpStatusCode.NoContent, result.StatusCode);
+            switch (expectedResult)
+            {
+                case ResultType.ModelError:
+                    Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+                    break;
+
+                case ResultType.Success:
+                    Assert.IsInstanceOfType(res, typeof(CreatedODataResult<IMEIToCallsign>));
+                    service.Verify(i => i.RegisterCallsign(imei, callsign, type));
+                    break;
+            }
         }
 
-        public static void Validate(object model, ApiController controller)
+        private async Task PutIMEIToCallsign(int id, string callsign, string imei, VehicleType? type, ResultType expectedResult = ResultType.Success)
         {
-            var results = new List<ValidationResult>();
-            var validationContext = new ValidationContext(model, null, null);
-            Validator.TryValidateObject(model, validationContext, results, true);
+            var service = CreateMockIMEIService();
+            var controller = new IMEIController(service.Object);
+            var config = new Mock<HttpConfiguration>();
+            controller.Configuration = config.Object;
 
-            if (model is IValidatableObject) (model as IValidatableObject).Validate(validationContext);
+            var delta = new Delta<IMEIToCallsign>();
+            if (!string.IsNullOrEmpty(imei))
+                delta.TrySetPropertyValue("IMEI", imei);
+            if (!string.IsNullOrEmpty(callsign))
+                delta.TrySetPropertyValue("CallSign", callsign);
+            if (type != null)
+                delta.TrySetPropertyValue("Type", type);
 
-            foreach (var v in results)
+            var res = await controller.Put(id, delta);
+
+            switch (expectedResult)
             {
-                if (!v.MemberNames.Any())
-                {
-                    controller.ModelState.AddModelError("model", v.ErrorMessage);
-                }
-                else
-                {
-                    foreach (var m in v.MemberNames)
-                        controller.ModelState.AddModelError(m, v.ErrorMessage);
-                }
+                case ResultType.ModelError:
+                    Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+                    break;
+
+                case ResultType.NotFoundError:
+                    Assert.IsInstanceOfType(res, typeof(NotFoundResult));
+                    break;
+
+                case ResultType.Success:
+                    Assert.IsInstanceOfType(res, typeof(UpdatedODataResult<IMEIToCallsign>));
+                    service.Verify(i => i.RegisterCallsign(imei, callsign, type));
+                    break;
             }
         }
     }
