@@ -28,6 +28,14 @@ namespace BikeTracker.Controllers.API
             this.imeiService = imeiService;
         }
 
+        // DELETE: odata/IMEI(5)
+        public async Task<IHttpActionResult> Delete([FromODataUri] int key)
+        {
+            await imeiService.DeleteIMEIById(key);
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
         // GET: odata/IMEI
         [EnableQuery]
         public async Task<IQueryable<IMEIToCallsign>> GetIMEI()
@@ -40,6 +48,19 @@ namespace BikeTracker.Controllers.API
         public async Task<SingleResult<IMEIToCallsign>> GetIMEIToCallsign([FromODataUri] int key)
         {
             return SingleResult.Create(await imeiService.GetFromIdQueryable(key));
+        }
+
+        // POST: odata/IMEI
+        public async Task<IHttpActionResult> Post(IMEIToCallsign imeiToCallsign)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
+
+            return Created(await imeiService.GetFromIMEI(imeiToCallsign.IMEI));
         }
 
         // PUT: odata/IMEI(5)
@@ -63,27 +84,6 @@ namespace BikeTracker.Controllers.API
             await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
 
             return Updated(await imeiService.GetFromIMEI(imeiToCallsign.IMEI));
-        }
-
-        // POST: odata/IMEI
-        public async Task<IHttpActionResult> Post(IMEIToCallsign imeiToCallsign)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
-
-            return Created(await imeiService.GetFromIMEI(imeiToCallsign.IMEI));
-        }
-
-        // DELETE: odata/IMEI(5)
-        public async Task<IHttpActionResult> Delete([FromODataUri] int key)
-        {
-            await imeiService.DeleteIMEIById(key);
-
-            return StatusCode(HttpStatusCode.NoContent);
         }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using BikeTracker.Controllers.Filters;
 using BikeTracker.Models.IdentityModels;
 using BikeTracker.Models.LocationModels;
+using BikeTracker.Models.LoggingModels;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Configuration;
 using System.Data.Entity;
-using BikeTracker.Models.LoggingModels;
-using System;
 
 namespace BikeTracker.Models.Contexts
 {
@@ -14,6 +13,26 @@ namespace BikeTracker.Models.Contexts
     public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>,
         ILocationIMEIContext, ILoggingContext
     {
+        public ApplicationDbContext()
+            : base(GetRDSConnection() ?? "DefaultConnection")
+        {
+        }
+
+        public virtual DbSet<IMEIToCallsign> IMEIToCallsigns { get; set; }
+
+        public virtual DbSet<Landmark> Landmarks { get; set; }
+
+        public virtual DbSet<LocationRecord> LocationRecords { get; set; }
+
+        public virtual DbSet<LogEntry> LogEntries { get; set; }
+
+        public virtual DbSet<LogEntryProperty> LogProperties { get; set; }
+
+        public static ApplicationDbContext Create()
+        {
+            return new ApplicationDbContext();
+        }
+
         public static string GetRDSConnection()
         {
             var appConfig = ConfigurationManager.AppSettings;
@@ -29,22 +48,6 @@ namespace BikeTracker.Models.Contexts
 
             return "Data Source=" + hostname + ";Initial Catalog=" + dbname + ";User ID=" + username + ";Password=" + password + ";";
         }
-
-        public ApplicationDbContext()
-            : base(GetRDSConnection() ?? "DefaultConnection")
-        {
-        }
-
-        public static ApplicationDbContext Create()
-        {
-            return new ApplicationDbContext();
-        }
-
-        public virtual DbSet<IMEIToCallsign> IMEIToCallsigns { get; set; }
-        public virtual DbSet<LocationRecord> LocationRecords { get; set; }
-        public virtual DbSet<Landmark> Landmarks { get; set; }
-        public virtual DbSet<LogEntry> LogEntries { get; set; }
-        public virtual DbSet<LogEntryProperty> LogProperties { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

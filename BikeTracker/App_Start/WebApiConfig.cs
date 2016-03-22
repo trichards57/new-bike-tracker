@@ -46,7 +46,6 @@ namespace BikeTracker
             register.Parameter<string>("role");
 
             config.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
-
         }
     }
 }

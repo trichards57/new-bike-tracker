@@ -8,18 +8,6 @@ namespace BikeTracker.Tests.Controllers
     public class ControlPanelControllerTests
     {
         [TestMethod]
-        public void Index()
-        {
-            var controller = new ControlPanelController();
-
-            var res = controller.Index();
-
-            var view = res as ViewResult;
-
-            Assert.IsNotNull(view);
-        }
-
-        [TestMethod]
         public void Home()
         {
             var controller = new ControlPanelController();
@@ -29,6 +17,18 @@ namespace BikeTracker.Tests.Controllers
             var partialView = res as PartialViewResult;
 
             Assert.IsNotNull(partialView);
+        }
+
+        [TestMethod]
+        public void Index()
+        {
+            var controller = new ControlPanelController();
+
+            var res = controller.Index();
+
+            var view = res as ViewResult;
+
+            Assert.IsNotNull(view);
         }
     }
 }

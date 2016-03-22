@@ -1,5 +1,4 @@
-﻿using BikeTracker.Models;
-using BikeTracker.Models.AccountViewModels;
+﻿using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
@@ -11,23 +10,18 @@ namespace BikeTracker.Tests.Controllers
     public class ManageControllerTests
     {
         [TestMethod]
-        public void Index()
+        public async Task ChangePasswordBadNewPassword()
         {
             var controller = MockHelpers.CreateManageController();
 
-            var result = controller.Index(null);
+            var model = new ChangePasswordViewModel
+            {
+                OldPassword = MockHelpers.UnconfirmedGoodPassword,
+                NewPassword = MockHelpers.BadPassword,
+                ConfirmPassword = MockHelpers.BadPassword
+            };
 
-            var view = result as ViewResult;
-
-            Assert.IsNotNull(view);
-        }
-
-        [TestMethod]
-        public void StartChangePassword()
-        {
-            var controller = MockHelpers.CreateManageController();
-
-            var result = controller.ChangePassword();
+            var result = await controller.ChangePassword(model);
 
             var view = result as ViewResult;
 
@@ -55,6 +49,27 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
+        public async Task ChangePasswordNewPasswordMismatch()
+        {
+            var controller = MockHelpers.CreateManageController();
+
+            var model = new ChangePasswordViewModel
+            {
+                OldPassword = MockHelpers.UnconfirmedGoodPassword,
+                NewPassword = MockHelpers.ConfirmedGoodPassword,
+                ConfirmPassword = MockHelpers.BadPassword
+            };
+
+            MockHelpers.Validate(model, controller);
+
+            var result = await controller.ChangePassword(model);
+
+            var view = result as ViewResult;
+
+            Assert.IsNotNull(view);
+        }
+
+        [TestMethod]
         public async Task ChangePasswordWrongPassword()
         {
             var controller = MockHelpers.CreateManageController();
@@ -74,18 +89,11 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task ChangePasswordBadNewPassword()
+        public void Index()
         {
             var controller = MockHelpers.CreateManageController();
 
-            var model = new ChangePasswordViewModel
-            {
-                OldPassword = MockHelpers.UnconfirmedGoodPassword,
-                NewPassword = MockHelpers.BadPassword,
-                ConfirmPassword = MockHelpers.BadPassword
-            };
-
-            var result = await controller.ChangePassword(model);
+            var result = controller.Index(null);
 
             var view = result as ViewResult;
 
@@ -93,20 +101,11 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task ChangePasswordNewPasswordMismatch()
+        public void StartChangePassword()
         {
             var controller = MockHelpers.CreateManageController();
 
-            var model = new ChangePasswordViewModel
-            {
-                OldPassword = MockHelpers.UnconfirmedGoodPassword,
-                NewPassword = MockHelpers.ConfirmedGoodPassword,
-                ConfirmPassword = MockHelpers.BadPassword
-            };
-
-            MockHelpers.Validate(model, controller);
-
-            var result = await controller.ChangePassword(model);
+            var result = controller.ChangePassword();
 
             var view = result as ViewResult;
 

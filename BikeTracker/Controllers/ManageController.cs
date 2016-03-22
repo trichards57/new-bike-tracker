@@ -1,17 +1,14 @@
 ﻿using BikeTracker.Controllers.Filters;
 using BikeTracker.Models.AccountViewModels;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Practices.Unity;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace BikeTracker.Controllers
 {
     public class ManageController : UserBaseController
     {
-
         [InjectionConstructor, IgnoreCoverage]
         public ManageController()
         {
@@ -22,18 +19,10 @@ namespace BikeTracker.Controllers
         {
         }
 
-        //
-        // GET: /Manage/Index
-        [AuthorizePasswordExpires]
-        public ActionResult Index(ManageMessageId? message)
+        public enum ManageMessageId
         {
-            ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.Error ? "An error has occurred."
-                : "";
-
-            var userId = User.Identity.GetUserId();
-            return View();
+            ChangePasswordSuccess,
+            Error
         }
 
         //
@@ -69,18 +58,26 @@ namespace BikeTracker.Controllers
             return View(model);
         }
 
+        //
+        // GET: /Manage/Index
+        [AuthorizePasswordExpires]
+        public ActionResult Index(ManageMessageId? message)
+        {
+            ViewBag.StatusMessage =
+                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
+                : message == ManageMessageId.Error ? "An error has occurred."
+                : "";
+
+            var userId = User.Identity.GetUserId();
+            return View();
+        }
+
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error);
             }
-        }
-
-        public enum ManageMessageId
-        {
-            ChangePasswordSuccess,
-            Error
         }
     }
 }

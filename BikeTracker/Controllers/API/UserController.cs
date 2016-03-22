@@ -1,6 +1,5 @@
 ﻿using BikeTracker.Controllers.Filters;
 using BikeTracker.Models.AccountViewModels;
-using BikeTracker.Models.Contexts;
 using BikeTracker.Models.IdentityModels;
 using BikeTracker.Services;
 using Microsoft.AspNet.Identity;
@@ -25,9 +24,9 @@ namespace BikeTracker.Controllers.API
     [Authorize(Roles = "GeneralAdmin")]
     public class UserController : ODataController
     {
-        private IUserManager userManager;
-        private IRoleManager roleManager;
         private ILogService logService;
+        private IRoleManager roleManager;
+        private IUserManager userManager;
 
         [InjectionConstructor, IgnoreCoverage]
         public UserController() { }
@@ -37,6 +36,14 @@ namespace BikeTracker.Controllers.API
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.logService = logService;
+        }
+
+        public IRoleManager RoleManager
+        {
+            get
+            {
+                return roleManager ?? HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
         }
 
         /// <summary>
@@ -53,39 +60,17 @@ namespace BikeTracker.Controllers.API
             }
         }
 
-        public IRoleManager RoleManager
+        // DELETE: odata/User(5)
+        public async Task<IHttpActionResult> Delete([FromODataUri] string key)
         {
-            get
+            var user = await UserManager.FindByIdAsync(key);
+            if (user != null)
             {
-                return roleManager ?? HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+                await UserManager.DeleteAsync(user);
+                await logService.LogUserDeleted(User.Identity.GetUserName(), user.UserName);
             }
-        }
 
-        // GET: odata/User
-        [EnableQuery]
-        public async Task<IQueryable<UserAdminViewModel>> GetUser()
-        {
-            var users = await UserManager.Users.ToListAsync();
-
-            var userRoleTask = users.Select(async user =>
-            {
-                var roles = await UserManager.GetRolesAsync(user.Id);
-                var role = roles.FirstOrDefault();
-                var roleDetails = await RoleManager.FindByNameAsync(role);
-                return new { user, role = roleDetails };
-            });
-
-            var userRole = await Task.WhenAll(userRoleTask);
-
-            return userRole.Select(d => new UserAdminViewModel
-            {
-                Id = d.user.Id,
-                EmailAddress = d.user.Email,
-                Role = d.role.Name,
-                RoleDisplayName = d.role.DisplayName,
-                RoleId = d.role.Id,
-                UserName = d.user.UserName
-            }).AsQueryable();
+            return StatusCode(HttpStatusCode.NoContent);
         }
 
         // GET: odata/User(5)
@@ -116,6 +101,33 @@ namespace BikeTracker.Controllers.API
             return SingleResult.Create(new List<UserAdminViewModel>().AsQueryable());
         }
 
+        // GET: odata/User
+        [EnableQuery]
+        public async Task<IQueryable<UserAdminViewModel>> GetUser()
+        {
+            var users = await UserManager.Users.ToListAsync();
+
+            var userRoleTask = users.Select(async user =>
+            {
+                var roles = await UserManager.GetRolesAsync(user.Id);
+                var role = roles.FirstOrDefault();
+                var roleDetails = await RoleManager.FindByNameAsync(role);
+                return new { user, role = roleDetails };
+            });
+
+            var userRole = await Task.WhenAll(userRoleTask);
+
+            return userRole.Select(d => new UserAdminViewModel
+            {
+                Id = d.user.Id,
+                EmailAddress = d.user.Email,
+                Role = d.role.Name,
+                RoleDisplayName = d.role.DisplayName,
+                RoleId = d.role.Id,
+                UserName = d.user.UserName
+            }).AsQueryable();
+        }
+
         // PUT: odata/User(5)
         public async Task<IHttpActionResult> Put([FromODataUri] string key, UserAdminViewModel update)
         {
@@ -133,7 +145,7 @@ namespace BikeTracker.Controllers.API
             }
 
             var changes = new List<string>();
-            
+
             if (user.Email != update.EmailAddress)
             {
                 await UserManager.SetEmailAsync(key, update.EmailAddress);
@@ -158,7 +170,6 @@ namespace BikeTracker.Controllers.API
         [HttpPost]
         public async Task<IHttpActionResult> Register(ODataActionParameters parameters)
         {
-
             var role = (string)parameters["role"];
             var email = (string)parameters["email"];
 
@@ -209,19 +220,6 @@ namespace BikeTracker.Controllers.API
             }
 
             return BadRequest(ModelState);
-        }
-
-        // DELETE: odata/User(5)
-        public async Task<IHttpActionResult> Delete([FromODataUri] string key)
-        {
-            var user = await UserManager.FindByIdAsync(key);
-            if (user != null)
-            {
-                await UserManager.DeleteAsync(user);
-                await logService.LogUserDeleted(User.Identity.GetUserName(), user.UserName);
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
         }
     }
 }

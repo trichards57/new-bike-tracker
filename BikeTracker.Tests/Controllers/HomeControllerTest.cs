@@ -8,18 +8,18 @@ namespace BikeTracker.Tests.Controllers
     public class HomeControllerTest
     {
         [TestMethod]
-        public void Index()
-        {
-            var controller = new HomeController();
-            var result = controller.Index() as ViewResult;
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
         public void Contact()
         {
             var controller = new HomeController();
             var result = controller.Contact() as ViewResult;
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Index()
+        {
+            var controller = new HomeController();
+            var result = controller.Index() as ViewResult;
             Assert.IsNotNull(result);
         }
 

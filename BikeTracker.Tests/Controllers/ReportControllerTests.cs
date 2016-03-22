@@ -20,18 +20,6 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public void UserActivity()
-        {
-            var controller = new ReportController();
-
-            var res = controller.UserActivity();
-
-            var partialView = res as PartialViewResult;
-
-            Assert.IsNotNull(partialView);
-        }
-
-        [TestMethod]
         public void Locations()
         {
             var controller = new ReportController();
@@ -49,6 +37,18 @@ namespace BikeTracker.Tests.Controllers
             var controller = new ReportController();
 
             var res = controller.Rates();
+
+            var partialView = res as PartialViewResult;
+
+            Assert.IsNotNull(partialView);
+        }
+
+        [TestMethod]
+        public void UserActivity()
+        {
+            var controller = new ReportController();
+
+            var res = controller.UserActivity();
 
             var partialView = res as PartialViewResult;
 

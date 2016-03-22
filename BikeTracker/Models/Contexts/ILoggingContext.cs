@@ -8,6 +8,7 @@ namespace BikeTracker.Models.Contexts
     {
         DbSet<LogEntry> LogEntries { get; }
         DbSet<LogEntryProperty> LogProperties { get; }
+
         Task<int> SaveChangesAsync();
     }
 }

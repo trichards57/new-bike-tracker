@@ -9,6 +9,8 @@ namespace BikeTracker.Models.IdentityModels
     [IgnoreCoverage]
     public class ApplicationUser : IdentityUser
     {
+        public bool MustResetPassword { get; set; } = false;
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser, string> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -16,7 +18,5 @@ namespace BikeTracker.Models.IdentityModels
             // Add custom user claims here
             return userIdentity;
         }
-
-        public bool MustResetPassword { get; set; } = false;
     }
 }

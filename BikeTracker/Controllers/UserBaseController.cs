@@ -1,6 +1,6 @@
-﻿using System.Web;
+﻿using Microsoft.AspNet.Identity.Owin;
+using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity.Owin;
 
 namespace BikeTracker.Controllers
 {
@@ -18,7 +18,6 @@ namespace BikeTracker.Controllers
             UserManager = userManager;
             SignInManager = signInManager;
         }
-
 
         /// <summary>
         /// Gets the sign in manager.
@@ -55,6 +54,5 @@ namespace BikeTracker.Controllers
                 _userManager = value;
             }
         }
-
     }
 }

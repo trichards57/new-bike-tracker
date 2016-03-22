@@ -9,12 +9,12 @@ namespace BikeTracker.Controllers
     [AuthorizePasswordExpires(Roles = "IMEIAdmin,GeneralAdmin")]
     public class IMEIController : Controller
     {
-        public ActionResult Home()
+        public ActionResult EditForm()
         {
             return PartialView();
         }
 
-        public ActionResult EditForm()
+        public ActionResult Home()
         {
             return PartialView();
         }

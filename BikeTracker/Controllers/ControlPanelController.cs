@@ -6,15 +6,15 @@ namespace BikeTracker.Controllers
     [AuthorizePasswordExpires(Roles = "IMEIAdmin,GeneralAdmin")]
     public class ControlPanelController : Controller
     {
+        public PartialViewResult Home()
+        {
+            return PartialView();
+        }
+
         // GET: ControlPanel
         public ActionResult Index()
         {
             return View();
-        }
-
-        public PartialViewResult Home()
-        {
-            return PartialView();
         }
     }
 }

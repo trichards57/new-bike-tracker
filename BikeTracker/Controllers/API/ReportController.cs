@@ -1,5 +1,4 @@
-﻿using BikeTracker.Models;
-using BikeTracker.Models.ReportViewModels;
+﻿using BikeTracker.Models.ReportViewModels;
 using BikeTracker.Services;
 using System;
 using System.Globalization;
@@ -17,18 +16,6 @@ namespace BikeTracker.Controllers.API
         public ReportController(IReportService service)
         {
             reportService = service;
-        }
-
-        [HttpGet, Route("api/Report/Callsigns")]
-        public async Task<IHttpActionResult> Callsigns()
-        {
-            return Json(await reportService.GetAllCallsigns());
-        }
-
-        [HttpGet, Route("api/Report/CallsignReportDates")]
-        public async Task<IHttpActionResult> CallsignReportDates()
-        {
-            return Json(await reportService.GetReportDates());
         }
 
         [HttpGet, Route("api/Report/CallsignLocations")]
@@ -60,6 +47,18 @@ namespace BikeTracker.Controllers.API
                 Longitude = r.Longitude,
                 ReadingTime = r.ReadingTime
             }));
+        }
+
+        [HttpGet, Route("api/Report/CallsignReportDates")]
+        public async Task<IHttpActionResult> CallsignReportDates()
+        {
+            return Json(await reportService.GetReportDates());
+        }
+
+        [HttpGet, Route("api/Report/Callsigns")]
+        public async Task<IHttpActionResult> Callsigns()
+        {
+            return Json(await reportService.GetAllCallsigns());
         }
     }
 }

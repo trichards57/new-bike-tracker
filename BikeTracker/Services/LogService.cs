@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BikeTracker.Models.Contexts;
-using BikeTracker.Models.LoggingModels;
-using System.Linq;
+﻿using BikeTracker.Models.Contexts;
 using BikeTracker.Models.LocationModels;
+using BikeTracker.Models.LoggingModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BikeTracker.Services
 {

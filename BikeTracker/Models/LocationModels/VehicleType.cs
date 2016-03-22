@@ -6,8 +6,10 @@ namespace BikeTracker.Models.LocationModels
     {
         Unknown,
         Bike,
+
         [Display(Name = "Foot Patrol")]
         FootPatrol,
+
         Ambulance,
         Other
     }

@@ -9,12 +9,12 @@ namespace BikeTracker.Controllers
     [AuthorizePasswordExpires(Roles = "GeneralAdmin")]
     public class AdminController : Controller
     {
-        public ActionResult Home()
+        public ActionResult EditForm()
         {
             return PartialView();
         }
 
-        public ActionResult EditForm()
+        public ActionResult Home()
         {
             return PartialView();
         }

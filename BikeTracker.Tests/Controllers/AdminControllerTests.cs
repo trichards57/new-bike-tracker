@@ -1,10 +1,5 @@
 ﻿using BikeTracker.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Controllers
@@ -13,11 +8,11 @@ namespace BikeTracker.Tests.Controllers
     public class AdminControllerTests
     {
         [TestMethod]
-        public void Home()
+        public void EditForm()
         {
             var controller = new AdminController();
 
-            var res = controller.Home();
+            var res = controller.EditForm();
 
             var partialView = res as PartialViewResult;
 
@@ -25,11 +20,11 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public void EditForm()
+        public void Home()
         {
             var controller = new AdminController();
 
-            var res = controller.EditForm();
+            var res = controller.Home();
 
             var partialView = res as PartialViewResult;
 

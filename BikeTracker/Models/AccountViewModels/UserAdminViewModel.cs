@@ -7,13 +7,10 @@ namespace BikeTracker.Models.AccountViewModels
     [IgnoreCoverage]
     public class UserAdminViewModel
     {
-        public string Id { get; set; }
-
-        [ReadOnly(true), Display(Name ="User Name")]
-        public string UserName { get; set; }
-
         [Required, EmailAddress, Display(Name = "Email Address")]
         public string EmailAddress { get; set; }
+
+        public string Id { get; set; }
 
         [ReadOnly(true)]
         public string Role { get; set; }
@@ -22,5 +19,8 @@ namespace BikeTracker.Models.AccountViewModels
         public string RoleDisplayName { get; set; }
 
         public string RoleId { get; set; }
+
+        [ReadOnly(true), Display(Name = "User Name")]
+        public string UserName { get; set; }
     }
 }

@@ -7,6 +7,8 @@ namespace BikeTracker.Models.IdentityModels
     [IgnoreCoverage]
     public class ApplicationUserStore : UserStore<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>
     {
-        public ApplicationUserStore(ApplicationDbContext dbContext) : base(dbContext) { }
+        public ApplicationUserStore(ApplicationDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

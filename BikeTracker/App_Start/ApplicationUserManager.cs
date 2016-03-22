@@ -20,7 +20,6 @@ namespace BikeTracker
     {
         public const int MinPasswordLength = 6;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationUserManager"/> class.
         /// </summary>
@@ -79,6 +78,20 @@ namespace BikeTracker
                     new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
             }
             return manager;
+        }
+
+        public override async Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            var res = await base.ChangePasswordAsync(userId, currentPassword, newPassword);
+
+            if (res.Succeeded)
+            {
+                var user = await Store.FindByIdAsync(userId);
+                user.MustResetPassword = false;
+                await Store.UpdateAsync(user);
+            }
+
+            return res;
         }
 
         public virtual async Task GenerateEmailConfirmationEmailAsync(UrlHelper url, string id)
@@ -164,20 +177,6 @@ namespace BikeTracker
             };
 
             await EmailService.SendAsync(msg);
-        }
-
-        public override async Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
-        {
-            var res = await base.ChangePasswordAsync(userId, currentPassword, newPassword);
-
-            if (res.Succeeded)
-            {
-                var user = await Store.FindByIdAsync(userId);
-                user.MustResetPassword = false;
-                await Store.UpdateAsync(user);
-            }
-
-            return res;
         }
 
         public override async Task<IdentityResult> SetEmailAsync(string userId, string email)

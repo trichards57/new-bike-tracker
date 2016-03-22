@@ -13,8 +13,8 @@ namespace BikeTracker.Controllers
     [AuthorizePasswordExpires]
     public class MapController : Controller
     {
-        private ILocationService locationService;
         private IIMEIService imeiService;
+        private ILocationService locationService;
 
         public MapController(ILocationService locationService, IIMEIService imeiService)
         {
@@ -22,32 +22,14 @@ namespace BikeTracker.Controllers
             this.imeiService = imeiService;
         }
 
-        // GET: Map
-        public ActionResult Index()
+        public async Task<ActionResult> AddLandmark(string name, decimal lat, decimal lon)
         {
-            return View();
-        }
+            if (string.IsNullOrWhiteSpace(name))
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "name is missing");
 
-        public async Task<JsonResult> GetLocations()
-        {
-            var reportedIMEIs = await locationService.GetLocations();
+            await locationService.RegisterLandmark(name, lat, lon);
 
-            return Json(reportedIMEIs.Select(r => new LocationViewModel
-            {
-                Id = r.Id,
-                Callsign = r.Callsign,
-                ReadingTime = r.ReadingTime,
-                Latitude = r.Latitude,
-                Longitude = r.Longitude,
-                Type = r.Type
-            }), JsonRequestBehavior.AllowGet);
-        }
-
-        public async Task<JsonResult> GetLandmarks()
-        {
-            var registeredLandmarks = await locationService.GetLandmarks();
-
-            return Json(registeredLandmarks, JsonRequestBehavior.AllowGet);
+            return new HttpStatusCodeResult(HttpStatusCode.Created);
         }
 
         [AllowAnonymous]
@@ -75,21 +57,39 @@ namespace BikeTracker.Controllers
             return Content($"Location Receieved from {callsign.CallSign}.");
         }
 
-        public async Task<ActionResult> AddLandmark(string name, decimal lat, decimal lon)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "name is missing");
-
-            await locationService.RegisterLandmark(name, lat, lon);
-
-            return new HttpStatusCodeResult(HttpStatusCode.Created);
-        }
-
         public async Task<ActionResult> ClearLandmark(int id)
         {
             await locationService.ClearLandmark(id);
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        public async Task<JsonResult> GetLandmarks()
+        {
+            var registeredLandmarks = await locationService.GetLandmarks();
+
+            return Json(registeredLandmarks, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<JsonResult> GetLocations()
+        {
+            var reportedIMEIs = await locationService.GetLocations();
+
+            return Json(reportedIMEIs.Select(r => new LocationViewModel
+            {
+                Id = r.Id,
+                Callsign = r.Callsign,
+                ReadingTime = r.ReadingTime,
+                Latitude = r.Latitude,
+                Longitude = r.Longitude,
+                Type = r.Type
+            }), JsonRequestBehavior.AllowGet);
+        }
+
+        // GET: Map
+        public ActionResult Index()
+        {
+            return View();
         }
     }
 }

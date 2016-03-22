@@ -6,7 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Ploeh.AutoFixture;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -167,7 +166,6 @@ namespace BikeTracker.Tests.Controllers.API
         {
             await PutIMEIToCallsign(TestId, TestCallsign.CallSign, null, TestCallsign.Type, ResultType.ModelError);
         }
-
 
         private async Task PostIMEIToCallsign(string callsign, string imei, VehicleType type, ResultType expectedResult = ResultType.Success)
         {

@@ -17,17 +17,17 @@ namespace BikeTracker.Controllers
             return PartialView();
         }
 
-        public ActionResult UserActivity()
-        {
-            return PartialView();
-        }
-
         public ActionResult Locations()
         {
             return PartialView();
         }
 
         public ActionResult Rates()
+        {
+            return PartialView();
+        }
+
+        public ActionResult UserActivity()
         {
             return PartialView();
         }

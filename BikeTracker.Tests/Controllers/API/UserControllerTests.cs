@@ -27,18 +27,18 @@ namespace BikeTracker.Tests.Controllers.API
     [TestClass]
     public class UserControllerTests
     {
-        private readonly Fixture Fixture = new Fixture();
-        private readonly List<ApplicationUser> TestUsers;
-        private readonly List<ApplicationRole> TestRoles;
-        private readonly string TestGoodEmail;
-        private readonly string TestBadEmail;
-        private readonly ApplicationUser TestUser;
-        private IEnumerable<string> TestRoleResult;
-        private readonly ApplicationRole GoodRole;
+        private const string DefaultRole = "Normal";
         private readonly ApplicationRole BadRole;
         private readonly string BadUserId;
-        private const string DefaultRole = "Normal";
+        private readonly Fixture Fixture = new Fixture();
+        private readonly ApplicationRole GoodRole;
+        private readonly string TestBadEmail;
+        private readonly string TestGoodEmail;
+        private readonly List<ApplicationRole> TestRoles;
+        private readonly ApplicationUser TestUser;
         private readonly string TestUsername;
+        private readonly List<ApplicationUser> TestUsers;
+        private IEnumerable<string> TestRoleResult;
 
         public UserControllerTests()
         {
@@ -58,6 +58,234 @@ namespace BikeTracker.Tests.Controllers.API
             TestBadEmail = Fixture.Create<string>();
             BadUserId = Fixture.Create<string>();
             TestUsername = Fixture.Create<string>();
+        }
+
+        [TestMethod]
+        public async Task DeleteBadUser()
+        {
+            await DeleteUser(BadUserId, expectSuccess: false);
+        }
+
+        [TestMethod]
+        public async Task DeleteGoodUser()
+        {
+            await DeleteUser(TestUser.Id, testUser: TestUser);
+        }
+
+        [TestMethod]
+        public async Task GetSingleUserBadId()
+        {
+            var controller = CreateController();
+
+            var role = TestRoles.First();
+            var res = (await controller.Get(BadUserId)).Queryable;
+
+            Assert.IsNotNull(res);
+            Assert.IsFalse(res.Any());
+        }
+
+        [TestMethod]
+        public async Task GetSingleUserGoodId()
+        {
+            var controller = CreateController();
+
+            var role = TestRoles.First();
+            var user = (await controller.Get(TestUsers.First().Id)).Queryable.First();
+
+            var original = TestUsers.First(us => us.Id == user.Id);
+
+            Assert.AreEqual(original.Email, user.EmailAddress);
+            Assert.AreEqual(original.UserName, user.UserName);
+            Assert.AreEqual(role.Name, user.Role);
+            Assert.AreEqual(role.DisplayName, user.RoleDisplayName);
+            Assert.AreEqual(role.Id, user.RoleId);
+        }
+
+        [TestMethod]
+        public async Task GetUser()
+        {
+            var controller = CreateController();
+
+            var users = await controller.GetUser();
+            var role = TestRoles.First();
+
+            foreach (var u in users)
+            {
+                var original = TestUsers.First(us => us.Id == u.Id);
+
+                Assert.AreEqual(original.Email, u.EmailAddress);
+                Assert.AreEqual(original.UserName, u.UserName);
+                Assert.AreEqual(role.Name, u.Role);
+                Assert.AreEqual(role.DisplayName, u.RoleDisplayName);
+                Assert.AreEqual(role.Id, u.RoleId);
+            }
+        }
+
+        [TestMethod]
+        public async Task PutUserBadEmail()
+        {
+            await PutUser(TestUser.Id, TestBadEmail, GoodRole, expectedResult: ResultType.ModelError);
+        }
+
+        [TestMethod]
+        public async Task PutUserBadUser()
+        {
+            await PutUser(BadUserId, TestGoodEmail, GoodRole, expectedResult: ResultType.NotFoundError);
+        }
+
+        [TestMethod]
+        public async Task PutUserGoodData()
+        {
+            await PutUser(TestUser.Id, TestGoodEmail, GoodRole, TestRoleResult);
+        }
+
+        [TestMethod]
+        public async Task PutUserGoodEmailOnly()
+        {
+            await PutUser(TestUser.Id, TestGoodEmail, TestRoles.First(), TestRoleResult, changeRole: false);
+        }
+
+        [TestMethod]
+        public async Task PutUserGoodRoleOnly()
+        {
+            await PutUser(TestUser.Id, TestUser.Email, GoodRole, TestRoleResult, changeEmail: false);
+        }
+
+        [TestMethod]
+        public async Task PutUserNoChanges()
+        {
+            await PutUser(TestUser.Id, TestUser.Email, TestRoles.First(), TestRoleResult, changeEmail: false, changeRole: false);
+        }
+
+        [TestMethod]
+        public async Task RegisterBadEmail()
+        {
+            await RegisterUser(GoodRole.Name, TestBadEmail, expectedResult: ResultType.ModelError);
+        }
+
+        [TestMethod]
+        public async Task RegisterBadRole()
+        {
+            await RegisterUser(BadRole.Name, TestGoodEmail, TestUser.Id, useDefaultRole: true);
+        }
+
+        [TestMethod]
+        public async Task RegisterDuplicateEmail()
+        {
+            await RegisterUser(GoodRole.Name, TestUser.Email, expectedResult: ResultType.ModelError);
+        }
+
+        [TestMethod]
+        public async Task RegisterEmptyEmail()
+        {
+            await RegisterUser(GoodRole.Name, string.Empty, expectedResult: ResultType.ModelError);
+        }
+
+        [TestMethod]
+        public async Task RegisterEmptyRole()
+        {
+            await RegisterUser(string.Empty, TestGoodEmail, TestUser.Id, useDefaultRole: true);
+        }
+
+        [TestMethod]
+        public async Task RegisterGoodData()
+        {
+            await RegisterUser(GoodRole.Name, TestGoodEmail, TestUser.Id);
+        }
+
+        [TestMethod]
+        public async Task RegisterNullEmail()
+        {
+            await RegisterUser(GoodRole.Name, null, expectedResult: ResultType.ModelError);
+        }
+
+        [TestMethod]
+        public async Task RegisterNullRole()
+        {
+            await RegisterUser(null, TestGoodEmail, TestUser.Id, useDefaultRole: true);
+        }
+
+        private bool CheckUpdateProperties(IEnumerable<string> properties, bool changeRole, bool changeEmail)
+        {
+            var res = true;
+            if (changeEmail)
+                res &= properties.Contains("Email");
+            else
+                res &= !properties.Contains("Email");
+
+            if (changeRole)
+                res &= properties.Contains("Role");
+            else
+                res &= !properties.Contains("Role");
+
+            return res;
+        }
+
+        private UserController CreateController()
+        {
+            var userManager = GetMockUserManager();
+            var roleManager = GetMockRoleManager();
+            var logService = GetMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
+
+            return controller;
+        }
+
+        private Mock<IPrincipal> CreateMockPrincipal()
+        {
+            var identity = new ClaimsIdentity();
+            identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, TestUsername));
+
+            var mockPrinciple = new Mock<IPrincipal>();
+            mockPrinciple.SetupGet(i => i.Identity).Returns(identity);
+
+            return mockPrinciple;
+        }
+
+        private async Task DeleteUser(string id, bool expectSuccess = true, ApplicationUser testUser = null)
+        {
+            var userManager = GetMockUserManager();
+            var roleManager = GetMockRoleManager();
+            var logService = GetMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
+
+            var principal = CreateMockPrincipal();
+            controller.User = principal.Object;
+
+            var res = await controller.Delete(id);
+
+            if (expectSuccess)
+            {
+                userManager.Verify(u => u.DeleteAsync(testUser));
+                logService.Verify(l => l.LogUserDeleted(TestUsername, testUser.UserName));
+            }
+
+            Assert.IsInstanceOfType(res, typeof(StatusCodeResult));
+        }
+
+        private Mock<ILogService> GetMockLogService()
+        {
+            var service = new Mock<ILogService>(MockBehavior.Strict);
+
+            service.Setup(l => l.LogUserCreated(TestUsername, TestGoodEmail)).Returns(Task.FromResult<object>(null));
+            service.Setup(l => l.LogUserUpdated(TestUsername, It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult<object>(null));
+            service.Setup(l => l.LogUserDeleted(TestUsername, It.IsAny<string>())).Returns(Task.FromResult<object>(null));
+
+            return service;
+        }
+
+        private Mock<IRoleManager> GetMockRoleManager()
+        {
+            var roleManager = new Mock<IRoleManager>(MockBehavior.Strict);
+
+            var role = TestRoles.First();
+
+            roleManager.Setup(r => r.FindByNameAsync(role.Name)).ReturnsAsync(role);
+            roleManager.Setup(r => r.RoleExistsAsync(GoodRole.Name)).ReturnsAsync(true);
+            roleManager.Setup(r => r.RoleExistsAsync(BadRole.Name)).ReturnsAsync(false);
+            roleManager.Setup(r => r.RoleExistsAsync(DefaultRole)).ReturnsAsync(true);
+
+            return roleManager;
         }
 
         private Mock<IUserManager> GetMockUserManager()
@@ -101,90 +329,6 @@ namespace BikeTracker.Tests.Controllers.API
             userManager.SetupGet(u => u.PasswordValidator).Returns(passwordValidator.Object);
 
             return userManager;
-        }
-
-        private Mock<IRoleManager> GetMockRoleManager()
-        {
-            var roleManager = new Mock<IRoleManager>(MockBehavior.Strict);
-
-            var role = TestRoles.First();
-
-            roleManager.Setup(r => r.FindByNameAsync(role.Name)).ReturnsAsync(role);
-            roleManager.Setup(r => r.RoleExistsAsync(GoodRole.Name)).ReturnsAsync(true);
-            roleManager.Setup(r => r.RoleExistsAsync(BadRole.Name)).ReturnsAsync(false);
-            roleManager.Setup(r => r.RoleExistsAsync(DefaultRole)).ReturnsAsync(true);
-
-            return roleManager;
-        }
-
-        private Mock<ILogService> GetMockLogService()
-        {
-            var service = new Mock<ILogService>(MockBehavior.Strict);
-
-            service.Setup(l => l.LogUserCreated(TestUsername, TestGoodEmail)).Returns(Task.FromResult<object>(null));
-            service.Setup(l => l.LogUserUpdated(TestUsername, It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult<object>(null));
-            service.Setup(l => l.LogUserDeleted(TestUsername, It.IsAny<string>())).Returns(Task.FromResult<object>(null));
-
-            return service;
-        }
-
-        private UserController CreateController()
-        {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var logService = GetMockLogService();
-            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
-
-            return controller;
-        }
-
-        [TestMethod]
-        public async Task GetUser()
-        {
-            var controller = CreateController();
-
-            var users = await controller.GetUser();
-            var role = TestRoles.First();
-
-            foreach (var u in users)
-            {
-                var original = TestUsers.First(us => us.Id == u.Id);
-
-                Assert.AreEqual(original.Email, u.EmailAddress);
-                Assert.AreEqual(original.UserName, u.UserName);
-                Assert.AreEqual(role.Name, u.Role);
-                Assert.AreEqual(role.DisplayName, u.RoleDisplayName);
-                Assert.AreEqual(role.Id, u.RoleId);
-            }
-        }
-
-        [TestMethod]
-        public async Task GetSingleUserGoodId()
-        {
-            var controller = CreateController();
-
-            var role = TestRoles.First();
-            var user = (await controller.Get(TestUsers.First().Id)).Queryable.First();
-
-            var original = TestUsers.First(us => us.Id == user.Id);
-
-            Assert.AreEqual(original.Email, user.EmailAddress);
-            Assert.AreEqual(original.UserName, user.UserName);
-            Assert.AreEqual(role.Name, user.Role);
-            Assert.AreEqual(role.DisplayName, user.RoleDisplayName);
-            Assert.AreEqual(role.Id, user.RoleId);
-        }
-
-        [TestMethod]
-        public async Task GetSingleUserBadId()
-        {
-            var controller = CreateController();
-
-            var role = TestRoles.First();
-            var res = (await controller.Get(BadUserId)).Queryable;
-
-            Assert.IsNotNull(res);
-            Assert.IsFalse(res.Any());
         }
 
         private async Task PutUser(string id, string email, ApplicationRole role, IEnumerable<string> oldRoles = null, bool changeRole = true, bool changeEmail = true, ResultType expectedResult = ResultType.Success)
@@ -247,80 +391,18 @@ namespace BikeTracker.Tests.Controllers.API
                     else
                         logService.Verify(l => l.LogUserUpdated(TestUsername, It.IsAny<IEnumerable<string>>()), Times.Never);
 
-
                     break;
+
                 case ResultType.ModelError:
                     Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
                     userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), id), Times.Never);
                     break;
+
                 case ResultType.NotFoundError:
                     Assert.IsInstanceOfType(res, typeof(NotFoundResult));
                     userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsNotNull<UrlHelper>(), id), Times.Never);
                     break;
             }
-        }
-
-        private bool CheckUpdateProperties(IEnumerable<string> properties, bool changeRole, bool changeEmail)
-        {
-            var res = true;
-            if (changeEmail)
-                res &= properties.Contains("Email");
-            else
-                res &= !properties.Contains("Email");
-
-            if (changeRole)
-                res &= properties.Contains("Role");
-            else
-                res &= !properties.Contains("Role");
-
-            return res;
-        }
-
-        [TestMethod]
-        public async Task PutUserGoodData()
-        {
-            await PutUser(TestUser.Id, TestGoodEmail, GoodRole, TestRoleResult);
-        }
-
-        [TestMethod]
-        public async Task PutUserGoodEmailOnly()
-        {
-            await PutUser(TestUser.Id, TestGoodEmail, TestRoles.First(), TestRoleResult, changeRole: false);
-        }
-
-        [TestMethod]
-        public async Task PutUserBadEmail()
-        {
-            await PutUser(TestUser.Id, TestBadEmail, GoodRole, expectedResult: ResultType.ModelError);
-        }
-
-        [TestMethod]
-        public async Task PutUserBadUser()
-        {
-            await PutUser(BadUserId, TestGoodEmail, GoodRole, expectedResult: ResultType.NotFoundError);
-        }
-
-        [TestMethod]
-        public async Task PutUserGoodRoleOnly()
-        {
-            await PutUser(TestUser.Id, TestUser.Email, GoodRole, TestRoleResult, changeEmail: false);
-        }
-
-        [TestMethod]
-        public async Task PutUserNoChanges()
-        {
-            await PutUser(TestUser.Id, TestUser.Email, TestRoles.First(), TestRoleResult, changeEmail: false, changeRole: false);
-        }
-
-        private Mock<IPrincipal> CreateMockPrincipal()
-        {
-            var identity = new ClaimsIdentity();
-            identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, TestUsername));
-
-            var mockPrinciple = new Mock<IPrincipal>();
-            mockPrinciple.SetupGet(i => i.Identity).Returns(identity);
-
-            return mockPrinciple;
         }
 
         private async Task RegisterUser(string role, string email, string id = null, ResultType expectedResult = ResultType.Success, bool useDefaultRole = false)
@@ -360,94 +442,13 @@ namespace BikeTracker.Tests.Controllers.API
 
                     Assert.IsInstanceOfType(res, typeof(OkResult));
                     break;
+
                 case ResultType.ModelError:
                     userManager.Verify(u => u.GenerateEmailConfirmationEmailAsync(It.IsAny<UrlHelper>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
                     logService.Verify(l => l.LogUserCreated(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
                     Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
                     break;
             }
-        }
-
-        [TestMethod]
-        public async Task RegisterGoodData()
-        {
-            await RegisterUser(GoodRole.Name, TestGoodEmail, TestUser.Id);
-        }
-
-        [TestMethod]
-        public async Task RegisterDuplicateEmail()
-        {
-            await RegisterUser(GoodRole.Name, TestUser.Email, expectedResult: ResultType.ModelError);
-        }
-
-        [TestMethod]
-        public async Task RegisterBadEmail()
-        {
-            await RegisterUser(GoodRole.Name, TestBadEmail, expectedResult: ResultType.ModelError);
-        }
-
-        [TestMethod]
-        public async Task RegisterEmptyEmail()
-        {
-            await RegisterUser(GoodRole.Name, string.Empty, expectedResult: ResultType.ModelError);
-        }
-
-        [TestMethod]
-        public async Task RegisterNullEmail()
-        {
-            await RegisterUser(GoodRole.Name, null, expectedResult: ResultType.ModelError);
-        }
-
-        [TestMethod]
-        public async Task RegisterBadRole()
-        {
-            await RegisterUser(BadRole.Name, TestGoodEmail, TestUser.Id, useDefaultRole: true);
-        }
-
-        [TestMethod]
-        public async Task RegisterEmptyRole()
-        {
-            await RegisterUser(string.Empty, TestGoodEmail, TestUser.Id, useDefaultRole: true);
-        }
-
-        [TestMethod]
-        public async Task RegisterNullRole()
-        {
-            await RegisterUser(null, TestGoodEmail, TestUser.Id, useDefaultRole: true);
-        }
-
-        private async Task DeleteUser(string id, bool expectSuccess = true, ApplicationUser testUser = null)
-        {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var logService = GetMockLogService();
-            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
-
-            var principal = CreateMockPrincipal();
-            controller.User = principal.Object;
-
-            var res = await controller.Delete(id);
-
-            if (expectSuccess)
-            {
-                userManager.Verify(u => u.DeleteAsync(testUser));
-                logService.Verify(l => l.LogUserDeleted(TestUsername, testUser.UserName));
-            }
-
-            Assert.IsInstanceOfType(res, typeof(StatusCodeResult));
-
-        }
-
-        [TestMethod]
-        public async Task DeleteGoodUser()
-        {
-            await DeleteUser(TestUser.Id, testUser: TestUser);
-        }
-
-        [TestMethod]
-        public async Task DeleteBadUser()
-        {
-            await DeleteUser(BadUserId, expectSuccess: false);
         }
     }
 }

@@ -13,17 +13,6 @@ namespace BikeTracker
     [IgnoreCoverage]
     public partial class Startup
     {
-        private static bool IsAjaxRequest(IOwinRequest request)
-        {
-            IReadableStringCollection query = request.Query;
-            if ((query != null) && (query["X-Requested-With"] == "XMLHttpRequest"))
-            {
-                return true;
-            }
-            IHeaderDictionary headers = request.Headers;
-            return ((headers != null) && (headers["X-Requested-With"] == "XMLHttpRequest"));
-        }
-
         // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
         /// <summary>
         /// Configures the website's authentication.
@@ -62,6 +51,17 @@ namespace BikeTracker
                     }
                 }
             });
+        }
+
+        private static bool IsAjaxRequest(IOwinRequest request)
+        {
+            IReadableStringCollection query = request.Query;
+            if ((query != null) && (query["X-Requested-With"] == "XMLHttpRequest"))
+            {
+                return true;
+            }
+            IHeaderDictionary headers = request.Headers;
+            return ((headers != null) && (headers["X-Requested-With"] == "XMLHttpRequest"));
         }
     }
 }

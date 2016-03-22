@@ -7,6 +7,7 @@ namespace BikeTracker
     public interface ISignInManager
     {
         Task<SignInStatus> PasswordSignInAsync(string username, string password, bool isPersistent, bool shouldLockout);
+
         Task SignInAsync(ApplicationUser user, bool isPersistent, bool rememberBrowser);
     }
 }
