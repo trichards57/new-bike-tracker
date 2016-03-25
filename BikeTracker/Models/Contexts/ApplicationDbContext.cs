@@ -8,31 +8,77 @@ using System.Data.Entity;
 
 namespace BikeTracker.Models.Contexts
 {
-    // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
+    /// <summary>
+    /// Main database for the application.
+    /// </summary>
+    /// <seealso cref="Microsoft.AspNet.Identity.EntityFramework.IdentityDbContext{ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim}" />
+    /// <seealso cref="ILocationIMEIContext" />
+    /// <seealso cref="ILoggingContext" />
     [IgnoreCoverage]
     public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>,
         ILocationIMEIContext, ILoggingContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
+        /// </summary>
         public ApplicationDbContext()
             : base(GetRDSConnection() ?? "DefaultConnection")
         {
         }
 
+        /// <summary>
+        /// Gets the IMEI to callsigns relationships.
+        /// </summary>
+        /// <value>
+        /// The IMEI to callsigns.
+        /// </value>
         public virtual DbSet<IMEIToCallsign> IMEIToCallsigns { get; set; }
 
+        /// <summary>
+        /// Gets the landmarks.
+        /// </summary>
+        /// <value>
+        /// The landmarks.
+        /// </value>
         public virtual DbSet<Landmark> Landmarks { get; set; }
 
+        /// <summary>
+        /// Gets the location records.
+        /// </summary>
+        /// <value>
+        /// The location records.
+        /// </value>
         public virtual DbSet<LocationRecord> LocationRecords { get; set; }
 
+        /// <summary>
+        /// Gets the log entries.
+        /// </summary>
+        /// <value>
+        /// The log entries.
+        /// </value>
         public virtual DbSet<LogEntry> LogEntries { get; set; }
 
+        /// <summary>
+        /// Gets the log properties.
+        /// </summary>
+        /// <value>
+        /// The log properties.
+        /// </value>
         public virtual DbSet<LogEntryProperty> LogProperties { get; set; }
 
+        /// <summary>
+        /// Creates an instance of this data context.
+        /// </summary>
+        /// <returns></returns>
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
 
+        /// <summary>
+        /// Gets the RDS connection reported by the environment variables.
+        /// </summary>
+        /// <returns>A connection string for the RDS connection.</returns>
         public static string GetRDSConnection()
         {
             var appConfig = ConfigurationManager.AppSettings;
@@ -49,6 +95,10 @@ namespace BikeTracker.Models.Contexts
             return "Data Source=" + hostname + ";Initial Catalog=" + dbname + ";User ID=" + username + ";Password=" + password + ";";
         }
 
+        /// <summary>
+        /// Maps table names, and sets up relationships between the various user entities.
+        /// </summary>
+        /// <param name="modelBuilder">The builder used to create the database.</param>
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LocationRecord>().Property(o => o.Latitude).HasPrecision(18, 6);

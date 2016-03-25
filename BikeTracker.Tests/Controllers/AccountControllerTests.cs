@@ -43,7 +43,7 @@ namespace BikeTracker.Tests.Controllers
         [TestMethod]
         public async Task ConfirmEmailBadUser()
         {
-            await ConfirmEmail(MockHelpers.BadId, MockHelpers.GoodToken, false, ResultType.BadRequest);
+            await ConfirmEmail(MockHelpers.BadId, MockHelpers.GoodToken, type: ResultType.BadRequest);
         }
 
         [TestMethod]
@@ -366,7 +366,7 @@ namespace BikeTracker.Tests.Controllers
             var view = res as ViewResult;
 
             if (attemptConfirm)
-                userManager.Verify(a => a.ConfirmEmailAsync(MockHelpers.UnconfirmedGoodId, MockHelpers.BadToken));
+                userManager.Verify(a => a.ConfirmEmailAsync(userId, code));
             else
                 userManager.Verify(a => a.ConfirmEmailAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
 
@@ -376,6 +376,9 @@ namespace BikeTracker.Tests.Controllers
             {
                 case ResultType.BadRequest:
                     Assert.AreEqual("Error", view.ViewName);
+                    break;
+                case ResultType.Success:
+                    Assert.AreNotEqual("Error", view.ViewName);
                     break;
             }
         }
@@ -451,6 +454,7 @@ namespace BikeTracker.Tests.Controllers
             var signInManager = MockHelpers.CreateMockSignInManager();
             var urlHelper = MockHelpers.CreateMockUrlHelper();
 
+
             var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
 
             var model = new ResetPasswordViewModel
@@ -461,8 +465,9 @@ namespace BikeTracker.Tests.Controllers
                 Email = email
             };
 
+            MockHelpers.Validate(model, controller);
+
             var result = await controller.ResetPassword(model);
-            var view = result as ViewResult;
 
             if (attemptReset)
                 userManager.Verify(a => a.ResetPasswordAsync(userId, token, password));
@@ -470,6 +475,7 @@ namespace BikeTracker.Tests.Controllers
             switch (expectedResult)
             {
                 case ResultType.ModelError:
+                    var view = result as ViewResult;
                     Assert.IsNotNull(view);
                     break;
 

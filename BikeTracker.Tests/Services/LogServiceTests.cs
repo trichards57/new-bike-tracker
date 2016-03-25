@@ -148,17 +148,17 @@ namespace BikeTracker.Tests.Services
 
         private bool CheckImeiRegisteredLogEntry(LogEntry entry, string registeringUser, string imei, string callsign, VehicleType type)
         {
-            CheckLogEntry(entry, registeringUser, new LogEntryProperty { PropertyType = LogPropertyType.Imei, PropertyValue = imei },
+            CheckLogEntry(entry, LogEventType.ImeiRegistered, registeringUser, new LogEntryProperty { PropertyType = LogPropertyType.Imei, PropertyValue = imei },
                 new LogEntryProperty { PropertyValue = callsign, PropertyType = LogPropertyType.Callsign },
                 new LogEntryProperty { PropertyType = LogPropertyType.VehicleType, PropertyValue = type.ToString() });
 
             return true;
         }
 
-        private void CheckLogEntry(LogEntry entry, string sourceUser, params LogEntryProperty[] properties)
+        private void CheckLogEntry(LogEntry entry, LogEventType type, string sourceUser, params LogEntryProperty[] properties)
         {
             Assert.AreEqual(sourceUser, entry.SourceUser);
-            Assert.AreEqual(LogEventType.UserCreated, entry.Type);
+            Assert.AreEqual(type, entry.Type);
 
             foreach (var p in properties)
                 Assert.IsNotNull(entry.Properties.SingleOrDefault(lep => lep.PropertyType == p.PropertyType && lep.PropertyValue == p.PropertyValue));
@@ -169,13 +169,13 @@ namespace BikeTracker.Tests.Services
 
         private bool CheckUserCreatedLogEntry(LogEntry entry, string creatingUser, string newUser)
         {
-            CheckLogEntry(entry, creatingUser, new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = newUser });
+            CheckLogEntry(entry, LogEventType.UserCreated, creatingUser,  new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = newUser });
             return true;
         }
 
         private bool CheckUserDeletedLogEntry(LogEntry entry, string deletingUser, string oldUser)
         {
-            CheckLogEntry(entry, deletingUser, new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = oldUser });
+            CheckLogEntry(entry, LogEventType.UserDeleted, deletingUser, new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = oldUser });
             return true;
         }
 
@@ -183,7 +183,7 @@ namespace BikeTracker.Tests.Services
         {
             var properties = changes.Select(c => new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = c }).ToArray();
 
-            CheckLogEntry(entry, updatingUser, properties);
+            CheckLogEntry(entry, LogEventType.UserUpdated, updatingUser, properties);
             return true;
         }
 
@@ -249,7 +249,7 @@ namespace BikeTracker.Tests.Services
 
             if (expectSuccess)
             {
-                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckUserDeletedLogEntry(le, deletedUser, deletedUser))));
+                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckUserDeletedLogEntry(le, deletingUser, deletedUser))));
                 context.Verify(c => c.SaveChangesAsync());
             }
             else

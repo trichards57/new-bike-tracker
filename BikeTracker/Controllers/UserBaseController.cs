@@ -4,15 +4,33 @@ using System.Web.Mvc;
 
 namespace BikeTracker.Controllers
 {
+    /// <summary>
+    /// The base class for controllers that manage users.
+    /// </summary>
+    /// <seealso cref="System.Web.Mvc.Controller" />
     public abstract class UserBaseController : Controller
     {
+        /// <summary>
+        /// The ISignInManager used by the controller.
+        /// </summary>
         private ISignInManager _signInManager;
+        /// <summary>
+        /// The IUserManager used by the controller.
+        /// </summary>
         private IUserManager _userManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserBaseController"/> class.
+        /// </summary>
         public UserBaseController()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserBaseController"/> class.
+        /// </summary>
+        /// <param name="userManager">The user manager.</param>
+        /// <param name="signInManager">The sign in manager.</param>
         public UserBaseController(IUserManager userManager, ISignInManager signInManager)
         {
             UserManager = userManager;

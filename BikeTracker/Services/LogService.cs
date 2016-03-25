@@ -8,20 +8,53 @@ using System.Threading.Tasks;
 
 namespace BikeTracker.Services
 {
+    /// <summary>
+    /// Service to log events for the system.
+    /// </summary>
+    /// <seealso cref="BikeTracker.Services.ILogService" />
     public class LogService : ILogService
     {
-        private ILoggingContext context;
+        /// <summary>
+        /// The data context used to store the data
+        /// </summary>
+        private ILoggingContext dataContext;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogService"/> class.
+        /// </summary>
+        /// <param name="context">The data context to store to.</param>
         public LogService(ILoggingContext context)
         {
-            this.context = context;
+            dataContext = context;
         }
 
+        /// <summary>
+        /// Logs when an IMEI is registered in the system.
+        /// </summary>
+        /// <param name="registeringUser">The registering user.</param>
+        /// <param name="imei">The IMEI that was registered.</param>
+        /// <param name="callsign">The callsign associated with the IMEI.</param>
+        /// <param name="type">The vehicle type associated with the callsign.</param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task LogImeiRegistered(string registeringUser, string imei, string callsign, VehicleType type)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Logs when a user is created.
+        /// </summary>
+        /// <param name="creatingUser">The creating user.</param>
+        /// <param name="newUser">The new user.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// parameter cannot be empty
+        /// or
+        /// parameter cannot be empty
+        /// </exception>
         public async Task LogUserCreated(string creatingUser, string newUser)
         {
             if (creatingUser == null)
@@ -43,15 +76,28 @@ namespace BikeTracker.Services
             };
             var logProperty = new LogEntryProperty
             {
-                PropertyType = LogPropertyType.Imei,
+                PropertyType = LogPropertyType.Username,
                 PropertyValue = newUser
             };
             logEntry.Properties.Add(logProperty);
 
-            context.LogEntries.Add(logEntry);
-            await context.SaveChangesAsync();
+            dataContext.LogEntries.Add(logEntry);
+            await dataContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Logs when a user is deleted.
+        /// </summary>
+        /// <param name="deletingUser">The deleting user.</param>
+        /// <param name="deletedUser">The deleted user.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// parameter cannot be empty
+        /// or
+        /// parameter cannot be empty
+        /// </exception>
         public async Task LogUserDeleted(string deletingUser, string deletedUser)
         {
             if (deletingUser == null)
@@ -73,20 +119,39 @@ namespace BikeTracker.Services
             };
             var logProperty = new LogEntryProperty
             {
-                PropertyType = LogPropertyType.Imei,
+                PropertyType = LogPropertyType.Username,
                 PropertyValue = deletedUser
             };
             logEntry.Properties.Add(logProperty);
 
-            context.LogEntries.Add(logEntry);
-            await context.SaveChangesAsync();
+            dataContext.LogEntries.Add(logEntry);
+            await dataContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Logs when a user is logged in.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task LogUserLoggedIn(string username)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Logs the a user's details are updated.
+        /// </summary>
+        /// <param name="updatingUser">The updating user.</param>
+        /// <param name="changedProperties">The changed properties.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// parameter cannot be empty
+        /// or
+        /// parameter cannot be empty
+        /// </exception>
         public async Task LogUserUpdated(string updatingUser, IEnumerable<string> changedProperties)
         {
             if (updatingUser == null)
@@ -115,8 +180,8 @@ namespace BikeTracker.Services
             foreach (var lp in logProperties)
                 logEntry.Properties.Add(lp);
 
-            context.LogEntries.Add(logEntry);
-            await context.SaveChangesAsync();
+            dataContext.LogEntries.Add(logEntry);
+            await dataContext.SaveChangesAsync();
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -48,5 +49,7 @@ namespace BikeTracker
         Task<IdentityResult> ResetPasswordAsync(string userId, string token, string newPassword);
 
         Task<IdentityResult> SetEmailAsync(string userId, string email);
+
+        Task<ClaimsIdentity> CreateIdentityAsync(ApplicationUser user, string authenticationType);
     }
 }

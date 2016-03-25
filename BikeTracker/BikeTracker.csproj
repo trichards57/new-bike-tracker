@@ -1008,6 +1008,7 @@
     <Content Include="Views\Report\UserActivity.cshtml" />
     <Content Include="Views\Report\Locations.cshtml" />
     <Content Include="Views\Report\Rates.cshtml" />
+    <None Include="Properties\PublishProfiles\File.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
