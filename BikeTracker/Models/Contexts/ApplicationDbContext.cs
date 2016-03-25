@@ -11,12 +11,13 @@ namespace BikeTracker.Models.Contexts
     /// <summary>
     /// Main database for the application.
     /// </summary>
-    /// <seealso cref="Microsoft.AspNet.Identity.EntityFramework.IdentityDbContext{ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim}" />
-    /// <seealso cref="ILocationIMEIContext" />
-    /// <seealso cref="ILoggingContext" />
+    /// <seealso cref="Microsoft.AspNet.Identity.EntityFramework.IdentityDbContext{BikeTracker.Models.IdentityModels.ApplicationUser, BikeTracker.Models.IdentityModels.ApplicationRole, System.String, Microsoft.AspNet.Identity.EntityFramework.IdentityUserLogin, Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole, Microsoft.AspNet.Identity.EntityFramework.IdentityUserClaim}" />
+    /// <seealso cref="BikeTracker.Models.Contexts.ILocationContext" />
+    /// <seealso cref="BikeTracker.Models.Contexts.ILoggingContext" />
+    /// <seealso cref="BikeTracker.Models.Contexts.IIMEIContext" />
     [IgnoreCoverage]
     public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>,
-        ILocationIMEIContext, ILoggingContext
+        ILocationContext, ILoggingContext, IIMEIContext
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.

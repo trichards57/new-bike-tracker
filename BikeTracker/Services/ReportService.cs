@@ -17,13 +17,13 @@ namespace BikeTracker.Services
         /// <summary>
         /// The data context used to store the data.
         /// </summary>
-        private ILocationIMEIContext dataContext;
+        private ILocationContext dataContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReportService"/> class.
         /// </summary>
         /// <param name="context">The data context to store to.</param>
-        public ReportService(ILocationIMEIContext context)
+        public ReportService(ILocationContext context)
         {
             dataContext = context;
         }

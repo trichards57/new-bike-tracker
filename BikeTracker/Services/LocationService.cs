@@ -12,7 +12,7 @@ namespace BikeTracker.Services
         /// <summary>
         /// The data context used to store the data
         /// </summary>
-        private ILocationIMEIContext dataContext;
+        private ILocationContext dataContext;
 
         /// <summary>
         /// The <see cref="IIMEIService"/> used to translate IMEIs into callsigns.
@@ -24,7 +24,7 @@ namespace BikeTracker.Services
         /// </summary>
         /// <param name="imeiService">The IMEI service this service should use.</param>
         /// <param name="context">The data context to store to.</param>
-        public LocationService(IIMEIService imeiService, ILocationIMEIContext context)
+        public LocationService(IIMEIService imeiService, ILocationContext context)
         {
             this.imeiService = imeiService;
             dataContext = context;
@@ -40,6 +40,20 @@ namespace BikeTracker.Services
             var landmark = dataContext.Landmarks.FirstOrDefault(l => l.Id == id);
             if (landmark != null)
                 landmark.Expiry = DateTimeOffset.Now.AddDays(-1);
+
+            await dataContext.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Asynchronously expires any location associated with the given callsign.
+        /// </summary>
+        /// <param name="callsign">The callsign.</param>
+        public async Task ExpireLocation(string callsign)
+        {
+            var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.Expired == false);
+
+            foreach (var l in oldLocations)
+                l.Expired = true;
 
             await dataContext.SaveChangesAsync();
         }

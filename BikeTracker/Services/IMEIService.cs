@@ -1,5 +1,6 @@
 ﻿using BikeTracker.Models.Contexts;
 using BikeTracker.Models.LocationModels;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -16,15 +17,19 @@ namespace BikeTracker.Services
         /// <summary>
         /// The data context used to store the data.
         /// </summary>
-        private ILocationIMEIContext dataContext;
+        private IIMEIContext dataContext;
+        private ILocationService locationService;
+
+        public static readonly string DefaultCallsign = "WR???";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IMEIService"/> class.
         /// </summary>
         /// <param name="context">The data context to store to.</param>
-        public IMEIService(ILocationIMEIContext context)
+        public IMEIService(IIMEIContext context, ILocationService locationService)
         {
             dataContext = context;
+            this.locationService = locationService;
         }
 
         /// <summary>
@@ -103,6 +108,11 @@ namespace BikeTracker.Services
         /// </remarks>
         public async Task<IMEIToCallsign> GetFromIMEI(string imei)
         {
+            if (imei == null)
+                throw new ArgumentNullException(nameof(imei));
+            if (string.IsNullOrWhiteSpace(imei))
+                throw new ArgumentException("{0} cannot be empty or only whitespace.", nameof(imei));
+
             var iToC = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
 
             if (iToC == null)
@@ -123,19 +133,22 @@ namespace BikeTracker.Services
         /// <returns></returns>
         public async Task RegisterCallsign(string imei, string callsign = null, VehicleType? type = null)
         {
+            if (imei == null)
+                throw new ArgumentNullException(nameof(imei));
+
+            if (string.IsNullOrWhiteSpace(imei))
+                throw new ArgumentException("{0} must not be empty or only whitespace", nameof(imei));
+
             var iToC = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
 
             if (iToC != null)
             {
                 if (iToC.CallSign != callsign)
                 {
-                    var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == iToC.CallSign && l.Expired == false);
-
-                    foreach (var l in oldLocations)
-                        l.Expired = true;
+                    await locationService.ExpireLocation(iToC.CallSign);
                 }
 
-                iToC.CallSign = callsign ?? iToC.CallSign;
+                iToC.CallSign = string.IsNullOrWhiteSpace(callsign) ? iToC.CallSign : callsign;
                 iToC.Type = type ?? iToC.Type;
                 await dataContext.SaveChangesAsync();
             }
@@ -143,7 +156,7 @@ namespace BikeTracker.Services
             {
                 iToC = new IMEIToCallsign
                 {
-                    CallSign = callsign ?? "WR???",
+                    CallSign = callsign ?? DefaultCallsign,
                     IMEI = imei,
                     Type = type ?? VehicleType.Unknown
                 };
@@ -165,10 +178,7 @@ namespace BikeTracker.Services
             if (imei == null)
                 return;
 
-            var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == imei.CallSign && l.Expired == false);
-
-            foreach (var l in oldLocations)
-                l.Expired = true;
+            await locationService.ExpireLocation(imei.CallSign);
 
             dataContext.IMEIToCallsigns.Remove(imei);
             await dataContext.SaveChangesAsync();

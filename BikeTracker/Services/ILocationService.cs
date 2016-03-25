@@ -46,5 +46,11 @@ namespace BikeTracker.Services
         /// <param name="latitude">The latitude of the callsign.</param>
         /// <param name="longitude">The longitude of the callsign.</param>
         Task RegisterLocation(string imei, DateTimeOffset readingTime, DateTimeOffset receivedTime, decimal latitude, decimal longitude);
+
+        /// <summary>
+        /// Asynchronously expires any location associated with the given callsign.
+        /// </summary>
+        /// <param name="callsign">The callsign.</param>
+        Task ExpireLocation(string callsign);
     }
 }

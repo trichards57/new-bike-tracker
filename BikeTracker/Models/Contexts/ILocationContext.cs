@@ -7,15 +7,8 @@ namespace BikeTracker.Models.Contexts
     /// <summary>
     /// An interface for a data context that can store location and IMEI details.
     /// </summary>
-    public interface ILocationIMEIContext
+    public interface ILocationContext
     {
-        /// <summary>
-        /// Gets the IMEI to callsigns relationships.
-        /// </summary>
-        /// <value>
-        /// The IMEI to callsigns.
-        /// </value>
-        DbSet<IMEIToCallsign> IMEIToCallsigns { get; }
         /// <summary>
         /// Gets the landmarks.
         /// </summary>
