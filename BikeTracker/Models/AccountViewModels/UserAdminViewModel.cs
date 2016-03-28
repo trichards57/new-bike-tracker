@@ -1,13 +1,13 @@
-﻿using BikeTracker.Controllers.Filters;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.AccountViewModels
 {
     /// <summary>
     /// Represents the data provided to a user administrator.
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class UserAdminViewModel
     {
         /// <summary>

@@ -1,14 +1,14 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Models.Contexts;
+﻿using BikeTracker.Models.Contexts;
 using BikeTracker.Models.IdentityModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker
 {
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class ApplicationRoleManager : RoleManager<ApplicationRole>, IRoleManager
     {
         public ApplicationRoleManager(IRoleStore<ApplicationRole, string> store)

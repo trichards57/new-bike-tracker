@@ -1,13 +1,13 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Models.LocationModels;
+﻿using BikeTracker.Models.LocationModels;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models
 {
     /// <summary>
     /// Represents a current location report that is passed to the map users.
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class LocationViewModel
     {
         /// <summary>

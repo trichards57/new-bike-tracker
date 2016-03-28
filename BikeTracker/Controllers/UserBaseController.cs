@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.Owin;
+using System.Diagnostics.CodeAnalysis;
 using System.Web;
 using System.Web.Mvc;
 
@@ -22,6 +23,7 @@ namespace BikeTracker.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="UserBaseController"/> class.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         public UserBaseController()
         {
         }

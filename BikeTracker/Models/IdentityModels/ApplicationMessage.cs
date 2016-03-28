@@ -1,5 +1,5 @@
-﻿using BikeTracker.Controllers.Filters;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.IdentityModels
 {
@@ -7,7 +7,7 @@ namespace BikeTracker.Models.IdentityModels
     /// Represents a message sent by the application to a user by means other than the website.
     /// </summary>
     /// <seealso cref="IdentityMessage" />
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class ApplicationMessage : IdentityMessage
     {
         /// <summary>

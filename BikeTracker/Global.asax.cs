@@ -1,4 +1,4 @@
-﻿using BikeTracker.Controllers.Filters;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -6,7 +6,7 @@ using System.Web.Routing;
 
 namespace BikeTracker
 {
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class MvcApplication : HttpApplication
     {
         protected void Application_Start()

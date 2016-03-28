@@ -1,12 +1,12 @@
-﻿using BikeTracker.Controllers.Filters;
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.ReportViewModels
 {
     /// <summary>
     /// Represents a location report for a given callsign
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class CallsignLocationReportViewModel
     {
         /// <summary>

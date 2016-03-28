@@ -1,14 +1,14 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Services;
+﻿using BikeTracker.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.LoggingModels
 {
     /// <summary>
     /// Represents an entry in the website activity log
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class LogEntry
     {
         /// <summary>

@@ -39,9 +39,11 @@ namespace BikeTracker.Services
         {
             var landmark = dataContext.Landmarks.FirstOrDefault(l => l.Id == id);
             if (landmark != null)
+            {
                 landmark.Expiry = DateTimeOffset.Now.AddDays(-1);
 
-            await dataContext.SaveChangesAsync();
+                await dataContext.SaveChangesAsync();
+            }
         }
 
         /// <summary>
@@ -50,6 +52,9 @@ namespace BikeTracker.Services
         /// <param name="callsign">The callsign.</param>
         public async Task ExpireLocation(string callsign)
         {
+            if (string.IsNullOrWhiteSpace(callsign))
+                return;
+
             var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.Expired == false);
 
             foreach (var l in oldLocations)
@@ -97,6 +102,12 @@ namespace BikeTracker.Services
         /// <returns></returns>
         public async Task RegisterLandmark(string name, decimal latitude, decimal longitude, DateTimeOffset? expiry = null)
         {
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("{0} cannot be empty or only whitespace", nameof(name));
+
             var landmark = new Landmark
             {
                 Name = name,
@@ -120,6 +131,12 @@ namespace BikeTracker.Services
         /// <returns></returns>
         public async Task RegisterLocation(string imei, DateTimeOffset readingTime, DateTimeOffset receivedTime, decimal latitude, decimal longitude)
         {
+            if (imei == null)
+                throw new ArgumentNullException(nameof(imei));
+
+            if (string.IsNullOrWhiteSpace(imei))
+                throw new ArgumentException("{0} cannot be empty or only whitespace", nameof(imei));
+
             var vehicle = await imeiService.GetFromIMEI(imei);
 
             var locationData = new LocationRecord

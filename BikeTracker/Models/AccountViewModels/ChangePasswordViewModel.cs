@@ -1,12 +1,12 @@
-﻿using BikeTracker.Controllers.Filters;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.AccountViewModels
 {
     /// <summary>
     /// Model to represent a request from the user to change their password.
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class ChangePasswordViewModel
     {
         /// <summary>

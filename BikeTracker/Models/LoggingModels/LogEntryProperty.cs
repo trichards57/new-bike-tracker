@@ -1,12 +1,12 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Services;
+﻿using BikeTracker.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.LoggingModels
 {
     /// <summary>
     /// Represents a data property associated with a log entry.
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class LogEntryProperty
     {
         /// <summary>

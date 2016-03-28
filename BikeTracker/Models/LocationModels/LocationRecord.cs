@@ -1,12 +1,12 @@
-﻿using BikeTracker.Controllers.Filters;
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.LocationModels
 {
     /// <summary>
     /// Represents a location record reported to the server.
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class LocationRecord
     {
         /// <summary>

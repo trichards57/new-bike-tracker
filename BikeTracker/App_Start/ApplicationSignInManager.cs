@@ -1,8 +1,8 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Models.IdentityModels;
+﻿using BikeTracker.Models.IdentityModels;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -12,7 +12,7 @@ namespace BikeTracker
     /// <summary>
     /// Subclass of SignInManager, set up to use <see cref="ApplicationUser"/> instead of IdentityUser.
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class ApplicationSignInManager : SignInManager<ApplicationUser, string>, ISignInManager
     {
         /// <summary>

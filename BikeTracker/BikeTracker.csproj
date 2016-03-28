@@ -247,7 +247,6 @@
     <Compile Include="Controllers\ControlPanelController.cs" />
     <Compile Include="Controllers\DialogController.cs" />
     <Compile Include="Controllers\Filters\AuthorizePasswordExpiresAttribute.cs" />
-    <Compile Include="Controllers\Filters\IgnoreCoverageAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IMEIController.cs" />
     <Compile Include="Controllers\ManageController.cs" />

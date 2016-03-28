@@ -1,12 +1,12 @@
-﻿using BikeTracker.Controllers.Filters;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.LocationModels
 {
     /// <summary>
     /// Represents a relationship between an IMEI code and a callsign
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class IMEIToCallsign
     {
         /// <summary>

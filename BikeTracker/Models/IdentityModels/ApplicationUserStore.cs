@@ -1,6 +1,6 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Models.Contexts;
+﻿using BikeTracker.Models.Contexts;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.IdentityModels
 {
@@ -8,7 +8,7 @@ namespace BikeTracker.Models.IdentityModels
     /// Represents the store used to manage user details.
     /// </summary>
     /// <seealso cref="Microsoft.AspNet.Identity.EntityFramework.UserStore{ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim}" />
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class ApplicationUserStore : UserStore<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>
     {
         /// <summary>

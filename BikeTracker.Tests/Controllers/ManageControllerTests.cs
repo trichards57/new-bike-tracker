@@ -1,4 +1,5 @@
-﻿using BikeTracker.Models.AccountViewModels;
+﻿using BikeTracker.Controllers;
+using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
@@ -94,6 +95,30 @@ namespace BikeTracker.Tests.Controllers
             var controller = MockHelpers.CreateManageController();
 
             var result = controller.Index(null);
+
+            var view = result as ViewResult;
+
+            Assert.IsNotNull(view);
+        }
+
+        [TestMethod]
+        public void IndexPasswordSuccess()
+        {
+            var controller = MockHelpers.CreateManageController();
+
+            var result = controller.Index(ManageController.ManageMessageId.ChangePasswordSuccess);
+
+            var view = result as ViewResult;
+
+            Assert.IsNotNull(view);
+        }
+
+        [TestMethod]
+        public void IndexError()
+        {
+            var controller = MockHelpers.CreateManageController();
+
+            var result = controller.Index(ManageController.ManageMessageId.Error);
 
             var view = result as ViewResult;
 

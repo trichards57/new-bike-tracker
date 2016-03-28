@@ -1,10 +1,9 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Models.AccountViewModels;
+﻿using BikeTracker.Models.AccountViewModels;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Practices.Unity;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -22,7 +21,7 @@ namespace BikeTracker.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
         /// </summary>
-        [InjectionConstructor, IgnoreCoverage]
+        [InjectionConstructor, ExcludeFromCodeCoverage]
         public AccountController()
         {
         }
@@ -186,25 +185,14 @@ namespace BikeTracker.Controllers
                     await UserManager.GenerateEmailConfirmationEmailAsync(Url, user.Id);
                     return View(model);
                 }
+
+                await SignInManager.SignInAsync(user, model.RememberMe, false);
+                return RedirectToLocal(returnUrl);
             }
             else
             {
                 ModelState.AddModelError("", "Invalid login attempt.");
                 return View(model);
-            }
-
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-
-                case SignInStatus.Failure:
-                default:
-                    // This should only be reached if something breaks internally in the SignInManager
-                    // as the code above already checks the username and password is valid.
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
             }
         }
 

@@ -1,6 +1,6 @@
-﻿using BikeTracker.Controllers.Filters;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -10,7 +10,7 @@ namespace BikeTracker.Models.IdentityModels
     /// Represents a user who can use the website.
     /// </summary>
     /// <seealso cref="IdentityUser" />
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class ApplicationUser : IdentityUser
     {
         /// <summary>

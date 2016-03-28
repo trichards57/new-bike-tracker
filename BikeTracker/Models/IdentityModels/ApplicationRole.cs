@@ -1,5 +1,5 @@
-﻿using BikeTracker.Controllers.Filters;
-using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.IdentityModels
 {
@@ -7,7 +7,7 @@ namespace BikeTracker.Models.IdentityModels
     /// Represents a role held by an <see cref="ApplicationUser"/>.
     /// </summary>
     /// <seealso cref="IdentityRole" />
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class ApplicationRole : IdentityRole
     {
         /// <summary>

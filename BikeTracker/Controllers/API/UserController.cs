@@ -1,5 +1,4 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Models.AccountViewModels;
+﻿using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Models.IdentityModels;
 using BikeTracker.Services;
 using Microsoft.AspNet.Identity;
@@ -10,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -28,7 +28,7 @@ namespace BikeTracker.Controllers.API
         private IRoleManager roleManager;
         private IUserManager userManager;
 
-        [InjectionConstructor, IgnoreCoverage]
+        [InjectionConstructor, ExcludeFromCodeCoverage]
         public UserController() { }
 
         public UserController(IUserManager userManager, IRoleManager roleManager, ILogService logService)

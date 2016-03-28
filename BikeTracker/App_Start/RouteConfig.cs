@@ -1,4 +1,4 @@
-﻿using BikeTracker.Controllers.Filters;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -7,7 +7,7 @@ namespace BikeTracker
     /// <summary>
     /// Setup class to configure the website's routes.
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class RouteConfig
     {
         /// <summary>

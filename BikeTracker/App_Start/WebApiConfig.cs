@@ -1,6 +1,6 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Models.AccountViewModels;
+﻿using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Models.LocationModels;
+using System.Diagnostics.CodeAnalysis;
 using System.Web.Http;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
@@ -10,7 +10,7 @@ namespace BikeTracker
     /// <summary>
     /// Setup class for the Web API elements of the website
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public static class WebApiConfig
     {
         /// <summary>

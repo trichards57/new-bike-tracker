@@ -2,6 +2,7 @@
 using BikeTracker.Models.AccountViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.Practices.Unity;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -9,7 +10,7 @@ namespace BikeTracker.Controllers
 {
     public class ManageController : UserBaseController
     {
-        [InjectionConstructor, IgnoreCoverage]
+        [InjectionConstructor, ExcludeFromCodeCoverage]
         public ManageController()
         {
         }
@@ -48,10 +49,7 @@ namespace BikeTracker.Controllers
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-                if (user != null)
-                {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                }
+                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
             }
             AddErrors(result);

@@ -462,7 +462,7 @@ namespace BikeTracker.Tests.Services
             }
             else
             {
-                locationService.Verify(l => l.ExpireLocation(callsign));
+                locationService.Verify(l => l.ExpireLocation(oldValues.CallSign));
             }
 
             if (shouldUpdate)

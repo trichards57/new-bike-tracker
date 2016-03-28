@@ -1,11 +1,11 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Models.Contexts;
+﻿using BikeTracker.Models.Contexts;
 using BikeTracker.Models.IdentityModels;
 using BikeTracker.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -15,7 +15,7 @@ namespace BikeTracker
     /// Subclass of UserManager, set up to use <see cref="ApplicationUser"/> instead of IdentityUser.
     /// Used to support user management for the website.
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class ApplicationUserManager : UserManager<ApplicationUser, string>, IUserManager
     {
         public const int MinPasswordLength = 6;

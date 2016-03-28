@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using System.Diagnostics.CodeAnalysis;
 using System.Web;
 using System.Web.Mvc;
 
@@ -10,7 +11,7 @@ namespace BikeTracker.Controllers.Filters
     /// </summary>
     /// This filter will allow an anonymous user to access the page.
     /// <seealso cref="System.Web.Mvc.ActionFilterAttribute" />
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class AllowAnonymousPasswordExpiresAttribute : ActionFilterAttribute
     {
         /// <summary>
@@ -38,7 +39,7 @@ namespace BikeTracker.Controllers.Filters
     /// </summary>
     /// This filter will not allow an anonymous user to access the page.  It can be used in place of the <seealso cref="System.Web.Mvc.AuthorizeAttribute"/>.
     /// <seealso cref="System.Web.Mvc.AuthorizeAttribute" />
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class AuthorizePasswordExpiresAttribute : AuthorizeAttribute
     {
         /// <summary>

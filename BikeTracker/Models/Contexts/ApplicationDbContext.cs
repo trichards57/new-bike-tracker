@@ -1,10 +1,10 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Models.IdentityModels;
+﻿using BikeTracker.Models.IdentityModels;
 using BikeTracker.Models.LocationModels;
 using BikeTracker.Models.LoggingModels;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Configuration;
 using System.Data.Entity;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.Contexts
 {
@@ -15,7 +15,7 @@ namespace BikeTracker.Models.Contexts
     /// <seealso cref="BikeTracker.Models.Contexts.ILocationContext" />
     /// <seealso cref="BikeTracker.Models.Contexts.ILoggingContext" />
     /// <seealso cref="BikeTracker.Models.Contexts.IIMEIContext" />
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>,
         ILocationContext, ILoggingContext, IIMEIContext
     {

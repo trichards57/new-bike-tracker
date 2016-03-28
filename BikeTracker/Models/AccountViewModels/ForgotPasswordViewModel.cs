@@ -1,12 +1,12 @@
-﻿using BikeTracker.Controllers.Filters;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.AccountViewModels
 {
     /// <summary>
     /// Represents a request to reset a forgotten password.
     /// </summary>
-    [IgnoreCoverage]
+    [ExcludeFromCodeCoverage]
     public class ForgotPasswordViewModel
     {
         /// <summary>
