@@ -5,6 +5,7 @@ using BikeTracker.Tests.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -13,6 +14,7 @@ namespace BikeTracker.Tests.Controllers
     /// <summary>
     /// Summary description for AccountControllerTest
     /// </summary>
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class AccountControllerTests
     {

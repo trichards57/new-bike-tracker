@@ -8,6 +8,7 @@ using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Mail;
 using System.Security.Claims;
@@ -18,6 +19,7 @@ using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Helpers
 {
+    [ExcludeFromCodeCoverage]
     public class MockHelpers
     {
         public static readonly string BadId;

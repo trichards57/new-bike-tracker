@@ -1,7 +1,9 @@
 using System.Data.Entity.Migrations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class InitialCreate : DbMigration
     {
         public override void Up()

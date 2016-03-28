@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace BikeTracker.Tests.Helpers
 {
+    [ExcludeFromCodeCoverage]
     internal class TestDbAsyncEnumerable<T> : EnumerableQuery<T>, IDbAsyncEnumerable<T>, IQueryable<T>
     {
         public TestDbAsyncEnumerable(IEnumerable<T> enumerable)

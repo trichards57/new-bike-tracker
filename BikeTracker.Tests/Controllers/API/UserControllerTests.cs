@@ -10,6 +10,7 @@ using Ploeh.AutoFixture;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -24,6 +25,7 @@ using System.Web.OData;
 
 namespace BikeTracker.Tests.Controllers.API
 {
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class UserControllerTests
     {

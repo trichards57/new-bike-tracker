@@ -7,6 +7,7 @@ using Moq;
 using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -15,6 +16,7 @@ using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Controllers
 {
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class MapControllerTests
     {

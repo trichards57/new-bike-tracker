@@ -1,7 +1,8 @@
 namespace BikeTracker.Migrations
 {
     using System.Data.Entity.Migrations;
-
+    using System.Diagnostics.CodeAnalysis;
+    [ExcludeFromCodeCoverage]
     public partial class StartLogging : DbMigration
     {
         public override void Up()

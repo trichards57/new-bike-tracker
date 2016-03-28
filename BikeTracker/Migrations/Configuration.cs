@@ -1,12 +1,12 @@
-using BikeTracker.Models;
 using BikeTracker.Models.Contexts;
 using BikeTracker.Models.IdentityModels;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity.Migrations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Migrations
 {
-
+    [ExcludeFromCodeCoverage]
     internal sealed class Configuration : DbMigrationsConfiguration<ApplicationDbContext>
     {
         public Configuration()

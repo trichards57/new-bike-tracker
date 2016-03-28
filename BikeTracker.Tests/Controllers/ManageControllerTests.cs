@@ -2,11 +2,13 @@
 using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Controllers
 {
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class ManageControllerTests
     {

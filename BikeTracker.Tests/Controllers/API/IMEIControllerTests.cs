@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Ploeh.AutoFixture;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using System.Web.OData.Results;
 
 namespace BikeTracker.Tests.Controllers.API
 {
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class IMEIControllerTests
     {

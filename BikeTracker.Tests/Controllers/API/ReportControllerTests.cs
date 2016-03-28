@@ -7,12 +7,14 @@ using Moq;
 using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 
 namespace BikeTracker.Tests.Controllers.API
 {
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class ReportControllerTests
     {

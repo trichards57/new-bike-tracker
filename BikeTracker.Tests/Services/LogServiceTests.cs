@@ -8,11 +8,13 @@ using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace BikeTracker.Tests.Services
 {
+    [ExcludeFromCodeCoverage]
     [TestClass]
     public class LogServiceTests
     {
