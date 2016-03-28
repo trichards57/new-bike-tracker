@@ -20,8 +20,10 @@ namespace BikeTracker.Tests.Services
     {
         private const int TimeTolerance = 2;
         private readonly Fixture Fixture = new Fixture();
+        private readonly string TestCallsign;
         private readonly List<string> TestChanges;
         private readonly string TestDeleteUser;
+        private readonly string TestImei;
         private readonly string TestNewUser;
         private readonly string TestUsername;
 
@@ -30,6 +32,8 @@ namespace BikeTracker.Tests.Services
             TestUsername = Fixture.Create<string>();
             TestNewUser = Fixture.Create<string>();
             TestDeleteUser = Fixture.Create<string>();
+            TestImei = Fixture.Create<string>();
+            TestCallsign = Fixture.Create<string>();
             TestChanges = new List<string>(Fixture.CreateMany<string>());
         }
 
@@ -56,6 +60,48 @@ namespace BikeTracker.Tests.Services
             var mockLogPropertySet = new Mock<DbSet<LogEntryProperty>>();
 
             return mockLogPropertySet;
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogImeiRegisteredEmptyCallsign()
+        {
+            await LogImeiRegistered(TestUsername, TestImei, string.Empty, VehicleType.FootPatrol, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogImeiRegisteredEmptyImei()
+        {
+            await LogImeiRegistered(TestUsername, string.Empty, TestCallsign, VehicleType.FootPatrol, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogImeiRegisteredEmptyUsername()
+        {
+            await LogImeiRegistered(string.Empty, TestImei, TestCallsign, VehicleType.FootPatrol, false);
+        }
+
+        [TestMethod]
+        public async Task LogImeiRegisteredGoodData()
+        {
+            await LogImeiRegistered(TestUsername, TestImei, TestCallsign, VehicleType.FootPatrol);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogImeiRegisteredNoCallsign()
+        {
+            await LogImeiRegistered(TestUsername, TestImei, null, VehicleType.FootPatrol, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogImeiRegisteredNoImei()
+        {
+            await LogImeiRegistered(TestUsername, null, TestCallsign, VehicleType.FootPatrol, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogImeiRegisteredNoUsername()
+        {
+            await LogImeiRegistered(null, TestImei, TestCallsign, VehicleType.FootPatrol, false);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
@@ -171,7 +217,7 @@ namespace BikeTracker.Tests.Services
 
         private bool CheckUserCreatedLogEntry(LogEntry entry, string creatingUser, string newUser)
         {
-            CheckLogEntry(entry, LogEventType.UserCreated, creatingUser,  new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = newUser });
+            CheckLogEntry(entry, LogEventType.UserCreated, creatingUser, new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = newUser });
             return true;
         }
 
@@ -201,13 +247,7 @@ namespace BikeTracker.Tests.Services
 
             if (expectSuccess)
             {
-                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => le.SourceUser == registeringUser
-                      && le.Type == LogEventType.ImeiRegistered
-                      && le.Properties.Count(lep => lep.PropertyType == LogPropertyType.Imei && lep.PropertyValue == imei) == 1
-                      && le.Properties.Count(lep => lep.PropertyType == LogPropertyType.Callsign && lep.PropertyValue == callsign) == 1
-                      && le.Properties.Count(lep => lep.PropertyType == LogPropertyType.VehicleType && lep.PropertyValue == type.ToString()) == 1
-                      && le.Properties.Count == 3
-                      && (le.Date - DateTimeOffset.Now).TotalSeconds < TimeTolerance)));
+                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckImeiRegisteredLogEntry(le, registeringUser, imei, callsign, type))));
                 context.Verify(c => c.SaveChangesAsync());
             }
             else

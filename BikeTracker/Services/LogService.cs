@@ -37,9 +37,36 @@ namespace BikeTracker.Services
         /// <param name="type">The vehicle type associated with the callsign.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task LogImeiRegistered(string registeringUser, string imei, string callsign, VehicleType type)
+        public async Task LogImeiRegistered(string registeringUser, string imei, string callsign, VehicleType type)
         {
-            throw new NotImplementedException();
+            if (registeringUser == null)
+                throw new ArgumentNullException(nameof(registeringUser));
+            if (string.IsNullOrWhiteSpace(registeringUser))
+                throw new ArgumentException("{0} cannot be null or whitespace", nameof(registeringUser));
+
+            if (imei == null)
+                throw new ArgumentNullException(nameof(imei));
+            if (string.IsNullOrWhiteSpace(imei))
+                throw new ArgumentException("{0} cannot be null or whitespace", nameof(imei));
+
+            if (callsign == null)
+                throw new ArgumentNullException(nameof(callsign));
+            if (string.IsNullOrWhiteSpace(callsign))
+                throw new ArgumentException("{0} cannot be null or whitespace", nameof(callsign));
+
+            var logEntry = new LogEntry
+            {
+                Date = DateTimeOffset.Now,
+                SourceUser = registeringUser,
+                Type = LogEventType.ImeiRegistered,
+            };
+
+            logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.Imei, PropertyValue = imei });
+            logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.Callsign, PropertyValue = callsign });
+            logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.VehicleType, PropertyValue = type.ToString() });
+
+            dataContext.LogEntries.Add(logEntry);
+            await dataContext.SaveChangesAsync();
         }
 
         /// <summary>
