@@ -28,7 +28,6 @@ namespace BikeTracker.Tests.Services
         private readonly List<Landmark> GoodLandmarks;
         private readonly LocationRecord GoodLocation;
         private readonly List<LocationRecord> GoodLocations;
-        // seconds
 
         public LocationServiceTests()
         {

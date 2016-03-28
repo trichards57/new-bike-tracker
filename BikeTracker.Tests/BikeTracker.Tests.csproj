@@ -168,6 +168,7 @@
     <Compile Include="Services\IMEIServiceTests.cs" />
     <Compile Include="Services\LocationServiceTests.cs" />
     <Compile Include="Services\LogServiceTests.cs" />
+    <Compile Include="Services\ReportServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config">

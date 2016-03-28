@@ -50,6 +50,11 @@ namespace BikeTracker.Services
         /// </returns>
         public async Task<IEnumerable<LocationRecord>> GetCallsignRecord(string callsign, DateTimeOffset startTime, DateTimeOffset endTime)
         {
+            if (callsign == null)
+                throw new ArgumentNullException(nameof(callsign));
+            if (string.IsNullOrWhiteSpace(callsign))
+                throw new ArgumentException("{0} cannot be null or whitespace", nameof(callsign));
+
             var callsignRecords = dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.ReadingTime >= startTime && l.ReadingTime <= endTime);
             return await callsignRecords.ToListAsync();
         }
@@ -62,7 +67,7 @@ namespace BikeTracker.Services
         /// </returns>
         public async Task<IEnumerable<DateTimeOffset>> GetReportDates()
         {
-            return await dataContext.LocationRecords.Select(l => DbFunctions.TruncateTime(l.ReadingTime)).Where(d => d.HasValue).Select(d => d.Value).Distinct().ToListAsync();
+            return await dataContext.LocationRecords.Select(l => DbFunctions.TruncateTime(l.ReadingTime).Value).Distinct().ToListAsync();
         }
     }
 }
