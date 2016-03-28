@@ -225,9 +225,9 @@ namespace BikeTracker.Tests.Controllers.API
 
         private UserController CreateController()
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var logService = GetMockLogService();
+            var userManager = CreateMockUserManager();
+            var roleManager = CreateMockRoleManager();
+            var logService = CreateMockLogService();
             var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
 
             return controller;
@@ -246,9 +246,9 @@ namespace BikeTracker.Tests.Controllers.API
 
         private async Task DeleteUser(string id, bool expectSuccess = true, ApplicationUser testUser = null)
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
-            var logService = GetMockLogService();
+            var userManager = CreateMockUserManager();
+            var roleManager = CreateMockRoleManager();
+            var logService = CreateMockLogService();
             var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
 
             var principal = CreateMockPrincipal();
@@ -265,7 +265,7 @@ namespace BikeTracker.Tests.Controllers.API
             Assert.IsInstanceOfType(res, typeof(StatusCodeResult));
         }
 
-        private Mock<ILogService> GetMockLogService()
+        private Mock<ILogService> CreateMockLogService()
         {
             var service = new Mock<ILogService>(MockBehavior.Strict);
 
@@ -276,7 +276,7 @@ namespace BikeTracker.Tests.Controllers.API
             return service;
         }
 
-        private Mock<IRoleManager> GetMockRoleManager()
+        private Mock<IRoleManager> CreateMockRoleManager()
         {
             var roleManager = new Mock<IRoleManager>(MockBehavior.Strict);
 
@@ -290,7 +290,7 @@ namespace BikeTracker.Tests.Controllers.API
             return roleManager;
         }
 
-        private Mock<IUserManager> GetMockUserManager()
+        private Mock<IUserManager> CreateMockUserManager()
         {
             var userManager = new Mock<IUserManager>(MockBehavior.Strict);
             var userData = TestUsers.AsQueryable();
@@ -335,10 +335,10 @@ namespace BikeTracker.Tests.Controllers.API
 
         private async Task PutUser(string id, string email, ApplicationRole role, IEnumerable<string> oldRoles = null, bool changeRole = true, bool changeEmail = true, ResultType expectedResult = ResultType.Success)
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
+            var userManager = CreateMockUserManager();
+            var roleManager = CreateMockRoleManager();
             var configuration = new Mock<HttpConfiguration>();
-            var logService = GetMockLogService();
+            var logService = CreateMockLogService();
             var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 
@@ -409,10 +409,10 @@ namespace BikeTracker.Tests.Controllers.API
 
         private async Task RegisterUser(string role, string email, string id = null, ResultType expectedResult = ResultType.Success, bool useDefaultRole = false)
         {
-            var userManager = GetMockUserManager();
-            var roleManager = GetMockRoleManager();
+            var userManager = CreateMockUserManager();
+            var roleManager = CreateMockRoleManager();
             var configuration = new Mock<HttpConfiguration>();
-            var logService = GetMockLogService();
+            var logService = CreateMockLogService();
             var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 

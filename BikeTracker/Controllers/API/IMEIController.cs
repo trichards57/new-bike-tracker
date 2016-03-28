@@ -1,5 +1,6 @@
 ﻿using BikeTracker.Models.LocationModels;
 using BikeTracker.Services;
+using Microsoft.AspNet.Identity;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -18,14 +19,16 @@ namespace BikeTracker.Controllers.API
         /// The IMEI Service used to access the database
         /// </summary>
         private IIMEIService imeiService;
+        private ILogService logService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IMEIController"/> class.
         /// </summary>
         /// <param name="imeiService">The IMEI service to use.</param>
-        public IMEIController(IIMEIService imeiService)
+        public IMEIController(IIMEIService imeiService, ILogService logService)
         {
             this.imeiService = imeiService;
+            this.logService = logService;
         }
 
         // DELETE: odata/IMEI(5)
@@ -82,8 +85,11 @@ namespace BikeTracker.Controllers.API
             }
 
             await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
+            var newImei = await imeiService.GetFromIMEI(imeiToCallsign.IMEI);
 
-            return Updated(await imeiService.GetFromIMEI(imeiToCallsign.IMEI));
+            await logService.LogImeiRegistered(User.Identity.GetUserName(), newImei.IMEI, newImei.CallSign, newImei.Type);
+
+            return Updated(newImei);
         }
     }
 }

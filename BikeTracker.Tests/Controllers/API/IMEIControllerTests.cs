@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -27,6 +29,7 @@ namespace BikeTracker.Tests.Controllers.API
         private readonly IMEIToCallsign TestCallsign;
         private readonly List<IMEIToCallsign> TestCallsigns;
         private readonly int TestId;
+        private readonly string TestUsername;
 
         public IMEIControllerTests()
         {
@@ -35,12 +38,14 @@ namespace BikeTracker.Tests.Controllers.API
             BadId = Fixture.Create<int>();
             TestCallsign = Fixture.Create<IMEIToCallsign>();
             BadCallsign = Fixture.Create<string>();
+            TestUsername = Fixture.Create<string>();
         }
 
         public IMEIController CreateController()
         {
             var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
+            var logService = CreateMockLogService();
+            var controller = new IMEIController(service.Object, logService.Object);
 
             return controller;
         }
@@ -65,7 +70,8 @@ namespace BikeTracker.Tests.Controllers.API
         public async Task DeleteCallsign()
         {
             var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
+            var logService = CreateMockLogService();
+            var controller = new IMEIController(service.Object, logService.Object);
             var config = new Mock<HttpConfiguration>();
             controller.Configuration = config.Object;
 
@@ -169,10 +175,20 @@ namespace BikeTracker.Tests.Controllers.API
             await PutIMEIToCallsign(TestId, TestCallsign.CallSign, null, TestCallsign.Type, ResultType.ModelError);
         }
 
+        private Mock<ILogService> CreateMockLogService()
+        {
+            var service = new Mock<ILogService>(MockBehavior.Strict);
+
+            service.Setup(l => l.LogImeiRegistered(TestUsername, TestCallsign.IMEI, TestCallsign.CallSign, TestCallsign.Type)).Returns(Task.FromResult<object>(null));
+
+            return service;
+        }
+
         private async Task PostIMEIToCallsign(string callsign, string imei, VehicleType type, ResultType expectedResult = ResultType.Success)
         {
             var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
+            var logService = CreateMockLogService();
+            var controller = new IMEIController(service.Object, logService.Object);
             var config = new Mock<HttpConfiguration>();
             controller.Configuration = config.Object;
 
@@ -200,11 +216,26 @@ namespace BikeTracker.Tests.Controllers.API
             }
         }
 
+        private Mock<IPrincipal> CreateMockPrincipal()
+        {
+            var identity = new ClaimsIdentity();
+            identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, TestUsername));
+
+            var mockPrinciple = new Mock<IPrincipal>();
+            mockPrinciple.SetupGet(i => i.Identity).Returns(identity);
+
+            return mockPrinciple;
+        }
+
         private async Task PutIMEIToCallsign(int id, string callsign, string imei, VehicleType? type, ResultType expectedResult = ResultType.Success)
         {
+            var logService = CreateMockLogService();
             var service = CreateMockIMEIService();
-            var controller = new IMEIController(service.Object);
+            var controller = new IMEIController(service.Object, logService.Object);
             var config = new Mock<HttpConfiguration>();
+            var principal = CreateMockPrincipal();
+
+            controller.User = principal.Object;
             controller.Configuration = config.Object;
 
             var delta = new Delta<IMEIToCallsign>();
@@ -221,15 +252,18 @@ namespace BikeTracker.Tests.Controllers.API
             {
                 case ResultType.ModelError:
                     Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
+                    logService.Verify(l => l.LogImeiRegistered(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<VehicleType>()), Times.Never);
                     break;
 
                 case ResultType.NotFoundError:
                     Assert.IsInstanceOfType(res, typeof(NotFoundResult));
+                    logService.Verify(l => l.LogImeiRegistered(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<VehicleType>()), Times.Never);
                     break;
 
                 case ResultType.Success:
                     Assert.IsInstanceOfType(res, typeof(UpdatedODataResult<IMEIToCallsign>));
                     service.Verify(i => i.RegisterCallsign(imei, callsign, type));
+                    logService.Verify(l => l.LogImeiRegistered(TestUsername, imei, callsign, type ?? VehicleType.Unknown));
                     break;
             }
         }
