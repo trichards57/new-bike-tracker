@@ -1,10 +1,12 @@
 ﻿using BikeTracker.Models.Contexts;
 using BikeTracker.Models.LocationModels;
+using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace BikeTracker.Services
 {
@@ -18,14 +20,47 @@ namespace BikeTracker.Services
         /// The data context used to store the data.
         /// </summary>
         private IIMEIContext dataContext;
+        /// <summary>
+        /// The service used to handle location details.
+        /// </summary>
         private ILocationService locationService;
 
+        /// <summary>
+        /// Gets the location service.
+        /// </summary>
+        /// <value>
+        /// The location service.
+        /// </value>
+        private ILocationService LocationService
+        {
+            get
+            {
+                if (locationService == null)
+                    locationService = DependencyResolver.Current.GetService<ILocationService>();
+
+                return locationService;
+            }
+        }
+
+        /// <summary>
+        /// The default callsign used if none is supplied.
+        /// </summary>
         public static readonly string DefaultCallsign = "WR???";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IMEIService"/> class.
         /// </summary>
         /// <param name="context">The data context to store to.</param>
+        /// <remarks>This is used to get around the circular reference between IMEIService and LocationService</remarks>
+        [InjectionConstructor]
+        public IMEIService(IIMEIContext context) : this(context, null) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IMEIService" /> class.
+        /// </summary>
+        /// <param name="context">The data context to store to.</param>
+        /// <param name="locationService">The location service to support this service.</param>
+        /// <remarks>If <paramref name="locationService"/> is null, it will be loaded from the DependencyResolver</remarks>
         public IMEIService(IIMEIContext context, ILocationService locationService)
         {
             dataContext = context;
@@ -145,7 +180,7 @@ namespace BikeTracker.Services
             {
                 if (!string.IsNullOrWhiteSpace(callsign) && iToC.CallSign != callsign)
                 {
-                    await locationService.ExpireLocation(iToC.CallSign);
+                    await LocationService.ExpireLocation(iToC.CallSign);
                 }
 
                 iToC.CallSign = string.IsNullOrWhiteSpace(callsign) ? iToC.CallSign : callsign;
@@ -178,7 +213,7 @@ namespace BikeTracker.Services
             if (imei == null)
                 return;
 
-            await locationService.ExpireLocation(imei.CallSign);
+            await LocationService.ExpireLocation(imei.CallSign);
 
             dataContext.IMEIToCallsigns.Remove(imei);
             await dataContext.SaveChangesAsync();

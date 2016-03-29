@@ -211,6 +211,18 @@ namespace BikeTracker.Services
             await dataContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Logs when an IMEI is deleted from the system.
+        /// </summary>
+        /// <param name="registeringUser">The registering user.</param>
+        /// <param name="imei">The IMEI that was deleted.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Raised if the <paramref name="registeringUser"/> or <paramref name="imei"/> are null.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// Raised if the <paramref name="registeringUser"/> or <paramref name="imei"/> are empty or whitespace.
+        /// </exception>
         public async Task LogImeiDeleted(string registeringUser, string imei)
         {
             if (registeringUser == null)

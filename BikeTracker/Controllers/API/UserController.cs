@@ -21,16 +21,38 @@ using System.Web.Security;
 
 namespace BikeTracker.Controllers.API
 {
+    /// <summary>
+    /// Controller that handles user management.
+    /// </summary>
+    /// <seealso cref="System.Web.OData.ODataController" />
     [Authorize(Roles = "GeneralAdmin")]
     public class UserController : ODataController
     {
+        /// <summary>
+        /// The log service to use
+        /// </summary>
         private ILogService logService;
+        /// <summary>
+        /// The role manager to use
+        /// </summary>
         private IRoleManager roleManager;
+        /// <summary>
+        /// The user manager to use
+        /// </summary>
         private IUserManager userManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserController"/> class.
+        /// </summary>
         [InjectionConstructor, ExcludeFromCodeCoverage]
         public UserController() { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserController"/> class.
+        /// </summary>
+        /// <param name="userManager">The user manager to inject.</param>
+        /// <param name="roleManager">The role manager to inject.</param>
+        /// <param name="logService">The log service to inject.</param>
         public UserController(IUserManager userManager, IRoleManager roleManager, ILogService logService)
         {
             this.userManager = userManager;
@@ -38,6 +60,12 @@ namespace BikeTracker.Controllers.API
             this.logService = logService;
         }
 
+        /// <summary>
+        /// Gets the role manager.
+        /// </summary>
+        /// <value>
+        /// The role manager.
+        /// </value>
         public IRoleManager RoleManager
         {
             get
@@ -60,7 +88,13 @@ namespace BikeTracker.Controllers.API
             }
         }
 
-        // DELETE: odata/User(5)
+        /// <summary>
+        /// Deletes the specified user.
+        /// </summary>
+        /// <param name="key">The key identifying the user.</param>
+        /// <returns>HTTP 204 - No Content</returns>
+        /// @mapping DELETE /odata/User(key)
+        /// @notanon
         public async Task<IHttpActionResult> Delete([FromODataUri] string key)
         {
             var user = await UserManager.FindByIdAsync(key);
@@ -73,7 +107,13 @@ namespace BikeTracker.Controllers.API
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // GET: odata/User(5)
+        /// <summary>
+        /// Gets the specified user.
+        /// </summary>
+        /// <param name="key">The key identifying the user.</param>
+        /// <returns>A single UserAdminViewModel, otherwise an empty result</returns>
+        /// @mapping GET /odata/User(key)
+        /// @notanon
         [EnableQuery]
         public async Task<SingleResult<UserAdminViewModel>> Get([FromODataUri] string key)
         {
@@ -101,7 +141,12 @@ namespace BikeTracker.Controllers.API
             return SingleResult.Create(new List<UserAdminViewModel>().AsQueryable());
         }
 
-        // GET: odata/User
+        /// <summary>
+        /// Gets the all the users.
+        /// </summary>
+        /// <returns>A list of all the registered users.</returns>
+        /// @mapping GET /odata/User
+        /// @notanon
         [EnableQuery]
         public async Task<IQueryable<UserAdminViewModel>> GetUser()
         {
@@ -128,7 +173,18 @@ namespace BikeTracker.Controllers.API
             }).AsQueryable();
         }
 
-        // PUT: odata/User(5)
+        /// <summary>
+        /// Updates the specified user.
+        /// </summary>
+        /// <param name="key">The key of the user to update.</param>
+        /// <param name="update">The updates to make to the user.</param>
+        /// <returns>
+        /// HTTP 400 - Bad Request if the model is invalid
+        /// HTTP 404 - Not Found if the user doesn't exist
+        /// HTTP 200 - OK if the user is updated
+        /// </returns>
+        /// @mapping PUT /odata/User(key)
+        /// @notanon
         public async Task<IHttpActionResult> Put([FromODataUri] string key, UserAdminViewModel update)
         {
             Validate(update);
@@ -167,6 +223,20 @@ namespace BikeTracker.Controllers.API
             return Ok();
         }
 
+        /// <summary>
+        /// Registers the user given in the odata parameters.
+        /// </summary>
+        /// <param name="parameters">The parameters describing the user.</param>
+        /// <returns>
+        /// HTTP 400 - Bad Request if the model is invalid
+        /// HTTP 200 - OK if the user is registered
+        /// </returns>
+        /// <remarks>
+        /// Needs parameters role and email.  If role isn't provided, it is set to 
+        /// Normal.
+        /// </remarks>
+        /// @mapping POST /odata/User.Register
+        /// @notanon
         [HttpPost]
         public async Task<IHttpActionResult> Register(ODataActionParameters parameters)
         {

@@ -1,9 +1,11 @@
 ﻿using BikeTracker.Models.Contexts;
 using BikeTracker.Models.LocationModels;
+using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace BikeTracker.Services
 {
@@ -20,11 +22,38 @@ namespace BikeTracker.Services
         private IIMEIService imeiService;
 
         /// <summary>
+        /// Gets the imei service.
+        /// </summary>
+        /// <value>
+        /// The imei service.
+        /// </value>
+        private IIMEIService ImeiService
+        {
+            get
+            {
+                if (imeiService == null)
+                    imeiService = DependencyResolver.Current.GetService<IIMEIService>();
+
+                return imeiService;
+
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationService"/> class.
+        /// </summary>
+        /// <param name="context">The data context to store to.</param>
+        /// <remarks>This is used to get around the circular reference between IMEIService and LocationService</remarks>
+        [InjectionConstructor]
+        public LocationService(ILocationContext context) : this(context, null) { }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="LocationService"/> class.
         /// </summary>
         /// <param name="imeiService">The IMEI service this service should use.</param>
         /// <param name="context">The data context to store to.</param>
-        public LocationService(IIMEIService imeiService, ILocationContext context)
+        /// <remarks>If <paramref name="imeiService"/> is null, it will be loaded from the DependencyResolver</remarks>
+        public LocationService(ILocationContext context, IIMEIService imeiService)
         {
             this.imeiService = imeiService;
             dataContext = context;
@@ -137,7 +166,7 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(imei))
                 throw new ArgumentException("{0} cannot be empty or only whitespace", nameof(imei));
 
-            var vehicle = await imeiService.GetFromIMEI(imei);
+            var vehicle = await ImeiService.GetFromIMEI(imei);
 
             var locationData = new LocationRecord
             {

@@ -16,6 +16,9 @@ namespace BikeTracker.Controllers
     [Authorize]
     public class AccountController : UserBaseController
     {
+        /// <summary>
+        /// The authentication manager
+        /// </summary>
         private IAuthenticationManager _authManager;
 
         /// <summary>
@@ -63,7 +66,7 @@ namespace BikeTracker.Controllers
         /// <param name="code">The confirmation code.</param>
         /// <returns>
         /// The ConfirmEmail view if successful, otherwise the Error view.  In either case, no model.
-        /// </returns>
+        /// </returns> 
         /// @mapping GET /Account/ConfirmEmail
         /// @anon
         [AllowAnonymous]

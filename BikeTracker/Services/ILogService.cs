@@ -18,6 +18,11 @@ namespace BikeTracker.Services
         /// <param name="type">The vehicle type associated with the callsign.</param>
         Task LogImeiRegistered(string registeringUser, string imei, string callsign, VehicleType type);
 
+        /// <summary>
+        /// Logs when an IMEI is deleted from the system.
+        /// </summary>
+        /// <param name="registeringUser">The registering user.</param>
+        /// <param name="imei">The IMEI that was deleted.</param>
         Task LogImeiDeleted(string registeringUser, string imei);
 
         /// <summary>
