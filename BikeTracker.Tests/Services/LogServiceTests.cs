@@ -62,6 +62,36 @@ namespace BikeTracker.Tests.Services
             return mockLogPropertySet;
         }
 
+        [TestMethod]
+        public async Task LogImeiDeletedGoodData()
+        {
+            await LogImeiDeleted(TestUsername, TestImei);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogImeiDeletedNoUsername()
+        {
+            await LogImeiDeleted(null, TestImei, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogImeiDeletedEmptyUsername()
+        {
+            await LogImeiDeleted(string.Empty, TestImei, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogImeiDeletedNoImei()
+        {
+            await LogImeiDeleted(TestUsername, null, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogImeiDeletedEmptyImei()
+        {
+            await LogImeiDeleted(TestUsername, string.Empty, false);
+        }
+
         [TestMethod, ExpectedException(typeof(ArgumentException))]
         public async Task LogImeiRegisteredEmptyCallsign()
         {
@@ -194,6 +224,12 @@ namespace BikeTracker.Tests.Services
             await LogUserUpdates(TestUsername, null, false);
         }
 
+        private bool CheckImeiDeletedLogEntry(LogEntry entry, string deletingUser, string imei)
+        {
+            CheckLogEntry(entry, LogEventType.ImeiDeleted, deletingUser, new LogEntryProperty { PropertyType = LogPropertyType.Imei, PropertyValue = imei });
+            return true;
+        }
+
         private bool CheckImeiRegisteredLogEntry(LogEntry entry, string registeringUser, string imei, string callsign, VehicleType type)
         {
             CheckLogEntry(entry, LogEventType.ImeiRegistered, registeringUser, new LogEntryProperty { PropertyType = LogPropertyType.Imei, PropertyValue = imei },
@@ -233,6 +269,28 @@ namespace BikeTracker.Tests.Services
 
             CheckLogEntry(entry, LogEventType.UserUpdated, updatingUser, properties);
             return true;
+        }
+
+        private async Task LogImeiDeleted(string registeringUser, string imei, bool expectSuccess = true)
+        {
+            var logEntrySet = CreateMockLogEntrySet();
+            var logPropertySet = CreateMockLogPropertySet();
+            var context = CreateLoggingContext(logEntrySet.Object, logPropertySet.Object);
+
+            var service = new LogService(context.Object);
+
+            await service.LogImeiDeleted(registeringUser, imei);
+
+            if (expectSuccess)
+            {
+                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckImeiDeletedLogEntry(le, registeringUser, imei))));
+                context.Verify(c => c.SaveChangesAsync());
+            }
+            else
+            {
+                logEntrySet.Verify(l => l.Add(It.IsAny<LogEntry>()), Times.Never);
+                context.Verify(c => c.SaveChangesAsync(), Times.Never);
+            }
         }
 
         private async Task LogImeiRegistered(string registeringUser, string imei, string callsign, VehicleType type, bool expectSuccess = true)

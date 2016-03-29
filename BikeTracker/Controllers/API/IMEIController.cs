@@ -34,7 +34,12 @@ namespace BikeTracker.Controllers.API
         // DELETE: odata/IMEI(5)
         public async Task<IHttpActionResult> Delete([FromODataUri] int key)
         {
+            var imei = await imeiService.GetFromId(key);
+
             await imeiService.DeleteIMEIById(key);
+
+            if (imei != null)
+                await logService.LogImeiDeleted(User.Identity.GetUserName(), imei.IMEI);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -63,7 +68,11 @@ namespace BikeTracker.Controllers.API
 
             await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
 
-            return Created(await imeiService.GetFromIMEI(imeiToCallsign.IMEI));
+            var newImei = await imeiService.GetFromIMEI(imeiToCallsign.IMEI);
+
+            await logService.LogImeiRegistered(User.Identity.GetUserName(), newImei.IMEI, newImei.CallSign, newImei.Type);
+
+            return Created(newImei);
         }
 
         // PUT: odata/IMEI(5)
@@ -85,6 +94,7 @@ namespace BikeTracker.Controllers.API
             }
 
             await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
+
             var newImei = await imeiService.GetFromIMEI(imeiToCallsign.IMEI);
 
             await logService.LogImeiRegistered(User.Identity.GetUserName(), newImei.IMEI, newImei.CallSign, newImei.Type);

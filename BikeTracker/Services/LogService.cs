@@ -210,5 +210,33 @@ namespace BikeTracker.Services
             dataContext.LogEntries.Add(logEntry);
             await dataContext.SaveChangesAsync();
         }
+
+        public async Task LogImeiDeleted(string registeringUser, string imei)
+        {
+            if (registeringUser == null)
+                throw new ArgumentNullException(nameof(registeringUser));
+            if (string.IsNullOrWhiteSpace(registeringUser))
+                throw new ArgumentException("{0} cannot be empty", nameof(registeringUser));
+            if (imei == null)
+                throw new ArgumentNullException(nameof(imei));
+            if (string.IsNullOrWhiteSpace(imei))
+                throw new ArgumentException("{0} cannot be empty", nameof(imei));
+
+            var logEntry = new LogEntry
+            {
+                Date = DateTimeOffset.Now,
+                SourceUser = registeringUser,
+                Type = LogEventType.ImeiDeleted
+            };
+            var logProperty = new LogEntryProperty
+            {
+                PropertyType = LogPropertyType.Imei,
+                PropertyValue = imei
+            };
+            logEntry.Properties.Add(logProperty);
+
+            dataContext.LogEntries.Add(logEntry);
+            await dataContext.SaveChangesAsync();
+        }
     }
 }

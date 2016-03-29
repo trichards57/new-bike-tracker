@@ -28,7 +28,8 @@
         /// <summary>
         /// An IMEI was registered
         /// </summary>
-        ImeiRegistered
+        ImeiRegistered,
+        ImeiDeleted
     }
 
     /// <summary>
