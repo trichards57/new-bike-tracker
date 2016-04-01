@@ -1,9 +1,7 @@
-﻿<script src="~/lib/angular/angular.js"></script>
-<script src="~/lib/angular-route/angular-route.js"></script>
-<script src="~/lib/angular-resource/angular-resource.js"></script>
+﻿@Scripts.Render("~/bundles/angular")
+@Scripts.Render("~/bundles/angular-route")
+@Scripts.Render("~/bundles/angular-resource")
 <script src="~/lib/angular-ui-validate/dist/validate.js"></script>
-<script src="~/lib/angular-bootstrap/ui-bootstrap.js"></script>
-<script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script src="~/Scripts/ui/app.js"></script>
-<script src="~/Scripts/ui/controllers.js"></script>
-<script src="~/Scripts/ui/services.js"></script>
+@Scripts.Render("~/bundles/angular-bootstrap")
+@Scripts.Render("~/bundles/angular-bootstrap-templates")
+@Scripts.Render("~/bundles/site-core")

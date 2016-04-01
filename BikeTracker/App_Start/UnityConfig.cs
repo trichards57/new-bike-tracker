@@ -17,6 +17,7 @@ namespace BikeTracker
             container.RegisterType<IIMEIService, IMEIService>();
             container.RegisterType<ILocationService, LocationService>();
             container.RegisterType<IReportService, ReportService>();
+            container.RegisterType<ILogService, LogService>();
             container.RegisterType<ApplicationDbContext>(new InjectionFactory(c => new ApplicationDbContext()));
             container.RegisterType<ILocationContext>(new InjectionFactory(c => c.Resolve<ApplicationDbContext>()));
             container.RegisterType<IIMEIContext>(new InjectionFactory(c => c.Resolve<ApplicationDbContext>()));

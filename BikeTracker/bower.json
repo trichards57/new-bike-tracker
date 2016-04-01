@@ -3,14 +3,14 @@
   "version": "1.4.1",
   "private": true,
   "dependencies": {
-    "bootstrap": "~3.3.6",
-    "jquery": "~1.11.3",
-    "jquery.validate": "~1.13.0",
-    "moment": "~2.10.6",
-    "angular": "~1.2.29",
-    "angular-route": "~1.2.29",
-    "angular-resource": "~1.2.29",
-    "angular-ui-validate": "~1.1.1",
+    "bootstrap": "3.3.6",
+    "jquery": "1.12.2",
+    "jquery.validate": "1.15.0",
+    "moment": "2.12.0",
+    "angular": "1.2.29",
+    "angular-route": "1.2.29",
+    "angular-resource": "1.2.29",
+    "angular-ui-validate": "1.1.1",
     "angular-bootstrap": "0.12.0"
   }
 }

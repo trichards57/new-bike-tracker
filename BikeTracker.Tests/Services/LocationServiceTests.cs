@@ -123,7 +123,7 @@ namespace BikeTracker.Tests.Services
             var landmarks = CreateMockLandmarkDbSet();
             var context = CreateMockLocationContext(landmarks: landmarks.Object);
 
-            var service = new LocationService(null, context.Object);
+            var service = new LocationService(context.Object);
 
             await service.ClearLandmark(id);
 
@@ -170,7 +170,7 @@ namespace BikeTracker.Tests.Services
             var landmarks = CreateMockLandmarkDbSet();
             var context = CreateMockLocationContext(landmarks: landmarks.Object);
 
-            var service = new LocationService(null, context.Object);
+            var service = new LocationService(context.Object);
 
             var res = await service.GetLandmarks();
 
@@ -224,7 +224,7 @@ namespace BikeTracker.Tests.Services
             var locations = CreateMockLocationDbSet();
             var context = CreateMockLocationContext(locations.Object);
 
-            var service = new LocationService(null, context.Object);
+            var service = new LocationService(context.Object);
 
             var res = await service.GetLocations();
 
@@ -298,7 +298,7 @@ namespace BikeTracker.Tests.Services
             var locations = CreateMockLocationDbSet();
             var context = CreateMockLocationContext(locations.Object);
 
-            var service = new LocationService(null, context.Object);
+            var service = new LocationService(context.Object);
 
             await service.ExpireLocation(callsign);
 
@@ -320,7 +320,7 @@ namespace BikeTracker.Tests.Services
             var landmarks = CreateMockLandmarkDbSet();
             var context = CreateMockLocationContext(landmarks: landmarks.Object);
 
-            var service = new LocationService(null, context.Object);
+            var service = new LocationService(context.Object);
 
             await service.RegisterLandmark(name, latitude, longitude, expiry);
 
@@ -338,7 +338,7 @@ namespace BikeTracker.Tests.Services
 
             var imeiService = CreateMockImeiService();
 
-            var service = new LocationService(imeiService.Object, context.Object);
+            var service = new LocationService(context.Object, imeiService.Object);
 
             await service.RegisterLocation(imei.IMEI, readingTime, receivedTime, latitude, longitude);
 

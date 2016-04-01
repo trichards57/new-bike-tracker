@@ -6724,3 +6724,151 @@ button.close {
     display: none !important;
   }
 }
+body {
+  padding-top: 56px;
+  padding-bottom: 20px;
+}
+.body-content {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.dl-horizontal dt {
+  white-space: normal;
+}
+input,
+select,
+textarea,
+.input-group {
+  max-width: 280px;
+}
+#mapDiv {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 91px;
+}
+.map-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 85px;
+}
+.map-footer-row {
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.callsign-flag {
+  font-size: 12px;
+  font-weight: bold;
+  border: solid 2px;
+  display: inline;
+  white-space: nowrap;
+}
+.move-tool {
+  position: fixed;
+  left: 10px;
+  top: 100px;
+  z-index: 100;
+  background-color: #fff;
+  border: 1px solid black;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+.move-tool h4 {
+  margin-top: 0;
+}
+.map-alert {
+  z-index: 101;
+  position: relative;
+  top: 100px;
+  text-align: center;
+}
+.alert-box {
+  position: relative;
+  z-index: 120;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+@media (min-width: 768px) {
+  #mapDiv {
+    bottom: 70px;
+  }
+  .map-footer {
+    height: 65px;
+  }
+}
+@media (min-width: 992px) {
+  #mapDiv {
+    bottom: 55px;
+  }
+  .map-footer {
+    height: 45px;
+  }
+  .button-pic {
+    text-align: center;
+  }
+  .button-pic a {
+    display: inline;
+  }
+  .button-pic a img {
+    width: 150px;
+    float: none;
+    display: inline;
+  }
+  .button-pic a span {
+    display: block;
+  }
+}
+.full-width-button {
+  width: 100%;
+}
+a.full-width-button {
+  margin-bottom: 3px;
+}
+.button-mini {
+  line-height: 1;
+  padding-top: 0;
+  margin-top: 4px;
+}
+.small-bottom-margin {
+  margin-bottom: 5px;
+}
+.small-hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.callsign-flag > img {
+  margin-bottom: 2px;
+  margin-left: 2px;
+  margin-right: 2px;
+  height: 12px;
+}
+.pointer {
+  cursor: pointer;
+}
+.sub-navbar {
+  padding-top: 6px;
+}
+.button-pic {
+  text-align: left;
+}
+.button-pic a {
+  vertical-align: middle;
+  display: table;
+}
+.button-pic a img {
+  width: 75px;
+  float: left;
+  margin: 5px;
+  display: table-cell;
+}
+.button-pic a span {
+  color: #333;
+  vertical-align: middle;
+  display: table-cell;
+}

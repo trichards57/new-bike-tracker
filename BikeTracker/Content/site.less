@@ -1,34 +1,33 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: @navbar-height + @padding-base-vertical;
     padding-bottom: 20px;
 }
 
-/* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists
-   will truncate terms that are too long to fit in the left column
-*/
 .dl-horizontal dt {
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
-textarea {
+textarea, .input-group {
     max-width: 280px;
 }
 
+@map-footer-height: 85px;
+@map-footer-height-md: 45px;
+@map-footer-height-sm: 65px;
+
 #mapDiv {
     position: fixed;
-    top: 50px;
+    top: @navbar-height;
     left: 0;
     right: 0;
-    bottom: 90px;
+    bottom: @map-footer-height + @padding-base-vertical;
 }
 
 .map-footer {
@@ -36,7 +35,7 @@ textarea {
     left: 0;
     right: 0;
     bottom: 0;
-    height: 85px;
+    height: @map-footer-height;
 }
 
 .map-footer-row {
@@ -48,7 +47,7 @@ textarea {
 }
 
 .callsign-flag {
-    font-size: 12px;
+    font-size: @font-size-small;
     font-weight: bold;
     border: solid 2px;
     display: inline;
@@ -60,10 +59,10 @@ textarea {
     left: 10px;
     top: 100px;
     z-index: 100;
-    background-color: white;
+    background-color: @body-bg;
     border: 1px solid black;
-    padding: 5px;
-    border-radius: 5px;
+    padding: @padding-small-vertical @padding-small-horizontal;
+    border-radius: @border-radius-small;
 }
 
 .move-tool h4 {
@@ -74,34 +73,52 @@ textarea {
     z-index: 101;
     position: relative;
     top: 100px;
-    text-align:center
+    text-align: center;
 }
 
 .alert-box {
     position: relative;
     z-index: 120;
-    padding: 5px;
-    border-radius: 5px;
+    padding: @padding-small-vertical @padding-small-horizontal;
+    border-radius: @border-radius-small;
 }
 
 
-@media (min-width: 768px) {
+@media (min-width: @screen-sm-min) {
     #mapDiv {
-        bottom: 70px;
+        bottom: @map-footer-height-sm + @padding-small-vertical;
     }
 
     .map-footer {
-        height: 65px;
+        height: @map-footer-height-sm;
     }
 }
 
-@media (min-width: 992px) {
+@media (min-width: @screen-md-min) {
     #mapDiv {
-        bottom: 50px;
+        bottom: @map-footer-height-md + @padding-large-vertical;
     }
 
     .map-footer {
-        height: 45px;
+        height: @map-footer-height-md;
+    }
+
+    .button-pic {
+        text-align: center;
+    }
+
+    .button-pic a {
+        display: inline;
+    }
+
+    .button-pic a img {
+        width: 150px;
+        float: none;
+        display: inline;
+    }
+
+    .button-pic a span {
+        display: block;
     }
 }
 
@@ -140,50 +157,27 @@ a.full-width-button {
 }
 
 .sub-navbar {
-    margin-top: 10px;
+    padding-top: @padding-base-vertical;
 }
 
 .button-pic {
     text-align: left;
 }
 
-    .button-pic a {
-        vertical-align: middle;
-        display: table;
-    }
-
-        .button-pic a img {
-            width: 75px;
-            float: left;
-            margin: 5px;
-            display: table-cell;
-        }
-
-        .button-pic a span {
-            color: #333;
-            vertical-align: middle;
-            display: table-cell;
-        }
-
-@media (min-width:992px) {
-    .button-pic {
-        text-align: center;
-    }
-        .button-pic a {
-            display: inline;
-        }
-
-        .button-pic a img {
-            width: 150px;
-            float: none;
-            display: inline;
-        }
-
-        .button-pic a span {
-            display:block;
-        }
+.button-pic a {
+    vertical-align: middle;
+    display: table;
 }
 
-.input-group {
-    max-width: 280px;
+.button-pic a img {
+    width: 75px;
+    float: left;
+    margin: 5px;
+    display: table-cell;
+}
+
+.button-pic a span {
+    color: #333;
+    vertical-align: middle;
+    display: table-cell;
 }
