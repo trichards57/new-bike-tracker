@@ -164,9 +164,22 @@ namespace BikeTracker.Services
         /// <param name="username">The username.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task LogUserLoggedIn(string username)
+        public async Task LogUserLoggedIn(string username)
         {
-            throw new NotImplementedException();
+            if (username == null)
+                throw new ArgumentNullException(nameof(username));
+            if (string.IsNullOrWhiteSpace(username))
+                throw new ArgumentException("parameter cannot be empty", nameof(username));
+
+            var logEntry = new LogEntry
+            {
+                Date = DateTimeOffset.Now,
+                SourceUser = username,
+                Type = LogEventType.UserLogIn
+            };
+
+            dataContext.LogEntries.Add(logEntry);
+            await dataContext.SaveChangesAsync();
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using BikeTracker.Models.AccountViewModels;
+using BikeTracker.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Microsoft.Practices.Unity;
@@ -38,11 +39,25 @@ namespace BikeTracker.Controllers
         /// <remarks>
         /// This overload is used to allow dependency injection for testing.
         /// </remarks>
-        public AccountController(IUserManager userManager, ISignInManager signInManager, UrlHelper urlHelper, IAuthenticationManager authManager = null)
+        public AccountController(IUserManager userManager, ISignInManager signInManager, UrlHelper urlHelper, IAuthenticationManager authManager = null, ILogService logService = null)
             : base(userManager, signInManager)
         {
             Url = urlHelper ?? Url;
             _authManager = authManager;
+            this.logService = logService;
+        }
+
+        private ILogService logService;
+
+        private ILogService LogService
+        {
+            get
+            {
+                if (logService == null)
+                    logService = DependencyResolver.Current.GetService<ILogService>();
+
+                return logService;
+            }
         }
 
         /// <summary>
@@ -190,6 +205,7 @@ namespace BikeTracker.Controllers
                 }
 
                 await SignInManager.SignInAsync(user, model.RememberMe, false);
+                await LogService.LogUserLoggedIn(user.UserName);
                 return RedirectToLocal(returnUrl);
             }
             else

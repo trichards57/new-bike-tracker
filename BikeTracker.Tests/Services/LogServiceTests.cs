@@ -169,8 +169,25 @@ namespace BikeTracker.Tests.Services
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public async Task LogMapInUseNullName()
         {
-
             await LogMapInUse(null, false);
+        }
+
+        [TestMethod]
+        public async Task LogUserLoggedInGoodData()
+        {
+            await LogUserLoggedIn(TestUsername, true);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogUserLoggedInEmptyName()
+        {
+            await LogUserLoggedIn(string.Empty, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogUserLoggedInNullName()
+        {
+            await LogUserLoggedIn(null, false);
         }
 
         [TestMethod]
@@ -348,6 +365,12 @@ namespace BikeTracker.Tests.Services
             CheckLogEntry(entry, LogEventType.UserCreated, creatingUser, new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = newUser });
             return true;
         }
+        
+        private bool CheckUserLoggedInEntry(LogEntry entry, string username)
+        {
+            CheckLogEntry(entry, LogEventType.UserLogIn, username);
+            return true;
+        }
 
         private bool CheckUserDeletedLogEntry(LogEntry entry, string deletingUser, string oldUser)
         {
@@ -466,6 +489,28 @@ namespace BikeTracker.Tests.Services
             if (expectSuccess)
             {
                 logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckUserDeletedLogEntry(le, deletingUser, deletedUser))));
+                context.Verify(c => c.SaveChangesAsync());
+            }
+            else
+            {
+                logEntrySet.Verify(l => l.Add(It.IsAny<LogEntry>()), Times.Never);
+                context.Verify(c => c.SaveChangesAsync(), Times.Never);
+            }
+        }
+
+        private async Task LogUserLoggedIn(string username, bool expectSuccess)
+        {
+            var logEntrySet = CreateMockLogEntrySet();
+            var logPropertySet = CreateMockLogPropertySet();
+            var context = CreateLoggingContext(logEntrySet.Object, logPropertySet.Object);
+
+            var service = new LogService(context.Object);
+
+            await service.LogUserLoggedIn(username);
+
+            if (expectSuccess)
+            {
+                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckUserLoggedInEntry(le, username))));
                 context.Verify(c => c.SaveChangesAsync());
             }
             else

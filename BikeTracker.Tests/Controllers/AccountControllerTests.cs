@@ -1,10 +1,12 @@
 ﻿using BikeTracker.Controllers;
 using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Models.IdentityModels;
+using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Ploeh.AutoFixture;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -18,6 +20,14 @@ namespace BikeTracker.Tests.Controllers
     [TestClass]
     public class AccountControllerTests
     {
+        private readonly Fixture Fixture = new Fixture();
+        private readonly string TestUsername;
+
+        public AccountControllerTests()
+        {
+            TestUsername = Fixture.Create<string>();
+        }
+
         private enum Result
         {
             VerificationFailure,
@@ -50,6 +60,12 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
+        public async Task ConfirmEmailEmptyBoth()
+        {
+            await ConfirmEmail(string.Empty, string.Empty, false, ResultType.BadRequest);
+        }
+
+        [TestMethod]
         public async Task ConfirmEmailEmptyToken()
         {
             await ConfirmEmail(MockHelpers.UnconfirmedGoodId, string.Empty, false, ResultType.BadRequest);
@@ -62,15 +78,15 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task ConfirmEmailEmptyBoth()
-        {
-            await ConfirmEmail(string.Empty, string.Empty, false, ResultType.BadRequest);
-        }
-
-        [TestMethod]
         public async Task ConfirmEmailGoodData()
         {
             await ConfirmEmail(MockHelpers.UnconfirmedGoodId, MockHelpers.GoodToken);
+        }
+
+        [TestMethod]
+        public async Task ConfirmEmailNoBoth()
+        {
+            await ConfirmEmail(null, null, false, ResultType.BadRequest);
         }
 
         [TestMethod]
@@ -83,12 +99,6 @@ namespace BikeTracker.Tests.Controllers
         public async Task ConfirmEmailNoUser()
         {
             await ConfirmEmail(null, MockHelpers.GoodToken, false, ResultType.BadRequest);
-        }
-
-        [TestMethod]
-        public async Task ConfirmEmailNoBoth()
-        {
-            await ConfirmEmail(null, null, false, ResultType.BadRequest);
         }
 
         [TestMethod]
@@ -391,6 +401,7 @@ namespace BikeTracker.Tests.Controllers
                 case ResultType.BadRequest:
                     Assert.AreEqual("Error", view.ViewName);
                     break;
+
                 case ResultType.Success:
                     Assert.AreNotEqual("Error", view.ViewName);
                     break;
@@ -435,6 +446,15 @@ namespace BikeTracker.Tests.Controllers
             }
         }
 
+        private Mock<ILogService> CreateMockLogService()
+        {
+            var result = new Mock<ILogService>(MockBehavior.Strict);
+
+            result.Setup(l => l.LogUserLoggedIn(MockHelpers.ConfirmedGoodUsername)).Returns(Task.FromResult<object>(null));
+
+            return result;
+        }
+
         private void MidResetPassword(string code, ResultType expectedResult = ResultType.Success)
         {
             var controller = MockHelpers.CreateAccountController();
@@ -467,7 +487,6 @@ namespace BikeTracker.Tests.Controllers
             var userManager = MockHelpers.CreateMockUserManager();
             var signInManager = MockHelpers.CreateMockSignInManager();
             var urlHelper = MockHelpers.CreateMockUrlHelper();
-
 
             var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
 
@@ -507,8 +526,9 @@ namespace BikeTracker.Tests.Controllers
             var userManager = MockHelpers.CreateMockUserManager();
             var signInManager = MockHelpers.CreateMockSignInManager();
             var urlHelper = MockHelpers.CreateMockUrlHelper();
+            var logService = CreateMockLogService();
 
-            var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
+            var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object, logService: logService.Object);
 
             MockHelpers.Validate(loginModel, controller);
 
@@ -523,6 +543,7 @@ namespace BikeTracker.Tests.Controllers
 
                     userManager.Verify(m => m.FindAsync(loginModel.Email, loginModel.Password), Times.AtLeastOnce);
                     signInManager.Verify(m => m.SignInAsync(It.IsAny<ApplicationUser>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
+                    logService.Verify(l => l.LogUserLoggedIn(It.IsAny<string>()), Times.Never);
 
                     Assert.IsNotNull(vr);
                     Assert.AreEqual(loginModel, vr.Model);
@@ -533,6 +554,7 @@ namespace BikeTracker.Tests.Controllers
 
                     userManager.Verify(m => m.FindAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
                     signInManager.Verify(m => m.SignInAsync(It.IsAny<ApplicationUser>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
+                    logService.Verify(l => l.LogUserLoggedIn(It.IsAny<string>()), Times.Never);
 
                     Assert.IsNotNull(vr);
                     Assert.AreEqual(loginModel, vr.Model);
@@ -544,6 +566,7 @@ namespace BikeTracker.Tests.Controllers
                     userManager.Verify(m => m.FindAsync(loginModel.Email, loginModel.Password), Times.AtLeastOnce);
                     signInManager.Verify(m => m.SignInAsync(user, loginModel.RememberMe, false), Times.Once);
                     urlHelper.Verify(m => m.IsLocalUrl(returnUrl), Times.AtLeastOnce);
+                    logService.Verify(l => l.LogUserLoggedIn(loginModel.Email));
 
                     Assert.IsNotNull(rr);
                     Assert.AreEqual(returnUrl, rr.Url);
@@ -556,6 +579,7 @@ namespace BikeTracker.Tests.Controllers
                     userManager.Verify(m => m.FindAsync(loginModel.Email, loginModel.Password), Times.AtLeastOnce);
                     signInManager.Verify(m => m.SignInAsync(user, loginModel.RememberMe, false), Times.Once);
                     urlHelper.Verify(m => m.IsLocalUrl(returnUrl), Times.AtLeastOnce);
+                    logService.Verify(l => l.LogUserLoggedIn(loginModel.Email));
 
                     Assert.IsNotNull(rtr);
                     Assert.AreEqual("Index", rtr.RouteValues["action"]);
