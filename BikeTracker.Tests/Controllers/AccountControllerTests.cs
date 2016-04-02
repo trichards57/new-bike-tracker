@@ -7,7 +7,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Ploeh.AutoFixture;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -451,6 +453,7 @@ namespace BikeTracker.Tests.Controllers
             var result = new Mock<ILogService>(MockBehavior.Strict);
 
             result.Setup(l => l.LogUserLoggedIn(MockHelpers.ConfirmedGoodUsername)).Returns(Task.FromResult<object>(null));
+            result.Setup(l => l.LogUserUpdated(MockHelpers.ConfirmedGoodUsername, It.Is<IEnumerable<string>>(s => s.Single() == "Password"))).Returns(Task.FromResult<object>(null));
 
             return result;
         }
@@ -487,8 +490,9 @@ namespace BikeTracker.Tests.Controllers
             var userManager = MockHelpers.CreateMockUserManager();
             var signInManager = MockHelpers.CreateMockSignInManager();
             var urlHelper = MockHelpers.CreateMockUrlHelper();
+            var logService = CreateMockLogService();
 
-            var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
+            var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object, logService: logService.Object);
 
             var model = new ResetPasswordViewModel
             {
@@ -519,6 +523,12 @@ namespace BikeTracker.Tests.Controllers
                     Assert.AreEqual("Account", redirect.RouteValues["controller"]);
                     break;
             }
+
+            if (attemptReset && expectedResult == ResultType.Success)
+                logService.Verify(s => s.LogUserUpdated(email, It.Is<IEnumerable<string>>(i => i.Single() == "Password")));
+            else
+                logService.Verify(s => s.LogUserUpdated(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Never);
+
         }
 
         private async Task SubmitLogin(LoginViewModel loginModel, ApplicationUser user, string returnUrl, Result expectedResult)
