@@ -93,7 +93,7 @@ namespace BikeTracker.Tests.Helpers
             var signInManager = CreateMockSignInManager();
             var httpContext = CreateMockHttpContext();
 
-            var controller = new ManageController(userManager.Object, signInManager.Object);
+            var controller = new ManageController(userManager.Object, signInManager.Object, null);
             var context = new ControllerContext();
             context.HttpContext = httpContext.Object;
             controller.ControllerContext = context;
