@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
