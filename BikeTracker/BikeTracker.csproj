@@ -231,7 +231,6 @@
     <Compile Include="App_Start\ApplicationUserManager.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\LessTransform.cs" />
     <Compile Include="Controllers\UserBaseController.cs" />
     <Compile Include="Migrations\201603201812414_StartLogging.cs" />
     <Compile Include="Migrations\201603201812414_StartLogging.Designer.cs">

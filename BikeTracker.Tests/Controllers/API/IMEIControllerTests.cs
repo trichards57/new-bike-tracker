@@ -180,24 +180,13 @@ namespace BikeTracker.Tests.Controllers.API
             return service;
         }
 
-        private Mock<IPrincipal> CreateMockPrincipal()
-        {
-            var identity = new ClaimsIdentity();
-            identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, TestUsername));
-
-            var mockPrinciple = new Mock<IPrincipal>();
-            mockPrinciple.SetupGet(i => i.Identity).Returns(identity);
-
-            return mockPrinciple;
-        }
-
         private async Task DeleteCallsign(int id, string imei, bool shouldLog)
         {
             var service = CreateMockIMEIService();
             var logService = CreateMockLogService();
             var controller = new IMEIController(service.Object, logService.Object);
             var config = new Mock<HttpConfiguration>();
-            var principal = CreateMockPrincipal();
+            var principal = MockHelpers.CreateMockPrincipal(TestUsername);
 
             controller.User = principal.Object;
             controller.Configuration = config.Object;
@@ -222,7 +211,7 @@ namespace BikeTracker.Tests.Controllers.API
             var logService = CreateMockLogService();
             var controller = new IMEIController(service.Object, logService.Object);
             var config = new Mock<HttpConfiguration>();
-            var principal = CreateMockPrincipal();
+            var principal = MockHelpers.CreateMockPrincipal(TestUsername);
 
             controller.User = principal.Object;
             controller.Configuration = config.Object;
@@ -259,7 +248,7 @@ namespace BikeTracker.Tests.Controllers.API
             var service = CreateMockIMEIService();
             var controller = new IMEIController(service.Object, logService.Object);
             var config = new Mock<HttpConfiguration>();
-            var principal = CreateMockPrincipal();
+            var principal = MockHelpers.CreateMockPrincipal(TestUsername);
 
             controller.User = principal.Object;
             controller.Configuration = config.Object;

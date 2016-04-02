@@ -57,7 +57,6 @@ namespace BikeTracker.Tests.Controllers.API
             var service = new Mock<IReportService>(MockBehavior.Strict);
 
             service.Setup(s => s.GetAllCallsigns()).ReturnsAsync(TestCallsigns);
-            service.Setup(s => s.GetReportDates()).ReturnsAsync(TestDates);
 
             service.Setup(s => s.GetCallsignRecord(TestCallsign, DateTimeOffset.MinValue, It.Is<DateTimeOffset>(d => Math.Abs((d - DateTimeOffset.Now).TotalSeconds) < DateTimeOffsetTolerance)))
                 .ReturnsAsync(TestReadingsSet1);
@@ -92,19 +91,6 @@ namespace BikeTracker.Tests.Controllers.API
         public async Task GetCallsignLocationsGoodDate()
         {
             await GetCallsignLocations(TestCallsign, TestDateString, TestDateString, TestReadingsSet2);
-        }
-
-        [TestMethod]
-        public async Task GetCallsignReportDates()
-        {
-            var controller = CreateController();
-
-            var result = await controller.CallsignReportDates();
-
-            var res = result as JsonResult<IEnumerable<DateTimeOffset>>;
-            Assert.IsNotNull(res);
-
-            Assert.IsTrue(TestDates.SequenceEqual(res.Content));
         }
 
         [TestMethod]

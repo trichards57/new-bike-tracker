@@ -1,5 +1,6 @@
 ﻿using BikeTracker.Controllers;
 using BikeTracker.Models.IdentityModels;
+using BikeTracker.Models.LocationModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -8,10 +9,13 @@ using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Mail;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -154,6 +158,41 @@ namespace BikeTracker.Tests.Helpers
                 .Returns(true);
 
             return urlHelper;
+        }
+
+        public static Mock<DbSet<LocationRecord>> CreateMockLocationDbSet(IList<LocationRecord> records)
+        {
+            var mockLocationEntrySet = new Mock<DbSet<LocationRecord>>();
+
+            var data = records.AsQueryable();
+
+            mockLocationEntrySet.Setup(e => e.Add(It.IsAny<LocationRecord>())).Callback<LocationRecord>(i => records.Add(i));
+
+            mockLocationEntrySet.As<IDbAsyncEnumerable<LocationRecord>>()
+                .Setup(m => m.GetAsyncEnumerator())
+                .Returns(new TestDbAsyncEnumerator<LocationRecord>(data.GetEnumerator()));
+
+            mockLocationEntrySet.As<IQueryable<LocationRecord>>()
+                .Setup(m => m.Provider)
+                .Returns(new TestDbAsyncQueryProvider<LocationRecord>(data.Provider));
+
+            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            return mockLocationEntrySet;
+        }
+
+
+        public static Mock<IPrincipal> CreateMockPrincipal(string username)
+        {
+            var identity = new ClaimsIdentity();
+            identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, username));
+
+            var mockPrinciple = new Mock<IPrincipal>();
+            mockPrinciple.SetupGet(i => i.Identity).Returns(identity);
+
+            return mockPrinciple;
         }
 
         public static Mock<IUserManager> CreateMockUserManager()

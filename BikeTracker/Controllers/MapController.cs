@@ -1,6 +1,7 @@
 ﻿using BikeTracker.Controllers.Filters;
 using BikeTracker.Models;
 using BikeTracker.Services;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -15,11 +16,13 @@ namespace BikeTracker.Controllers
     {
         private IIMEIService imeiService;
         private ILocationService locationService;
+        private ILogService logService;
 
-        public MapController(ILocationService locationService, IIMEIService imeiService)
+        public MapController(ILocationService locationService, IIMEIService imeiService, ILogService logService)
         {
             this.locationService = locationService;
             this.imeiService = imeiService;
+            this.logService = logService;
         }
 
         public async Task<ActionResult> AddLandmark(string name, decimal lat, decimal lon)
@@ -68,12 +71,16 @@ namespace BikeTracker.Controllers
         {
             var registeredLandmarks = await locationService.GetLandmarks();
 
+            await logService.LogMapInUse(User.Identity.GetUserName());
+
             return Json(registeredLandmarks, JsonRequestBehavior.AllowGet);
         }
 
         public async Task<JsonResult> GetLocations()
         {
             var reportedIMEIs = await locationService.GetLocations();
+
+            await logService.LogMapInUse(User.Identity.GetUserName());
 
             return Json(reportedIMEIs.Select(r => new LocationViewModel
             {

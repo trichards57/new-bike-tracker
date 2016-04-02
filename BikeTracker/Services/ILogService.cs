@@ -51,5 +51,12 @@ namespace BikeTracker.Services
         /// <param name="updatingUser">The updating user.</param>
         /// <param name="changedProperties">The changed properties.</param>
         Task LogUserUpdated(string updatingUser, IEnumerable<string> changedProperties);
+
+        /// <summary>
+        /// Logs the map in use.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        Task LogMapInUse(string user);
     }
 }

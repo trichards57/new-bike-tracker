@@ -58,16 +58,5 @@ namespace BikeTracker.Services
             var callsignRecords = dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.ReadingTime >= startTime && l.ReadingTime <= endTime);
             return await callsignRecords.ToListAsync();
         }
-
-        /// <summary>
-        /// Asynchronously gets the dates that callsigns have been reported.
-        /// </summary>
-        /// <returns>
-        /// An <seealso cref="IEnumerable{DateTimeOffset}" /> containing the dates.
-        /// </returns>
-        public async Task<IEnumerable<DateTimeOffset>> GetReportDates()
-        {
-            return await dataContext.LocationRecords.Select(l => DbFunctions.TruncateTime(l.ReadingTime).Value).Distinct().ToListAsync();
-        }
     }
 }

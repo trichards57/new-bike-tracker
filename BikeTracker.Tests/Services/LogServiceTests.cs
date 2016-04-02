@@ -2,13 +2,16 @@
 using BikeTracker.Models.LocationModels;
 using BikeTracker.Models.LoggingModels;
 using BikeTracker.Services;
+using BikeTracker.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,6 +29,7 @@ namespace BikeTracker.Tests.Services
         private readonly string TestImei;
         private readonly string TestNewUser;
         private readonly string TestUsername;
+        private readonly List<LogEntry> LogEntries;
 
         public LogServiceTests()
         {
@@ -35,6 +39,7 @@ namespace BikeTracker.Tests.Services
             TestImei = Fixture.Create<string>();
             TestCallsign = Fixture.Create<string>();
             TestChanges = new List<string>(Fixture.CreateMany<string>());
+            LogEntries = new List<LogEntry>();
         }
 
         public Mock<ILoggingContext> CreateLoggingContext(DbSet<LogEntry> logEntrySet, DbSet<LogEntryProperty> logPropertySet)
@@ -52,6 +57,20 @@ namespace BikeTracker.Tests.Services
         {
             var mockLogEntrySet = new Mock<DbSet<LogEntry>>();
 
+            var data = LogEntries.AsQueryable();
+
+            mockLogEntrySet.As<IDbAsyncEnumerable<LogEntry>>()
+                .Setup(m => m.GetAsyncEnumerator())
+                .Returns(new TestDbAsyncEnumerator<LogEntry>(data.GetEnumerator()));
+
+            mockLogEntrySet.As<IQueryable<LogEntry>>()
+                .Setup(m => m.Provider)
+                .Returns(new TestDbAsyncQueryProvider<LogEntry>(data.Provider));
+
+            mockLogEntrySet.As<IQueryable<LogEntry>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockLogEntrySet.As<IQueryable<LogEntry>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockLogEntrySet.As<IQueryable<LogEntry>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
             return mockLogEntrySet;
         }
 
@@ -62,16 +81,10 @@ namespace BikeTracker.Tests.Services
             return mockLogPropertySet;
         }
 
-        [TestMethod]
-        public async Task LogImeiDeletedGoodData()
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogImeiDeletedEmptyImei()
         {
-            await LogImeiDeleted(TestUsername, TestImei);
-        }
-
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public async Task LogImeiDeletedNoUsername()
-        {
-            await LogImeiDeleted(null, TestImei, false);
+            await LogImeiDeleted(TestUsername, string.Empty, false);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
@@ -80,16 +93,22 @@ namespace BikeTracker.Tests.Services
             await LogImeiDeleted(string.Empty, TestImei, false);
         }
 
+        [TestMethod]
+        public async Task LogImeiDeletedGoodData()
+        {
+            await LogImeiDeleted(TestUsername, TestImei);
+        }
+
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public async Task LogImeiDeletedNoImei()
         {
             await LogImeiDeleted(TestUsername, null, false);
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public async Task LogImeiDeletedEmptyImei()
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogImeiDeletedNoUsername()
         {
-            await LogImeiDeleted(TestUsername, string.Empty, false);
+            await LogImeiDeleted(null, TestImei, false);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
@@ -132,6 +151,67 @@ namespace BikeTracker.Tests.Services
         public async Task LogImeiRegisteredNoUsername()
         {
             await LogImeiRegistered(null, TestImei, TestCallsign, VehicleType.FootPatrol, false);
+        }
+
+        [TestMethod]
+        public async Task LogMapInUseNewGoodData()
+        {
+            LogEntries.Clear();
+            await LogMapInUse(TestUsername, true);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogMapInUseEmptyName()
+        {
+            await LogMapInUse(string.Empty, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogMapInUseNullName()
+        {
+
+            await LogMapInUse(null, false);
+        }
+
+        [TestMethod]
+        public async Task LogMapInUseUpdateGoodData()
+        {
+            LogEntries.Clear();
+
+            var startDate = DateTimeOffset.Now.AddMinutes(-29);
+
+            var le = new LogEntry { Date = startDate, SourceUser = TestUsername, Type = LogEventType.MapInUse };
+            le.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.StartDate, PropertyValue = startDate.ToString("O") });
+
+            LogEntries.Add(le);
+
+            var logEntrySet = CreateMockLogEntrySet();
+            var logPropertySet = CreateMockLogPropertySet();
+            var context = CreateLoggingContext(logEntrySet.Object, logPropertySet.Object);
+
+            var service = new LogService(context.Object);
+
+            await service.LogMapInUse(TestUsername);
+
+            logEntrySet.Verify(l => l.Add(It.IsAny<LogEntry>()), Times.Never);
+            context.Verify(c => c.SaveChangesAsync());
+
+            CheckMapLogEntry(le, TestUsername, startDate);
+        }
+
+        [TestMethod]
+        public async Task LogMapInUsePreviousGoodData()
+        {
+            LogEntries.Clear();
+
+            var startDate = DateTimeOffset.Now.AddMinutes(-31);
+
+            var le = new LogEntry { Date = startDate, SourceUser = TestUsername, Type = LogEventType.MapInUse };
+            le.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.StartDate, PropertyValue = startDate.ToString("O") });
+
+            LogEntries.Add(le);
+
+            await LogMapInUse(TestUsername, true);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
@@ -245,10 +325,22 @@ namespace BikeTracker.Tests.Services
             Assert.AreEqual(type, entry.Type);
 
             foreach (var p in properties)
-                Assert.IsNotNull(entry.Properties.SingleOrDefault(lep => lep.PropertyType == p.PropertyType && lep.PropertyValue == p.PropertyValue));
+            {
+                if (p.PropertyType == LogPropertyType.StartDate)
+                    Assert.IsNotNull(entry.Properties.SingleOrDefault(lep => lep.PropertyType == p.PropertyType && Math.Abs((DateTimeOffset.ParseExact(lep.PropertyValue, "O", CultureInfo.InvariantCulture) - DateTimeOffset.ParseExact(p.PropertyValue, "O", CultureInfo.InvariantCulture)).TotalSeconds) < TimeTolerance));
+                else
+                    Assert.IsNotNull(entry.Properties.SingleOrDefault(lep => lep.PropertyType == p.PropertyType && lep.PropertyValue == p.PropertyValue));
+            }
 
             Assert.AreEqual(properties.Length, entry.Properties.Count);
             Assert.IsTrue(Math.Abs((entry.Date - DateTimeOffset.Now).TotalSeconds) < TimeTolerance);
+        }
+
+        private bool CheckMapLogEntry(LogEntry entry, string username, DateTimeOffset startDate)
+        {
+            CheckLogEntry(entry, LogEventType.MapInUse, username, new LogEntryProperty { PropertyType = LogPropertyType.StartDate, PropertyValue = startDate.ToString("O") });
+
+            return true;
         }
 
         private bool CheckUserCreatedLogEntry(LogEntry entry, string creatingUser, string newUser)
@@ -306,6 +398,30 @@ namespace BikeTracker.Tests.Services
             if (expectSuccess)
             {
                 logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckImeiRegisteredLogEntry(le, registeringUser, imei, callsign, type))));
+                context.Verify(c => c.SaveChangesAsync());
+            }
+            else
+            {
+                logEntrySet.Verify(l => l.Add(It.IsAny<LogEntry>()), Times.Never);
+                context.Verify(c => c.SaveChangesAsync(), Times.Never);
+            }
+        }
+
+        private async Task LogMapInUse(string username, bool expectSuccess = true, DateTimeOffset? startDate = null)
+        {
+            startDate = startDate ?? DateTimeOffset.Now;
+
+            var logEntrySet = CreateMockLogEntrySet();
+            var logPropertySet = CreateMockLogPropertySet();
+            var context = CreateLoggingContext(logEntrySet.Object, logPropertySet.Object);
+
+            var service = new LogService(context.Object);
+
+            await service.LogMapInUse(username);
+
+            if (expectSuccess)
+            {
+                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckMapLogEntry(le, username, startDate.Value))));
                 context.Verify(c => c.SaveChangesAsync());
             }
             else

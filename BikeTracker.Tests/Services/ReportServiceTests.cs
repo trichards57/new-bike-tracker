@@ -32,29 +32,6 @@ namespace BikeTracker.Tests.Services
             return context;
         }
 
-        public Mock<DbSet<LocationRecord>> CreateMockLocationDbSet()
-        {
-            var mockLocationEntrySet = new Mock<DbSet<LocationRecord>>();
-
-            var data = GoodLocations.AsQueryable();
-
-            mockLocationEntrySet.Setup(e => e.Add(It.IsAny<LocationRecord>())).Callback<LocationRecord>(i => GoodLocations.Add(i));
-
-            mockLocationEntrySet.As<IDbAsyncEnumerable<LocationRecord>>()
-                .Setup(m => m.GetAsyncEnumerator())
-                .Returns(new TestDbAsyncEnumerator<LocationRecord>(data.GetEnumerator()));
-
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>()
-                .Setup(m => m.Provider)
-                .Returns(new TestDbAsyncQueryProvider<LocationRecord>(data.Provider));
-
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-
-            return mockLocationEntrySet;
-        }
-
         public ReportServiceTests()
         {
             GoodLocations = new List<LocationRecord>(Fixture.CreateMany<LocationRecord>());
@@ -63,7 +40,7 @@ namespace BikeTracker.Tests.Services
         [TestMethod]
         public async Task GetAllCallsigns()
         {
-            var locations = CreateMockLocationDbSet();
+            var locations = MockHelpers.CreateMockLocationDbSet(GoodLocations);
             var context = CreateMockLocationContext(locations.Object);
 
             var service = new ReportService(context.Object);
@@ -75,7 +52,7 @@ namespace BikeTracker.Tests.Services
 
         private async Task GetCallsignRecord(string callsign)
         {
-            var locations = CreateMockLocationDbSet();
+            var locations = MockHelpers.CreateMockLocationDbSet(GoodLocations);
             var context = CreateMockLocationContext(locations.Object);
 
             var service = new ReportService(context.Object);
@@ -146,7 +123,7 @@ namespace BikeTracker.Tests.Services
 
             GoodLocations.AddRange(goodRecords);
 
-            var locations = CreateMockLocationDbSet();
+            var locations = MockHelpers.CreateMockLocationDbSet(GoodLocations);
             var context = CreateMockLocationContext(locations.Object);
 
             var service = new ReportService(context.Object);

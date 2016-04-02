@@ -3,6 +3,7 @@ using BikeTracker.Models.LocationModels;
 using BikeTracker.Models.LoggingModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -248,6 +249,50 @@ namespace BikeTracker.Services
             logEntry.Properties.Add(logProperty);
 
             dataContext.LogEntries.Add(logEntry);
+            await dataContext.SaveChangesAsync();
+        }
+
+        public async Task LogMapInUse(string user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+            if (string.IsNullOrWhiteSpace(user))
+                throw new ArgumentException("{0} cannot be empty", nameof(user));
+
+            var logEntry = dataContext.LogEntries.OrderBy(l => l.Date).LastOrDefault(l => l.SourceUser == user && l.Type == LogEventType.MapInUse);
+
+            if (logEntry != null)
+            {
+                var prop = logEntry.Properties.First(lp => lp.PropertyType == LogPropertyType.StartDate);
+
+                var date = DateTimeOffset.ParseExact(prop.PropertyValue, "O", CultureInfo.InvariantCulture);
+
+                if (date > DateTimeOffset.Now.AddMinutes(-30))
+                {
+                    logEntry.Date = DateTimeOffset.Now;
+                }
+                else
+                    logEntry = null;
+            }
+
+            if (logEntry == null)
+            {
+                logEntry = new LogEntry
+                {
+                    Date = DateTimeOffset.Now,
+                    SourceUser = user,
+                    Type = LogEventType.MapInUse
+                };
+                var logProperty = new LogEntryProperty
+                {
+                    PropertyType = LogPropertyType.StartDate,
+                    PropertyValue = DateTimeOffset.Now.ToString("O")
+                };
+                logEntry.Properties.Add(logProperty);
+
+                dataContext.LogEntries.Add(logEntry);
+            }
+
             await dataContext.SaveChangesAsync();
         }
     }

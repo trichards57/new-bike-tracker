@@ -233,17 +233,6 @@ namespace BikeTracker.Tests.Controllers.API
             return controller;
         }
 
-        private Mock<IPrincipal> CreateMockPrincipal()
-        {
-            var identity = new ClaimsIdentity();
-            identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, TestUsername));
-
-            var mockPrinciple = new Mock<IPrincipal>();
-            mockPrinciple.SetupGet(i => i.Identity).Returns(identity);
-
-            return mockPrinciple;
-        }
-
         private async Task DeleteUser(string id, bool expectSuccess = true, ApplicationUser testUser = null)
         {
             var userManager = CreateMockUserManager();
@@ -251,7 +240,7 @@ namespace BikeTracker.Tests.Controllers.API
             var logService = CreateMockLogService();
             var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
 
-            var principal = CreateMockPrincipal();
+            var principal = MockHelpers.CreateMockPrincipal(TestUsername);
             controller.User = principal.Object;
 
             var res = await controller.Delete(id);
@@ -342,7 +331,7 @@ namespace BikeTracker.Tests.Controllers.API
             var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 
-            var principal = CreateMockPrincipal();
+            var principal = MockHelpers.CreateMockPrincipal(TestUsername);
             controller.User = principal.Object;
 
             var request = new HttpRequest("", "http://localhost", "");
@@ -416,7 +405,7 @@ namespace BikeTracker.Tests.Controllers.API
             var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
             controller.Configuration = configuration.Object;
 
-            var principal = CreateMockPrincipal();
+            var principal = MockHelpers.CreateMockPrincipal(TestUsername);
             controller.User = principal.Object;
 
             var request = new HttpRequest("", "http://localhost", "");

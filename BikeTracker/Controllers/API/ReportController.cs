@@ -49,12 +49,6 @@ namespace BikeTracker.Controllers.API
             }));
         }
 
-        [HttpGet, Route("api/Report/CallsignReportDates")]
-        public async Task<IHttpActionResult> CallsignReportDates()
-        {
-            return Json(await reportService.GetReportDates());
-        }
-
         [HttpGet, Route("api/Report/Callsigns")]
         public async Task<IHttpActionResult> Callsigns()
         {

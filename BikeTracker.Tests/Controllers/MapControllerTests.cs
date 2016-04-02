@@ -11,7 +11,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Controllers
@@ -21,6 +24,7 @@ namespace BikeTracker.Tests.Controllers
     public class MapControllerTests
     {
         private readonly Fixture Fixture = new Fixture();
+        private readonly ClaimsIdentity Identity;
         private readonly IEnumerable<Landmark> Landmarks;
         private readonly Expression<Func<ILocationService, Task>> LocationRegisterExpression;
         private readonly IEnumerable<LocationRecord> Locations;
@@ -31,6 +35,7 @@ namespace BikeTracker.Tests.Controllers
         private readonly string TestLandmark;
         private readonly decimal TestLatitude;
         private readonly decimal TestLongitude;
+        private readonly string TestUsername;
 
         public MapControllerTests()
         {
@@ -47,6 +52,11 @@ namespace BikeTracker.Tests.Controllers
                 It.Is<DateTimeOffset>(d => Math.Abs((d - TestDate).TotalSeconds) < 1),
                 It.Is<DateTimeOffset>(d => Math.Abs((d - DateTimeOffset.Now).TotalSeconds) < 5),
                 It.Is<decimal>(s => s == TestLatitude), It.Is<decimal>(s => s == TestLongitude)));
+
+            TestUsername = Fixture.Create<string>();
+
+            Identity = new ClaimsIdentity();
+            Identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, TestUsername));
         }
 
         [TestMethod]
@@ -55,7 +65,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var res = await controller.AddLandmark(string.Empty, TestLatitude, TestLongitude);
 
@@ -71,7 +81,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var res = await controller.AddLandmark(TestLandmark, TestLatitude, TestLongitude);
 
@@ -89,7 +99,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var res = await controller.AddLandmark(null, TestLatitude, TestLongitude);
 
@@ -105,7 +115,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var testDate = TestDate.ToString("ddMMyy");
             var testTime = TestDate.ToString("HHmmss.fff");
@@ -123,7 +133,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var testDate = TestDate.ToString("ddMMyy");
             var testTime = TestDate.ToString("HHmmss.fff");
@@ -141,7 +151,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var testDate = TestDate.ToString("ddMMyy");
             var testTime = TestDate.ToString("HHmmss.fff");
@@ -161,7 +171,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             string testDate = null;
             var testTime = TestDate.ToString("HHmmss.fff");
@@ -179,7 +189,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var testDate = TestDate.ToString("ddMMyy");
             var testTime = TestDate.ToString("HHmmss.fff");
@@ -197,7 +207,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var testDate = TestDate.ToString("ddMMyy");
             var testTime = TestDate.ToString("HHmmss.fff");
@@ -215,7 +225,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var testDate = TestDate.ToString("ddMMyy");
             var testTime = TestDate.ToString("HHmmss.fff");
@@ -233,7 +243,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var testDate = TestDate.ToString("ddMMyy");
             string testTime = null;
@@ -245,13 +255,29 @@ namespace BikeTracker.Tests.Controllers
             Assert.IsNotNull(view);
         }
 
+        public Mock<HttpContextBase> CreateMockHttpContext()
+        {
+            var context = new Mock<HttpContextBase>(MockBehavior.Strict);
+
+            context.SetupGet(h => h.User.Identity).Returns(Identity);
+
+            return context;
+        }
+
         [TestMethod]
         public async Task GetLandmarks()
         {
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
+            var logService = CreateMockLogService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, logService.Object);
+
+            var httpContext = CreateMockHttpContext();
+            var context = new ControllerContext();
+            context.HttpContext = httpContext.Object;
+
+            controller.ControllerContext = context;
 
             var res = await controller.GetLandmarks();
             Assert.IsNotNull(res);
@@ -269,6 +295,8 @@ namespace BikeTracker.Tests.Controllers
             }
 
             Assert.AreEqual(Locations.Count(), data.Count());
+
+            logService.Verify(l => l.LogMapInUse(TestUsername));
         }
 
         [TestMethod]
@@ -276,8 +304,15 @@ namespace BikeTracker.Tests.Controllers
         {
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
+            var logService = CreateMockLogService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, logService.Object);
+
+            var httpContext = CreateMockHttpContext();
+            var context = new ControllerContext();
+            context.HttpContext = httpContext.Object;
+
+            controller.ControllerContext = context;
 
             var res = await controller.GetLocations();
             Assert.IsNotNull(res);
@@ -296,6 +331,8 @@ namespace BikeTracker.Tests.Controllers
             }
 
             Assert.AreEqual(Locations.Count(), data.Count());
+
+            logService.Verify(l => l.LogMapInUse(TestUsername));
         }
 
         [TestMethod]
@@ -304,7 +341,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var res = controller.Index();
 
@@ -319,7 +356,7 @@ namespace BikeTracker.Tests.Controllers
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
 
-            var controller = new MapController(locationService.Object, imeiService.Object);
+            var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var res = await controller.ClearLandmark(TestId);
 
@@ -354,6 +391,15 @@ namespace BikeTracker.Tests.Controllers
                 .Returns(Task.FromResult<object>(null));
             result.Setup(l => l.ClearLandmark(It.Is<int>(i => i == TestId)))
                 .Returns(Task.FromResult<object>(null));
+
+            return result;
+        }
+
+        private Mock<ILogService> CreateMockLogService()
+        {
+            var result = new Mock<ILogService>(MockBehavior.Strict);
+
+            result.Setup(l => l.LogMapInUse(TestUsername)).Returns(Task.FromResult<object>(null));
 
             return result;
         }

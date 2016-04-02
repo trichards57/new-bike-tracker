@@ -83,29 +83,6 @@ namespace BikeTracker.Tests.Services
             return context;
         }
 
-        public Mock<DbSet<LocationRecord>> CreateMockLocationDbSet()
-        {
-            var mockLocationEntrySet = new Mock<DbSet<LocationRecord>>();
-
-            var data = GoodLocations.AsQueryable();
-
-            mockLocationEntrySet.Setup(e => e.Add(It.IsAny<LocationRecord>())).Callback<LocationRecord>(i => GoodLocations.Add(i));
-
-            mockLocationEntrySet.As<IDbAsyncEnumerable<LocationRecord>>()
-                .Setup(m => m.GetAsyncEnumerator())
-                .Returns(new TestDbAsyncEnumerator<LocationRecord>(data.GetEnumerator()));
-
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>()
-                .Setup(m => m.Provider)
-                .Returns(new TestDbAsyncQueryProvider<LocationRecord>(data.Provider));
-
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-
-            return mockLocationEntrySet;
-        }
-
         [TestMethod]
         public async Task ClearLandmarkGoodData()
         {
@@ -221,7 +198,7 @@ namespace BikeTracker.Tests.Services
                 }
             });
 
-            var locations = CreateMockLocationDbSet();
+            var locations = MockHelpers.CreateMockLocationDbSet(GoodLocations);
             var context = CreateMockLocationContext(locations.Object);
 
             var service = new LocationService(context.Object);
@@ -295,7 +272,7 @@ namespace BikeTracker.Tests.Services
                 GoodLocations.Add(lr);
             }
 
-            var locations = CreateMockLocationDbSet();
+            var locations = MockHelpers.CreateMockLocationDbSet(GoodLocations);
             var context = CreateMockLocationContext(locations.Object);
 
             var service = new LocationService(context.Object);
@@ -333,7 +310,7 @@ namespace BikeTracker.Tests.Services
 
         private async Task RegisterLocation(IMEIToCallsign imei, DateTimeOffset readingTime, DateTimeOffset receivedTime, decimal latitude, decimal longitude, bool shouldStore = true)
         {
-            var locations = CreateMockLocationDbSet();
+            var locations = MockHelpers.CreateMockLocationDbSet(GoodLocations);
             var context = CreateMockLocationContext(locations.Object);
 
             var imeiService = CreateMockImeiService();

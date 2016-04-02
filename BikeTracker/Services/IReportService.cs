@@ -26,11 +26,5 @@ namespace BikeTracker.Services
         /// An <seealso cref="IEnumerable{LocationRecord}"/> containing any report made in the given period.
         /// </returns>
         Task<IEnumerable<LocationRecord>> GetCallsignRecord(string callsign, DateTimeOffset startTime, DateTimeOffset endTime);
-
-        /// <summary>
-        /// Asynchronously gets the dates that callsigns have been reported.
-        /// </summary>
-        /// <returns>An <seealso cref="IEnumerable{DateTimeOffset}"/> containing the dates.</returns>
-        Task<IEnumerable<DateTimeOffset>> GetReportDates();
     }
 }

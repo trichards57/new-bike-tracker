@@ -29,7 +29,8 @@
         /// An IMEI was registered
         /// </summary>
         ImeiRegistered,
-        ImeiDeleted
+        ImeiDeleted,
+        MapInUse
     }
 
     /// <summary>
@@ -56,6 +57,7 @@
         /// <summary>
         /// The username associated with a log entry
         /// </summary>
-        Username
+        Username,
+        StartDate
     }
 }

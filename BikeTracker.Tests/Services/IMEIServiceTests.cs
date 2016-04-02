@@ -235,16 +235,8 @@ namespace BikeTracker.Tests.Services
             await RegisterCallsignCreate(newImei, newCallsign, type);
         }
 
-        private async Task DeleteImei(string imei, IMEIToCallsign imeiObj = null, bool tryDelete = true)
+        private void ConfirmDelete(Mock<DbSet<IMEIToCallsign>> imeis, Mock<IIMEIContext> context, Mock<ILocationService> locationService, IMEIToCallsign imeiObj, bool tryDelete)
         {
-            var imeis = CreateMockIMEIDbSet();
-            var context = CreateMockImeiContext(imeis.Object);
-            var locationService = CreateMockLocationService();
-
-            var service = new IMEIService(context.Object, locationService.Object);
-
-            await service.DeleteIMEI(imei);
-
             if (tryDelete)
             {
                 imeis.Verify(i => i.Remove(imeiObj));
@@ -259,6 +251,19 @@ namespace BikeTracker.Tests.Services
             }
         }
 
+        private async Task DeleteImei(string imei, IMEIToCallsign imeiObj = null, bool tryDelete = true)
+        {
+            var imeis = CreateMockIMEIDbSet();
+            var context = CreateMockImeiContext(imeis.Object);
+            var locationService = CreateMockLocationService();
+
+            var service = new IMEIService(context.Object, locationService.Object);
+
+            await service.DeleteIMEI(imei);
+
+            ConfirmDelete(imeis, context, locationService, imeiObj, tryDelete);
+        }
+
         private async Task DeleteImeiByID(int id, IMEIToCallsign imeiObj = null, bool tryDelete = true)
         {
             var imeis = CreateMockIMEIDbSet();
@@ -268,19 +273,7 @@ namespace BikeTracker.Tests.Services
             var service = new IMEIService(context.Object, locationService.Object);
 
             await service.DeleteIMEIById(id);
-
-            if (tryDelete)
-            {
-                imeis.Verify(i => i.Remove(imeiObj));
-                locationService.Verify(s => s.ExpireLocation(imeiObj.CallSign));
-                context.Verify(c => c.SaveChangesAsync());
-            }
-            else
-            {
-                imeis.Verify(i => i.Remove(It.IsAny<IMEIToCallsign>()), Times.Never);
-                locationService.Verify(s => s.ExpireLocation(It.IsAny<string>()), Times.Never);
-                context.Verify(c => c.SaveChangesAsync(), Times.Never);
-            }
+            ConfirmDelete(imeis, context, locationService, imeiObj, tryDelete);
         }
 
         private async Task GetFromId(int id, IMEIToCallsign expectedResult)

@@ -1,7 +1,9 @@
-﻿using System.Web.Optimization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Web.Optimization;
 
 namespace BikeTracker
 {
+    [ExcludeFromCodeCoverage]
     public static class BundleConfig
     {
         private readonly static string AngularCDN = "//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular.min.js";
