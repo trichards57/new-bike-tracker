@@ -20,6 +20,8 @@ namespace BikeTracker.Services
         /// </summary>
         private ILoggingContext dataContext;
 
+        public const int MapUseTimeout = 30;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LogService"/> class.
         /// </summary>
@@ -267,7 +269,7 @@ namespace BikeTracker.Services
 
                 var date = DateTimeOffset.ParseExact(prop.PropertyValue, "O", CultureInfo.InvariantCulture);
 
-                if (date > DateTimeOffset.Now.AddMinutes(-30))
+                if (date > DateTimeOffset.Now.AddMinutes(-MapUseTimeout))
                 {
                     logEntry.Date = DateTimeOffset.Now;
                 }

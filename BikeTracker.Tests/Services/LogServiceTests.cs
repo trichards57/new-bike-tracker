@@ -178,7 +178,7 @@ namespace BikeTracker.Tests.Services
         {
             LogEntries.Clear();
 
-            var startDate = DateTimeOffset.Now.AddMinutes(-29);
+            var startDate = DateTimeOffset.Now.AddMinutes(-(LogService.MapUseTimeout - 1));
 
             var le = new LogEntry { Date = startDate, SourceUser = TestUsername, Type = LogEventType.MapInUse };
             le.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.StartDate, PropertyValue = startDate.ToString("O") });
@@ -204,7 +204,7 @@ namespace BikeTracker.Tests.Services
         {
             LogEntries.Clear();
 
-            var startDate = DateTimeOffset.Now.AddMinutes(-31);
+            var startDate = DateTimeOffset.Now.AddMinutes(-(LogService.MapUseTimeout + 1));
 
             var le = new LogEntry { Date = startDate, SourceUser = TestUsername, Type = LogEventType.MapInUse };
             le.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.StartDate, PropertyValue = startDate.ToString("O") });
