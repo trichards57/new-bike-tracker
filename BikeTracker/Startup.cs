@@ -1,5 +1,4 @@
-﻿using BikeTracker.Controllers.Filters;
-using BikeTracker.Migrations;
+﻿using BikeTracker.Migrations;
 using BikeTracker.Models.Contexts;
 using Microsoft.Owin;
 using Owin;

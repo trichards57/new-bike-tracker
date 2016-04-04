@@ -27,7 +27,7 @@ namespace BikeTracker.Services
         /// <value>
         /// The imei service.
         /// </value>
-        private IIMEIService ImeiService
+        private IIMEIService IMEIService
         {
             get
             {
@@ -166,7 +166,7 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(imei))
                 throw new ArgumentException("{0} cannot be empty or only whitespace", nameof(imei));
 
-            var vehicle = await ImeiService.GetFromIMEI(imei);
+            var vehicle = await IMEIService.GetFromIMEI(imei);
 
             var locationData = new LocationRecord
             {

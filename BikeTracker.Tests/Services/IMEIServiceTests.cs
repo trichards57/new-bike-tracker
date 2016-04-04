@@ -31,7 +31,7 @@ namespace BikeTracker.Tests.Services
             BadCallsign = Fixture.Create<IMEIToCallsign>();
         }
 
-        public Mock<IIMEIContext> CreateMockImeiContext(DbSet<IMEIToCallsign> callsigns)
+        public Mock<IIMEIContext> CreateMockIMEIContext(DbSet<IMEIToCallsign> callsigns)
         {
             var context = new Mock<IIMEIContext>(MockBehavior.Strict);
 
@@ -43,25 +43,25 @@ namespace BikeTracker.Tests.Services
 
         public Mock<DbSet<IMEIToCallsign>> CreateMockIMEIDbSet()
         {
-            var mockImeiEntrySet = new Mock<DbSet<IMEIToCallsign>>();
+            var mockIMEIEntrySet = new Mock<DbSet<IMEIToCallsign>>();
 
             var data = GoodCallsigns.AsQueryable();
 
-            mockImeiEntrySet.Setup(e => e.Add(It.IsAny<IMEIToCallsign>())).Callback<IMEIToCallsign>(i => GoodCallsigns.Add(i));
+            mockIMEIEntrySet.Setup(e => e.Add(It.IsAny<IMEIToCallsign>())).Callback<IMEIToCallsign>(i => GoodCallsigns.Add(i));
 
-            mockImeiEntrySet.As<IDbAsyncEnumerable<IMEIToCallsign>>()
+            mockIMEIEntrySet.As<IDbAsyncEnumerable<IMEIToCallsign>>()
                 .Setup(m => m.GetAsyncEnumerator())
                 .Returns(new TestDbAsyncEnumerator<IMEIToCallsign>(data.GetEnumerator()));
 
-            mockImeiEntrySet.As<IQueryable<IMEIToCallsign>>()
+            mockIMEIEntrySet.As<IQueryable<IMEIToCallsign>>()
                 .Setup(m => m.Provider)
                 .Returns(new TestDbAsyncQueryProvider<IMEIToCallsign>(data.Provider));
 
-            mockImeiEntrySet.As<IQueryable<IMEIToCallsign>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockImeiEntrySet.As<IQueryable<IMEIToCallsign>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockImeiEntrySet.As<IQueryable<IMEIToCallsign>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            mockIMEIEntrySet.As<IQueryable<IMEIToCallsign>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockIMEIEntrySet.As<IQueryable<IMEIToCallsign>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockIMEIEntrySet.As<IQueryable<IMEIToCallsign>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
 
-            return mockImeiEntrySet;
+            return mockIMEIEntrySet;
         }
 
         public Mock<ILocationService> CreateMockLocationService()
@@ -74,46 +74,46 @@ namespace BikeTracker.Tests.Services
         }
 
         [TestMethod]
-        public async Task DeleteImeiBadImei()
+        public async Task DeleteIMEIBadIMEI()
         {
-            await DeleteImei(BadCallsign.IMEI, tryDelete: false);
+            await DeleteIMEI(BadCallsign.IMEI, tryDelete: false);
         }
 
         [TestMethod]
-        public async Task DeleteImeiByIdBadImei()
+        public async Task DeleteIMEIByIdBadIMEI()
         {
-            await DeleteImeiByID(BadCallsign.Id, tryDelete: false);
+            await DeleteIMEIByID(BadCallsign.Id, tryDelete: false);
         }
 
         [TestMethod]
-        public async Task DeleteImeiByIdGoodImei()
+        public async Task DeleteIMEIByIdGoodIMEI()
         {
-            await DeleteImeiByID(GoodCallsign.Id, GoodCallsign);
+            await DeleteIMEIByID(GoodCallsign.Id, GoodCallsign);
         }
 
         [TestMethod]
-        public async Task DeleteImeiEmptyImei()
+        public async Task DeleteIMEIEmptyIMEI()
         {
-            await DeleteImei(string.Empty, tryDelete: false);
+            await DeleteIMEI(string.Empty, tryDelete: false);
         }
 
         [TestMethod]
-        public async Task DeleteImeiGoodImei()
+        public async Task DeleteIMEIGoodIMEI()
         {
-            await DeleteImei(GoodCallsign.IMEI, GoodCallsign);
+            await DeleteIMEI(GoodCallsign.IMEI, GoodCallsign);
         }
 
         [TestMethod]
-        public async Task DeleteImeiNoImei()
+        public async Task DeleteIMEINoIMEI()
         {
-            await DeleteImei(null, tryDelete: false);
+            await DeleteIMEI(null, tryDelete: false);
         }
 
         [TestMethod]
         public async Task GetAll()
         {
             var imeis = CreateMockIMEIDbSet();
-            var context = CreateMockImeiContext(imeis.Object);
+            var context = CreateMockIMEIContext(imeis.Object);
             var locationService = CreateMockLocationService();
 
             var service = new IMEIService(context.Object, locationService.Object);
@@ -148,7 +148,7 @@ namespace BikeTracker.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetFromIMEIBadImei()
+        public async Task GetFromIMEIBadIMEI()
         {
             var callsign = Fixture.Create<IMEIToCallsign>();
             callsign.CallSign = IMEIService.DefaultCallsign;
@@ -158,19 +158,19 @@ namespace BikeTracker.Tests.Services
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public async Task GetFromIMEIEmptyImei()
+        public async Task GetFromIMEIEmptyIMEI()
         {
             await GetFromIMEI(string.Empty, shouldReturn: false);
         }
 
         [TestMethod]
-        public async Task GetFromIMEIGoodImei()
+        public async Task GetFromIMEIGoodIMEI()
         {
             await GetFromIMEI(GoodCallsign.IMEI, GoodCallsign);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public async Task GetFromIMEINoImei()
+        public async Task GetFromIMEINoIMEI()
         {
             await GetFromIMEI(null, shouldReturn: false);
         }
@@ -179,60 +179,60 @@ namespace BikeTracker.Tests.Services
         public async Task RegisterCallsignCreateEmptyCallsign()
         {
             var newCallsign = string.Empty;
-            var newImei = Fixture.Create<string>();
+            var newIMEI = Fixture.Create<string>();
             var type = VehicleType.Ambulance;
 
-            await RegisterCallsignCreate(newImei, newCallsign, type);
+            await RegisterCallsignCreate(newIMEI, newCallsign, type);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public async Task RegisterCallsignCreateEmptyImei()
+        public async Task RegisterCallsignCreateEmptyIMEI()
         {
             var newCallsign = Fixture.Create<string>();
-            var newImei = string.Empty;
+            var newIMEI = string.Empty;
             var type = VehicleType.Ambulance;
 
-            await RegisterCallsignCreate(newImei, newCallsign, type, false);
+            await RegisterCallsignCreate(newIMEI, newCallsign, type, false);
         }
 
         [TestMethod]
         public async Task RegisterCallsignCreateGoodData()
         {
             var newCallsign = Fixture.Create<string>();
-            var newImei = Fixture.Create<string>();
+            var newIMEI = Fixture.Create<string>();
             var type = VehicleType.Ambulance;
 
-            await RegisterCallsignCreate(newImei, newCallsign, type);
+            await RegisterCallsignCreate(newIMEI, newCallsign, type);
         }
 
         [TestMethod]
         public async Task RegisterCallsignCreateNullCallsign()
         {
             string newCallsign = null;
-            var newImei = Fixture.Create<string>();
+            var newIMEI = Fixture.Create<string>();
             var type = VehicleType.Ambulance;
 
-            await RegisterCallsignCreate(newImei, newCallsign, type);
+            await RegisterCallsignCreate(newIMEI, newCallsign, type);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public async Task RegisterCallsignCreateNullImei()
+        public async Task RegisterCallsignCreateNullIMEI()
         {
             var newCallsign = Fixture.Create<string>();
-            string newImei = null;
+            string newIMEI = null;
             var type = VehicleType.Ambulance;
 
-            await RegisterCallsignCreate(newImei, newCallsign, type, false);
+            await RegisterCallsignCreate(newIMEI, newCallsign, type, false);
         }
 
         [TestMethod]
         public async Task RegisterCallsignCreateNullVehicle()
         {
             var newCallsign = Fixture.Create<string>();
-            var newImei = Fixture.Create<string>();
+            var newIMEI = Fixture.Create<string>();
             VehicleType? type = null;
 
-            await RegisterCallsignCreate(newImei, newCallsign, type);
+            await RegisterCallsignCreate(newIMEI, newCallsign, type);
         }
 
         private void ConfirmDelete(Mock<DbSet<IMEIToCallsign>> imeis, Mock<IIMEIContext> context, Mock<ILocationService> locationService, IMEIToCallsign imeiObj, bool tryDelete)
@@ -251,10 +251,10 @@ namespace BikeTracker.Tests.Services
             }
         }
 
-        private async Task DeleteImei(string imei, IMEIToCallsign imeiObj = null, bool tryDelete = true)
+        private async Task DeleteIMEI(string imei, IMEIToCallsign imeiObj = null, bool tryDelete = true)
         {
             var imeis = CreateMockIMEIDbSet();
-            var context = CreateMockImeiContext(imeis.Object);
+            var context = CreateMockIMEIContext(imeis.Object);
             var locationService = CreateMockLocationService();
 
             var service = new IMEIService(context.Object, locationService.Object);
@@ -264,10 +264,10 @@ namespace BikeTracker.Tests.Services
             ConfirmDelete(imeis, context, locationService, imeiObj, tryDelete);
         }
 
-        private async Task DeleteImeiByID(int id, IMEIToCallsign imeiObj = null, bool tryDelete = true)
+        private async Task DeleteIMEIByID(int id, IMEIToCallsign imeiObj = null, bool tryDelete = true)
         {
             var imeis = CreateMockIMEIDbSet();
-            var context = CreateMockImeiContext(imeis.Object);
+            var context = CreateMockIMEIContext(imeis.Object);
             var locationService = CreateMockLocationService();
 
             var service = new IMEIService(context.Object, locationService.Object);
@@ -279,7 +279,7 @@ namespace BikeTracker.Tests.Services
         private async Task GetFromId(int id, IMEIToCallsign expectedResult)
         {
             var imeis = CreateMockIMEIDbSet();
-            var context = CreateMockImeiContext(imeis.Object);
+            var context = CreateMockIMEIContext(imeis.Object);
             var locationService = CreateMockLocationService();
 
             var service = new IMEIService(context.Object, locationService.Object);
@@ -302,7 +302,7 @@ namespace BikeTracker.Tests.Services
         private async Task GetFromIdQueryable(int id, IMEIToCallsign expectedResult)
         {
             var imeis = CreateMockIMEIDbSet();
-            var context = CreateMockImeiContext(imeis.Object);
+            var context = CreateMockIMEIContext(imeis.Object);
             var locationService = CreateMockLocationService();
 
             var service = new IMEIService(context.Object, locationService.Object);
@@ -329,7 +329,7 @@ namespace BikeTracker.Tests.Services
         private async Task GetFromIMEI(string imei, IMEIToCallsign expectedResult = null, bool shouldReturn = true, bool shouldRegister = false)
         {
             var imeis = CreateMockIMEIDbSet();
-            var context = CreateMockImeiContext(imeis.Object);
+            var context = CreateMockIMEIContext(imeis.Object);
             var locationService = CreateMockLocationService();
 
             var service = new IMEIService(context.Object, locationService.Object);
@@ -414,7 +414,7 @@ namespace BikeTracker.Tests.Services
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public async Task RegisterCallsignUpdateEmptyImei()
+        public async Task RegisterCallsignUpdateEmptyIMEI()
         {
             var imei = string.Empty;
             var callsign = Fixture.Create<string>();
@@ -424,7 +424,7 @@ namespace BikeTracker.Tests.Services
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public async Task RegisterCallsignUpdateNullImei()
+        public async Task RegisterCallsignUpdateNullIMEI()
         {
             string imei = null;
             var callsign = Fixture.Create<string>();
@@ -444,7 +444,7 @@ namespace BikeTracker.Tests.Services
             oldValues.Type = linkedObject.Type;
 
             var imeis = CreateMockIMEIDbSet();
-            var context = CreateMockImeiContext(imeis.Object);
+            var context = CreateMockIMEIContext(imeis.Object);
             var locationService = CreateMockLocationService();
 
             var service = new IMEIService(context.Object, locationService.Object);
@@ -479,7 +479,7 @@ namespace BikeTracker.Tests.Services
         private async Task RegisterCallsignCreate(string imei, string callsign, VehicleType? type, bool shouldCreate = true)
         {
             var imeis = CreateMockIMEIDbSet();
-            var context = CreateMockImeiContext(imeis.Object);
+            var context = CreateMockIMEIContext(imeis.Object);
             var locationService = CreateMockLocationService();
 
             var service = new IMEIService(context.Object, locationService.Object);

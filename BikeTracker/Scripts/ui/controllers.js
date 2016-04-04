@@ -3,14 +3,14 @@
     Longitude, Map, MapTypeId, Maps, Point, Pushpin, ReadingTime, Role, Type,
     UserName, anchor, animation, callsign, callsigns, cancel, center, clear,
     close, controller, createMode, credentials, data, dateOptions,
-    dialogCallsign, dialogEmail, dialogImei, dialogRole, dialogType, dismiss,
+    dialogCallsign, dialogEmail, dialogIMEI, dialogRole, dialogType, dismiss,
     document, email, entities, forEach, format, formatYear, get,
     getElementById, grep, height, htmlContent, imei, imeiFilter, imeiId, imeis,
     initialize, length, loading, mapTypeId, message, module, name, ok, open,
     openDate, preventDefault, previousTitle, push, query, refresh, remove,
     resolve, result, road, role, selectedCallsign, selectedDate, showAscending,
-    showDate, showDates, showDeleteConfirm, showError, showNewImei,
-    showNewUser, showUpdateImei, showUpdateUser, showWeeks, sortBy,
+    showDate, showDates, showDeleteConfirm, showError, showNewIMEI,
+    showNewUser, showUpdateIMEI, showUpdateUser, showWeeks, sortBy,
     sortReverse, startingDay, stopPropagation, templateUrl, then, title, type,
     updateSortBy, userFilter, userId, users, width, zoom
 */
@@ -381,7 +381,7 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', '$window', f
     $scope.refresh();
 }]);
 
-appControllers.controller('EditImeiCtrl', ["$scope", "$modalInstance", "$window", "createMode", "imei", "callsign", "type", function ($scope, $modalInstance, $window, createMode, imei, callsign, type) {
+appControllers.controller('EditIMEICtrl', ["$scope", "$modalInstance", "$window", "createMode", "imei", "callsign", "type", function ($scope, $modalInstance, $window, createMode, imei, callsign, type) {
 
     "use strict";
 
@@ -425,7 +425,7 @@ appControllers.controller('EditImeiCtrl', ["$scope", "$modalInstance", "$window"
     $scope.initialize();
 }]);
 
-appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', '$window', function ($scope, IMEI, $modal, $window) {
+appControllers.controller('IMEIListCtrl', ['$scope', 'IMEI', '$modal', '$window', function ($scope, IMEI, $modal, $window) {
     "use strict";
 
     $scope.initialize = function () {
@@ -441,7 +441,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', '$window'
     $scope.sortReverse = false;
     $scope.imeiFilter = '';
 
-    $scope.dialogImei = "";
+    $scope.dialogIMEI = "";
     $scope.dialogCallsign = "";
     $scope.dialogType = 0;
     $scope.createMode = true;
@@ -466,7 +466,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', '$window'
         return ($scope.sortBy !== param || ($scope.sortBy === param && !$scope.sortReverse));
     };
 
-    $scope.showUpdateImei = function (id) {
+    $scope.showUpdateIMEI = function (id) {
         var imei = $.grep($scope.imeis, function (e) {
             return e.Id === id;
         });
@@ -481,7 +481,7 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', '$window'
         var modalInstance = $modal.open({
             animation: true,
             templateUrl: "/IMEI/EditForm",
-            controller: "EditImeiCtrl",
+            controller: "EditIMEICtrl",
             resolve: {
                 createMode: function () {
                     return false;
@@ -516,11 +516,11 @@ appControllers.controller('ImeiListCtrl', ['$scope', 'IMEI', '$modal', '$window'
         });
     };
 
-    $scope.showNewImei = function () {
+    $scope.showNewIMEI = function () {
         var modalInstance = $modal.open({
             animation: true,
             templateUrl: "/IMEI/EditForm",
-            controller: "EditImeiCtrl",
+            controller: "EditIMEICtrl",
             resolve: {
                 createMode: function () {
                     return true;

@@ -40,7 +40,7 @@ namespace BikeTracker.Tests.Services
             GoodLandmark = GoodLandmarks.First();
         }
 
-        public Mock<IIMEIService> CreateMockImeiService()
+        public Mock<IIMEIService> CreateMockIMEIService()
         {
             var service = new Mock<IIMEIService>(MockBehavior.Strict);
 
@@ -243,7 +243,7 @@ namespace BikeTracker.Tests.Services
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public async Task RegisterLocationEmptyImei()
+        public async Task RegisterLocationEmptyIMEI()
         {
             await RegisterLocation(new IMEIToCallsign { IMEI = string.Empty }, GoodLocation.ReadingTime, GoodLocation.ReceiveTime, GoodLocation.Latitude, GoodLocation.Longitude);
         }
@@ -255,7 +255,7 @@ namespace BikeTracker.Tests.Services
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public async Task RegisterLocationNullImei()
+        public async Task RegisterLocationNullIMEI()
         {
             await RegisterLocation(new IMEIToCallsign { IMEI = null }, GoodLocation.ReadingTime, GoodLocation.ReceiveTime, GoodLocation.Latitude, GoodLocation.Longitude);
         }
@@ -313,7 +313,7 @@ namespace BikeTracker.Tests.Services
             var locations = MockHelpers.CreateMockLocationDbSet(GoodLocations);
             var context = CreateMockLocationContext(locations.Object);
 
-            var imeiService = CreateMockImeiService();
+            var imeiService = CreateMockIMEIService();
 
             var service = new LocationService(context.Object, imeiService.Object);
 

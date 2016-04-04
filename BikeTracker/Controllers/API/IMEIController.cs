@@ -39,7 +39,7 @@ namespace BikeTracker.Controllers.API
             await imeiService.DeleteIMEIById(key);
 
             if (imei != null)
-                await logService.LogImeiDeleted(User.Identity.GetUserName(), imei.IMEI);
+                await logService.LogIMEIDeleted(User.Identity.GetUserName(), imei.IMEI);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -68,11 +68,11 @@ namespace BikeTracker.Controllers.API
 
             await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
 
-            var newImei = await imeiService.GetFromIMEI(imeiToCallsign.IMEI);
+            var newIMEI = await imeiService.GetFromIMEI(imeiToCallsign.IMEI);
 
-            await logService.LogImeiRegistered(User.Identity.GetUserName(), newImei.IMEI, newImei.CallSign, newImei.Type);
+            await logService.LogIMEIRegistered(User.Identity.GetUserName(), newIMEI.IMEI, newIMEI.CallSign, newIMEI.Type);
 
-            return Created(newImei);
+            return Created(newIMEI);
         }
 
         // PUT: odata/IMEI(5)
@@ -95,11 +95,11 @@ namespace BikeTracker.Controllers.API
 
             await imeiService.RegisterCallsign(imeiToCallsign.IMEI, imeiToCallsign.CallSign, imeiToCallsign.Type);
 
-            var newImei = await imeiService.GetFromIMEI(imeiToCallsign.IMEI);
+            var newIMEI = await imeiService.GetFromIMEI(imeiToCallsign.IMEI);
 
-            await logService.LogImeiRegistered(User.Identity.GetUserName(), newImei.IMEI, newImei.CallSign, newImei.Type);
+            await logService.LogIMEIRegistered(User.Identity.GetUserName(), newIMEI.IMEI, newIMEI.CallSign, newIMEI.Type);
 
-            return Updated(newImei);
+            return Updated(newIMEI);
         }
     }
 }

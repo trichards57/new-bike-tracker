@@ -40,7 +40,7 @@ namespace BikeTracker.Services
         /// <param name="type">The vehicle type associated with the callsign.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task LogImeiRegistered(string registeringUser, string imei, string callsign, VehicleType type)
+        public async Task LogIMEIRegistered(string registeringUser, string imei, string callsign, VehicleType type)
         {
             if (registeringUser == null)
                 throw new ArgumentNullException(nameof(registeringUser));
@@ -61,10 +61,10 @@ namespace BikeTracker.Services
             {
                 Date = DateTimeOffset.Now,
                 SourceUser = registeringUser,
-                Type = LogEventType.ImeiRegistered,
+                Type = LogEventType.IMEIRegistered,
             };
 
-            logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.Imei, PropertyValue = imei });
+            logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.IMEI, PropertyValue = imei });
             logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.Callsign, PropertyValue = callsign });
             logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.VehicleType, PropertyValue = type.ToString() });
 
@@ -239,7 +239,7 @@ namespace BikeTracker.Services
         /// <exception cref="System.ArgumentException">
         /// Raised if the <paramref name="registeringUser"/> or <paramref name="imei"/> are empty or whitespace.
         /// </exception>
-        public async Task LogImeiDeleted(string registeringUser, string imei)
+        public async Task LogIMEIDeleted(string registeringUser, string imei)
         {
             if (registeringUser == null)
                 throw new ArgumentNullException(nameof(registeringUser));
@@ -254,11 +254,11 @@ namespace BikeTracker.Services
             {
                 Date = DateTimeOffset.Now,
                 SourceUser = registeringUser,
-                Type = LogEventType.ImeiDeleted
+                Type = LogEventType.IMEIDeleted
             };
             var logProperty = new LogEntryProperty
             {
-                PropertyType = LogPropertyType.Imei,
+                PropertyType = LogPropertyType.IMEI,
                 PropertyValue = imei
             };
             logEntry.Properties.Add(logProperty);

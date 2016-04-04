@@ -23,7 +23,7 @@
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a role="button" ng-click="showNewImei()">New IMEI</a>
+                        <a role="button" ng-click="showNewIMEI()">New IMEI</a>
                     </li>
                     <li>
                         <a ng-click="refresh()" role="button">
@@ -73,7 +73,7 @@
                 {{imei.Type}}
             </td>
             <td>
-                <a class="pointer" ng-click="showUpdateImei(imei.Id)">Edit</a> | <a class="pointer" ng-click="showDeleteConfirm(imei.Id)">Delete</a>
+                <a class="pointer" ng-click="showUpdateIMEI(imei.Id)">Edit</a> | <a class="pointer" ng-click="showDeleteConfirm(imei.Id)">Delete</a>
             </td>
         </tr>
         <tr ng-show="loading">

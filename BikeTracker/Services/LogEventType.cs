@@ -28,8 +28,8 @@
         /// <summary>
         /// An IMEI was registered
         /// </summary>
-        ImeiRegistered,
-        ImeiDeleted,
+        IMEIRegistered,
+        IMEIDeleted,
         MapInUse
     }
 
@@ -41,7 +41,7 @@
         /// <summary>
         /// The IMEI associated with a log entry
         /// </summary>
-        Imei,
+        IMEI,
         /// <summary>
         /// A property that was changed
         /// </summary>

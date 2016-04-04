@@ -172,8 +172,8 @@ namespace BikeTracker.Tests.Controllers.API
         {
             var service = new Mock<ILogService>(MockBehavior.Strict);
 
-            service.Setup(l => l.LogImeiRegistered(TestUsername, TestCallsign.IMEI, TestCallsign.CallSign, TestCallsign.Type)).Returns(Task.FromResult<object>(null));
-            service.Setup(l => l.LogImeiDeleted(TestUsername, TestCallsign.IMEI)).Returns(Task.FromResult<object>(null));
+            service.Setup(l => l.LogIMEIRegistered(TestUsername, TestCallsign.IMEI, TestCallsign.CallSign, TestCallsign.Type)).Returns(Task.FromResult<object>(null));
+            service.Setup(l => l.LogIMEIDeleted(TestUsername, TestCallsign.IMEI)).Returns(Task.FromResult<object>(null));
 
             return service;
         }
@@ -199,7 +199,7 @@ namespace BikeTracker.Tests.Controllers.API
 
             if (shouldLog)
             {
-                logService.Verify(l => l.LogImeiDeleted(TestUsername, imei));
+                logService.Verify(l => l.LogIMEIDeleted(TestUsername, imei));
             }
         }
 
@@ -229,13 +229,13 @@ namespace BikeTracker.Tests.Controllers.API
             {
                 case ResultType.ModelError:
                     Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
-                    logService.Verify(l => l.LogImeiRegistered(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<VehicleType>()), Times.Never);
+                    logService.Verify(l => l.LogIMEIRegistered(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<VehicleType>()), Times.Never);
                     break;
 
                 case ResultType.Success:
                     Assert.IsInstanceOfType(res, typeof(CreatedODataResult<IMEIToCallsign>));
                     service.Verify(i => i.RegisterCallsign(imei, callsign, type));
-                    logService.Verify(l => l.LogImeiRegistered(TestUsername, imei, callsign, type));
+                    logService.Verify(l => l.LogIMEIRegistered(TestUsername, imei, callsign, type));
                     break;
             }
         }
@@ -265,18 +265,18 @@ namespace BikeTracker.Tests.Controllers.API
             {
                 case ResultType.ModelError:
                     Assert.IsInstanceOfType(res, typeof(InvalidModelStateResult));
-                    logService.Verify(l => l.LogImeiRegistered(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<VehicleType>()), Times.Never);
+                    logService.Verify(l => l.LogIMEIRegistered(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<VehicleType>()), Times.Never);
                     break;
 
                 case ResultType.NotFoundError:
                     Assert.IsInstanceOfType(res, typeof(NotFoundResult));
-                    logService.Verify(l => l.LogImeiRegistered(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<VehicleType>()), Times.Never);
+                    logService.Verify(l => l.LogIMEIRegistered(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<VehicleType>()), Times.Never);
                     break;
 
                 case ResultType.Success:
                     Assert.IsInstanceOfType(res, typeof(UpdatedODataResult<IMEIToCallsign>));
                     service.Verify(i => i.RegisterCallsign(imei, callsign, type));
-                    logService.Verify(l => l.LogImeiRegistered(TestUsername, imei, callsign, type ?? VehicleType.Unknown));
+                    logService.Verify(l => l.LogIMEIRegistered(TestUsername, imei, callsign, type ?? VehicleType.Unknown));
                     break;
             }
         }

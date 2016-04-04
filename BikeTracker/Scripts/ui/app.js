@@ -18,7 +18,7 @@ app.config(['$routeProvider', function ($routeProvider) {
         controller: 'ControlPanelCtrl'
     }).when('/IMEIs', {
         templateUrl: '/IMEI/Home',
-        controller: 'ImeiListCtrl'
+        controller: 'IMEIListCtrl'
     }).when('/Admin', {
         templateUrl: '/Admin/Home',
         controller: 'AdminCtrl'

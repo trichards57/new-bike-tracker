@@ -128,7 +128,7 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task CheckInEmptyImei()
+        public async Task CheckInEmptyIMEI()
         {
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
@@ -184,7 +184,7 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
-        public async Task CheckInNoImei()
+        public async Task CheckInNoIMEI()
         {
             var locationService = CreateMockLocationService();
             var imeiService = CreateMockIMEIService();
