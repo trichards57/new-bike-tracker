@@ -1,4 +1,6 @@
 ﻿using BikeTracker.Models.LocationModels;
+using BikeTracker.Models.LoggingModels;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -58,5 +60,19 @@ namespace BikeTracker.Services
         /// <param name="user">The user.</param>
         /// <returns></returns>
         Task LogMapInUse(string user);
+
+        /// <summary>
+        /// Asynchronously gets the log entries with on the given <paramref name="page" /> of size <paramref name="pageSize" />.
+        /// </summary>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <param name="page">The page.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <remarks>
+        /// If <paramref name="startDate"/> is null, the start date will be the beginning of the log.  If <paramref name="endDate"/>
+        /// is null, the end date will be DateTimeOffset.Now.
+        /// </remarks>
+        /// <returns>An IEnumerable{LogEntry} containing the requested log entries.</returns>
+        Task<IEnumerable<LogEntry>> GetLogEntries(int? pageSize = null, int? page = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null);
     }
 }

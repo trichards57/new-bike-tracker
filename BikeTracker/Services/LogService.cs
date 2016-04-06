@@ -3,6 +3,7 @@ using BikeTracker.Models.LocationModels;
 using BikeTracker.Models.LoggingModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -309,6 +310,28 @@ namespace BikeTracker.Services
             }
 
             await dataContext.SaveChangesAsync();
+        }
+
+        public Task<IEnumerable<LogEntry>> GetLogEntries(int? pageSize = null, int? page = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null)
+        {
+            if (pageSize == null && page != null)
+                throw new ArgumentNullException(nameof(pageSize));
+
+            if (endDate < startDate)
+                throw new ArgumentException("End Date must not be before Start Date", nameof(endDate));
+
+            IEnumerable<LogEntry> result = dataContext.LogEntries.OrderBy(l => l.Date);
+
+            if (startDate != null)
+                result = result.Where(le => le.Date >= startDate.Value);
+
+            if (endDate != null)
+                result = result.Where(le => le.Date <= endDate.Value);
+
+            if (pageSize != null)
+                result = result.Skip((page ?? 0) * pageSize.Value).Take(pageSize.Value);
+
+            return Task.FromResult(result);
         }
     }
 }

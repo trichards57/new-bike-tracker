@@ -21,15 +21,17 @@ namespace BikeTracker.Tests.Services
     [TestClass]
     public class LogServiceTests
     {
+        private const int TestPageCount = 6;
+        private const int TestPageSize = 5;
         private const int TimeTolerance = 2;
         private readonly Fixture Fixture = new Fixture();
+        private readonly List<LogEntry> LogEntries;
         private readonly string TestCallsign;
         private readonly List<string> TestChanges;
         private readonly string TestDeleteUser;
         private readonly string TestIMEI;
         private readonly string TestNewUser;
         private readonly string TestUsername;
-        private readonly List<LogEntry> LogEntries;
 
         public LogServiceTests()
         {
@@ -59,6 +61,8 @@ namespace BikeTracker.Tests.Services
 
             var data = LogEntries.AsQueryable();
 
+            mockLogEntrySet.As<IEnumerable<LogEntry>>().Setup(e => e.GetEnumerator()).Returns(data.GetEnumerator());
+
             mockLogEntrySet.As<IDbAsyncEnumerable<LogEntry>>()
                 .Setup(m => m.GetAsyncEnumerator())
                 .Returns(new TestDbAsyncEnumerator<LogEntry>(data.GetEnumerator()));
@@ -79,6 +83,148 @@ namespace BikeTracker.Tests.Services
             var mockLogPropertySet = new Mock<DbSet<LogEntryProperty>>();
 
             return mockLogPropertySet;
+        }
+
+        [TestMethod]
+        public async Task GetLogEntriesAfterDate()
+        {
+            var data = new List<LogEntry>();
+
+            var expectedResult = new List<LogEntry>();
+
+            LogEntry le;
+
+            for (var i = 1; i <= 10; i++)
+                data.Add(Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.AddDays(-i).Date).Create());
+
+            le = Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.Date).Create();
+            data.Add(le);
+            expectedResult.Add(le);
+
+            for (var i = 1; i <= 10; i++)
+            {
+                le = Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.AddDays(i).Date).Create();
+                data.Add(le);
+                expectedResult.Add(le);
+            }
+
+            await GetLogEntries(data, expectedResult, startDate: DateTimeOffset.Now.Date);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task GetLogEntriesBadDates()
+        {
+            var data = new List<LogEntry>();
+            await GetLogEntries(data, data, startDate: DateTimeOffset.Now.AddDays(1).Date, endDate: DateTimeOffset.Now.AddDays(-1).Date, expectSuccess: false);
+        }
+
+        [TestMethod]
+        public async Task GetLogEntriesBeforeDate()
+        {
+            var data = new List<LogEntry>();
+
+            var expectedResult = new List<LogEntry>();
+
+            LogEntry le;
+
+            for (var i = 1; i <= 10; i++)
+            {
+                le = Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.AddDays(-i).Date).Create();
+                data.Add(le);
+                expectedResult.Add(le);
+            }
+
+            le = Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.Date).Create();
+            data.Add(le);
+            expectedResult.Add(le);
+
+            for (var i = 1; i <= 10; i++)
+            {
+                le = Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.AddDays(i).Date).Create();
+                data.Add(le);
+            }
+
+            await GetLogEntries(data, expectedResult, endDate: DateTimeOffset.Now.Date);
+        }
+
+        [TestMethod]
+        public async Task GetLogEntriesBetweenDates()
+        {
+            var data = new List<LogEntry>();
+
+            var expectedResult = new List<LogEntry>();
+
+            const int testRange = 2;
+
+            LogEntry le;
+
+            for (var i = 1; i <= 10; i++)
+            {
+                le = Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.AddDays(-i).Date).Create();
+                data.Add(le);
+                if (i <= testRange)
+                    expectedResult.Add(le);
+            }
+
+            le = Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.Date).Create();
+            data.Add(le);
+            expectedResult.Add(le);
+
+            for (var i = 1; i <= 10; i++)
+            {
+                le = Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.AddDays(i).Date).Create();
+                data.Add(le);
+                if (i <= testRange)
+                    expectedResult.Add(le);
+            }
+
+            await GetLogEntries(data, expectedResult, startDate: DateTimeOffset.Now.AddDays(-testRange).Date, endDate: DateTimeOffset.Now.AddDays(testRange).Date);
+        }
+
+        [TestMethod]
+        public async Task GetLogEntriesDefaultData()
+        {
+            var data = Fixture.Build<LogEntry>().Without(l => l.Properties).CreateMany().ToList();
+
+            await GetLogEntries(data, data);
+        }
+
+        [TestMethod]
+        public async Task GetLogEntriesFirstPage()
+        {
+            var data = Fixture.Build<LogEntry>().Without(l => l.Properties).CreateMany(TestPageSize * TestPageCount).ToList();
+
+            var expectedResult = data.OrderBy(t => t.Date).Take(TestPageSize).ToList();
+
+            await GetLogEntries(data, expectedResult, TestPageSize, 0);
+        }
+
+        [TestMethod]
+        public async Task GetLogEntriesNullPage()
+        {
+            var data = Fixture.Build<LogEntry>().Without(l => l.Properties).CreateMany(TestPageSize * TestPageCount).ToList();
+
+            var expectedResult = data.OrderBy(t => t.Date).Take(TestPageSize).ToList();
+
+            await GetLogEntries(data, expectedResult, TestPageSize, null);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task GetLogEntriesNullPageSizeWithPage()
+        {
+            var data = Fixture.Build<LogEntry>().Without(l => l.Properties).CreateMany().ToList();
+
+            await GetLogEntries(data, null, null, 0, expectSuccess: false);
+        }
+
+        [TestMethod]
+        public async Task GetLogEntriesThirdPage()
+        {
+            var data = Fixture.Build<LogEntry>().Without(l => l.Properties).CreateMany(TestPageSize * TestPageCount).ToList();
+
+            var expectedResult = data.OrderBy(t => t.Date).Skip(TestPageSize * 2).Take(TestPageSize).ToList();
+
+            await GetLogEntries(data, expectedResult, TestPageSize, 2);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
@@ -153,17 +299,17 @@ namespace BikeTracker.Tests.Services
             await LogIMEIRegistered(null, TestIMEI, TestCallsign, VehicleType.FootPatrol, false);
         }
 
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogMapInUseEmptyName()
+        {
+            await LogMapInUse(string.Empty, false);
+        }
+
         [TestMethod]
         public async Task LogMapInUseNewGoodData()
         {
             LogEntries.Clear();
             await LogMapInUse(TestUsername, true);
-        }
-
-        [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public async Task LogMapInUseEmptyName()
-        {
-            await LogMapInUse(string.Empty, false);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
@@ -173,21 +319,18 @@ namespace BikeTracker.Tests.Services
         }
 
         [TestMethod]
-        public async Task LogUserLoggedInGoodData()
+        public async Task LogMapInUsePreviousGoodData()
         {
-            await LogUserLoggedIn(TestUsername, true);
-        }
+            LogEntries.Clear();
 
-        [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public async Task LogUserLoggedInEmptyName()
-        {
-            await LogUserLoggedIn(string.Empty, false);
-        }
+            var startDate = DateTimeOffset.Now.AddMinutes(-(LogService.MapUseTimeout + 1));
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public async Task LogUserLoggedInNullName()
-        {
-            await LogUserLoggedIn(null, false);
+            var le = new LogEntry { Date = startDate, SourceUser = TestUsername, Type = LogEventType.MapInUse };
+            le.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.StartDate, PropertyValue = startDate.ToString("O") });
+
+            LogEntries.Add(le);
+
+            await LogMapInUse(TestUsername, true);
         }
 
         [TestMethod]
@@ -214,21 +357,6 @@ namespace BikeTracker.Tests.Services
             context.Verify(c => c.SaveChangesAsync());
 
             CheckMapLogEntry(le, TestUsername, startDate);
-        }
-
-        [TestMethod]
-        public async Task LogMapInUsePreviousGoodData()
-        {
-            LogEntries.Clear();
-
-            var startDate = DateTimeOffset.Now.AddMinutes(-(LogService.MapUseTimeout + 1));
-
-            var le = new LogEntry { Date = startDate, SourceUser = TestUsername, Type = LogEventType.MapInUse };
-            le.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.StartDate, PropertyValue = startDate.ToString("O") });
-
-            LogEntries.Add(le);
-
-            await LogMapInUse(TestUsername, true);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
@@ -289,6 +417,24 @@ namespace BikeTracker.Tests.Services
         public async Task LogUserDeletedNoSourceUser()
         {
             await LogUserDeleted(null, TestDeleteUser, false);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogUserLoggedInEmptyName()
+        {
+            await LogUserLoggedIn(string.Empty, false);
+        }
+
+        [TestMethod]
+        public async Task LogUserLoggedInGoodData()
+        {
+            await LogUserLoggedIn(TestUsername, true);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogUserLoggedInNullName()
+        {
+            await LogUserLoggedIn(null, false);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
@@ -365,16 +511,16 @@ namespace BikeTracker.Tests.Services
             CheckLogEntry(entry, LogEventType.UserCreated, creatingUser, new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = newUser });
             return true;
         }
-        
-        private bool CheckUserLoggedInEntry(LogEntry entry, string username)
-        {
-            CheckLogEntry(entry, LogEventType.UserLogIn, username);
-            return true;
-        }
 
         private bool CheckUserDeletedLogEntry(LogEntry entry, string deletingUser, string oldUser)
         {
             CheckLogEntry(entry, LogEventType.UserDeleted, deletingUser, new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = oldUser });
+            return true;
+        }
+
+        private bool CheckUserLoggedInEntry(LogEntry entry, string username)
+        {
+            CheckLogEntry(entry, LogEventType.UserLogIn, username);
             return true;
         }
 
@@ -384,6 +530,27 @@ namespace BikeTracker.Tests.Services
 
             CheckLogEntry(entry, LogEventType.UserUpdated, updatingUser, properties);
             return true;
+        }
+
+        private async Task GetLogEntries(IEnumerable<LogEntry> dataSet, IEnumerable<LogEntry> expectedDataSet, int? pageSize = null, int? page = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, bool expectSuccess = true)
+        {
+            LogEntries.Clear();
+            LogEntries.AddRange(dataSet);
+
+            var logEntrySet = CreateMockLogEntrySet();
+            var logPropertySet = CreateMockLogPropertySet();
+            var context = CreateLoggingContext(logEntrySet.Object, logPropertySet.Object);
+
+            var service = new LogService(context.Object);
+
+            var result = await service.GetLogEntries(pageSize, page, startDate, endDate);
+
+            if (expectSuccess)
+            {
+                Assert.IsTrue(expectedDataSet.OrderBy(l => l.Date).SequenceEqual(result));
+            }
+
+            context.Verify(c => c.SaveChangesAsync(), Times.Never);
         }
 
         private async Task LogIMEIDeleted(string registeringUser, string imei, bool expectSuccess = true)
