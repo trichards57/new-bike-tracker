@@ -2,6 +2,8 @@
 using BikeTracker.Models.LocationModels;
 using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
+using Microsoft.Practices.Unity;
+using Microsoft.Practices.Unity.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Ploeh.AutoFixture;
@@ -12,6 +14,7 @@ using System.Data.Entity.Infrastructure;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Services
 {
@@ -257,7 +260,13 @@ namespace BikeTracker.Tests.Services
             var context = CreateMockIMEIContext(imeis.Object);
             var locationService = CreateMockLocationService();
 
-            var service = new IMEIService(context.Object, locationService.Object);
+            var container = new UnityContainer();
+
+            container.RegisterInstance(locationService.Object);
+
+            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+
+            var service = new IMEIService(context.Object);
 
             await service.DeleteIMEI(imei);
 

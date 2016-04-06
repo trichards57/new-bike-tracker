@@ -2,6 +2,8 @@
 using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
+using Microsoft.Practices.Unity;
+using Microsoft.Practices.Unity.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
@@ -19,7 +21,7 @@ namespace BikeTracker.Tests.Controllers
         [TestMethod]
         public async Task ChangePasswordBadNewPassword()
         {
-            await ChangePassword(MockHelpers.ConfirmedGoodId, MockHelpers.UnconfirmedGoodPassword, MockHelpers.BadPassword, MockHelpers.BadPassword, MockHelpers.ConfirmedGoodUsername, true, false);
+            await ChangePassword(MockHelpers.ConfirmedGoodId, MockHelpers.UnconfirmedGoodPassword, MockHelpers.BadPassword, MockHelpers.BadPassword, MockHelpers.ConfirmedGoodUsername, false, true, false);
         }
 
         [TestMethod]
@@ -29,15 +31,21 @@ namespace BikeTracker.Tests.Controllers
         }
 
         [TestMethod]
+        public async Task ChangePasswordGoodDataWithDependencyResolver()
+        {
+            await ChangePassword(MockHelpers.ConfirmedGoodId, MockHelpers.UnconfirmedGoodPassword, MockHelpers.ConfirmedGoodPassword, MockHelpers.ConfirmedGoodPassword, MockHelpers.ConfirmedGoodUsername, true);
+        }
+
+        [TestMethod]
         public async Task ChangePasswordNewPasswordMismatch()
         {
-            await ChangePassword(MockHelpers.ConfirmedGoodId, MockHelpers.UnconfirmedGoodPassword, MockHelpers.ConfirmedGoodPassword, MockHelpers.BadPassword, MockHelpers.ConfirmedGoodUsername, false, false);
+            await ChangePassword(MockHelpers.ConfirmedGoodId, MockHelpers.UnconfirmedGoodPassword, MockHelpers.ConfirmedGoodPassword, MockHelpers.BadPassword, MockHelpers.ConfirmedGoodUsername, false, false, false);
         }
 
         [TestMethod]
         public async Task ChangePasswordWrongPassword()
         {
-            await ChangePassword(MockHelpers.ConfirmedGoodId, MockHelpers.BadPassword, MockHelpers.ConfirmedGoodPassword, MockHelpers.ConfirmedGoodPassword, MockHelpers.ConfirmedGoodUsername, true, false);
+            await ChangePassword(MockHelpers.ConfirmedGoodId, MockHelpers.BadPassword, MockHelpers.ConfirmedGoodPassword, MockHelpers.ConfirmedGoodPassword, MockHelpers.ConfirmedGoodUsername, false, true, false);
         }
 
         [TestMethod]
@@ -88,14 +96,20 @@ namespace BikeTracker.Tests.Controllers
             Assert.IsNotNull(view);
         }
 
-        private async Task ChangePassword(string userId, string oldPassword, string newPassword, string confirmPassword, string username, bool shouldReset = true, bool shouldReportSuccess = true)
+        private async Task ChangePassword(string userId, string oldPassword, string newPassword, string confirmPassword, string username, bool useDependencyService = false, bool shouldReset = true, bool shouldReportSuccess = true)
         {
             var userManager = MockHelpers.CreateMockUserManager();
             var signInManager = MockHelpers.CreateMockSignInManager();
             var httpContext = MockHelpers.CreateMockHttpContext();
             var logService = CreateMockLogService();
 
-            var controller = new ManageController(userManager.Object, signInManager.Object, logService.Object);
+            var container = new UnityContainer();
+
+            container.RegisterInstance(logService.Object);
+
+            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+
+            var controller = new ManageController(userManager.Object, signInManager.Object, useDependencyService ? null : logService.Object);
             var context = new ControllerContext();
             context.HttpContext = httpContext.Object;
             controller.ControllerContext = context;

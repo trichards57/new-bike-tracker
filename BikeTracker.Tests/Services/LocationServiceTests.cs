@@ -2,6 +2,8 @@
 using BikeTracker.Models.LocationModels;
 using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
+using Microsoft.Practices.Unity;
+using Microsoft.Practices.Unity.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Ploeh.AutoFixture;
@@ -12,6 +14,7 @@ using System.Data.Entity.Infrastructure;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Services
 {
@@ -23,6 +26,7 @@ namespace BikeTracker.Tests.Services
         private readonly LocationRecord BadLocation;
         private readonly Fixture Fixture = new Fixture();
         private readonly IMEIToCallsign GoodCallsign;
+        private readonly string UnknownIMEI;
         private readonly Landmark GoodLandmark;
         private readonly Landmark BadLandmark;
         private readonly List<Landmark> GoodLandmarks;
@@ -36,6 +40,7 @@ namespace BikeTracker.Tests.Services
             BadLocation = Fixture.Create<LocationRecord>();
             BadLandmark = Fixture.Create<Landmark>();
             GoodCallsign = Fixture.Create<IMEIToCallsign>();
+            UnknownIMEI = Fixture.Create<string>();
             GoodLandmarks = new List<Landmark>(Fixture.CreateMany<Landmark>());
             GoodLandmark = GoodLandmarks.First();
         }
@@ -45,6 +50,7 @@ namespace BikeTracker.Tests.Services
             var service = new Mock<IIMEIService>(MockBehavior.Strict);
 
             service.Setup(s => s.GetFromIMEI(GoodCallsign.IMEI)).ReturnsAsync(GoodCallsign);
+            service.Setup(s => s.GetFromIMEI(UnknownIMEI)).ReturnsAsync(new IMEIToCallsign { CallSign = IMEIService.DefaultCallsign, IMEI = UnknownIMEI });
 
             return service;
         }
@@ -254,6 +260,12 @@ namespace BikeTracker.Tests.Services
             await RegisterLocation(GoodCallsign, GoodLocation.ReadingTime, GoodLocation.ReceiveTime, GoodLocation.Latitude, GoodLocation.Longitude);
         }
 
+        [TestMethod]
+        public async Task RegisterLocationUnknownIMEI()
+        {
+            await RegisterLocation(new IMEIToCallsign { IMEI = UnknownIMEI, CallSign = IMEIService.DefaultCallsign }, GoodLocation.ReadingTime, GoodLocation.ReceiveTime, GoodLocation.Latitude, GoodLocation.Longitude, shouldUseResolver: true);
+        }
+
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public async Task RegisterLocationNullIMEI()
         {
@@ -308,14 +320,18 @@ namespace BikeTracker.Tests.Services
             }
         }
 
-        private async Task RegisterLocation(IMEIToCallsign imei, DateTimeOffset readingTime, DateTimeOffset receivedTime, decimal latitude, decimal longitude, bool shouldStore = true)
+        private async Task RegisterLocation(IMEIToCallsign imei, DateTimeOffset readingTime, DateTimeOffset receivedTime, decimal latitude, decimal longitude, bool shouldStore = true, bool shouldUseResolver = false)
         {
             var locations = MockHelpers.CreateMockLocationDbSet(GoodLocations);
             var context = CreateMockLocationContext(locations.Object);
-
             var imeiService = CreateMockIMEIService();
+            var container = new UnityContainer();
 
-            var service = new LocationService(context.Object, imeiService.Object);
+            container.RegisterInstance(imeiService.Object);
+
+            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+
+            var service = new LocationService(context.Object, shouldUseResolver ? null : imeiService.Object);
 
             await service.RegisterLocation(imei.IMEI, readingTime, receivedTime, latitude, longitude);
 

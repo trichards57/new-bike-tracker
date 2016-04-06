@@ -4,6 +4,8 @@ using BikeTracker.Models.IdentityModels;
 using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
 using Microsoft.AspNet.Identity;
+using Microsoft.Practices.Unity;
+using Microsoft.Practices.Unity.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Ploeh.AutoFixture;
@@ -492,7 +494,13 @@ namespace BikeTracker.Tests.Controllers
             var urlHelper = MockHelpers.CreateMockUrlHelper();
             var logService = CreateMockLogService();
 
-            var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object, logService: logService.Object);
+            var container = new UnityContainer();
+
+            container.RegisterInstance(logService.Object);
+
+            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+
+            var controller = new AccountController(userManager.Object, signInManager.Object, urlHelper.Object);
 
             var model = new ResetPasswordViewModel
             {
