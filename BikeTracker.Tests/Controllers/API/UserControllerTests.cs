@@ -49,6 +49,7 @@ namespace BikeTracker.Tests.Controllers.API
             foreach (var u in TestUsers)
             {
                 u.Email = Fixture.Create<MailAddress>().Address;
+                u.UserName = u.Email;
             }
 
             TestRoles = new List<ApplicationRole>(Fixture.CreateMany<ApplicationRole>());
@@ -138,19 +139,19 @@ namespace BikeTracker.Tests.Controllers.API
         [TestMethod]
         public async Task PutUserGoodData()
         {
-            await PutUser(TestUser.Id, TestGoodEmail, GoodRole, TestRoleResult);
+            await PutUser(TestUser.Id, TestGoodEmail, GoodRole, TestRoleResult, username: TestUser.UserName);
         }
 
         [TestMethod]
         public async Task PutUserGoodEmailOnly()
         {
-            await PutUser(TestUser.Id, TestGoodEmail, TestRoles.First(), TestRoleResult, changeRole: false);
+            await PutUser(TestUser.Id, TestGoodEmail, TestRoles.First(), TestRoleResult, changeRole: false, username: TestUser.UserName);
         }
 
         [TestMethod]
         public async Task PutUserGoodRoleOnly()
         {
-            await PutUser(TestUser.Id, TestUser.Email, GoodRole, TestRoleResult, changeEmail: false);
+            await PutUser(TestUser.Id, TestUser.Email, GoodRole, TestRoleResult, changeEmail: false, username: TestUser.UserName);
         }
 
         [TestMethod]
@@ -259,7 +260,7 @@ namespace BikeTracker.Tests.Controllers.API
             var service = new Mock<ILogService>(MockBehavior.Strict);
 
             service.Setup(l => l.LogUserCreated(TestUsername, TestGoodEmail)).Returns(Task.FromResult<object>(null));
-            service.Setup(l => l.LogUserUpdated(TestUsername, It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult<object>(null));
+            service.Setup(l => l.LogUserUpdated(TestUsername, TestUser.UserName, It.IsAny<IEnumerable<string>>())).Returns(Task.FromResult<object>(null));
             service.Setup(l => l.LogUserDeleted(TestUsername, It.IsAny<string>())).Returns(Task.FromResult<object>(null));
 
             return service;
@@ -322,7 +323,7 @@ namespace BikeTracker.Tests.Controllers.API
             return userManager;
         }
 
-        private async Task PutUser(string id, string email, ApplicationRole role, IEnumerable<string> oldRoles = null, bool changeRole = true, bool changeEmail = true, ResultType expectedResult = ResultType.Success)
+        private async Task PutUser(string id, string email, ApplicationRole role, IEnumerable<string> oldRoles = null, bool changeRole = true, bool changeEmail = true, string username = null, ResultType expectedResult = ResultType.Success)
         {
             var userManager = CreateMockUserManager();
             var roleManager = CreateMockRoleManager();
@@ -378,9 +379,9 @@ namespace BikeTracker.Tests.Controllers.API
                     }
 
                     if (changeEmail || changeRole)
-                        logService.Verify(l => l.LogUserUpdated(TestUsername, It.Is<IEnumerable<string>>(s => CheckUpdateProperties(s, changeRole, changeEmail))));
+                        logService.Verify(l => l.LogUserUpdated(TestUsername, username, It.Is<IEnumerable<string>>(s => CheckUpdateProperties(s, changeRole, changeEmail))));
                     else
-                        logService.Verify(l => l.LogUserUpdated(TestUsername, It.IsAny<IEnumerable<string>>()), Times.Never);
+                        logService.Verify(l => l.LogUserUpdated(TestUsername, It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Never);
 
                     break;
 

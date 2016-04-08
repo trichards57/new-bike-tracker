@@ -218,7 +218,7 @@ namespace BikeTracker.Controllers.API
             }
 
             if (changes.Count > 0)
-                await logService.LogUserUpdated(User.Identity.GetUserName(), changes);
+                await logService.LogUserUpdated(User.Identity.GetUserName(), user.UserName, changes);
 
             return Ok();
         }

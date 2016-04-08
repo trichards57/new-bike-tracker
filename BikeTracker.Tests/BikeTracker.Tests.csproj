@@ -210,6 +210,7 @@
     <Compile Include="Controllers\HomeControllerTest.cs" />
     <Compile Include="Services\IMEIServiceTests.cs" />
     <Compile Include="Services\LocationServiceTests.cs" />
+    <Compile Include="Services\LogFormatterTests.cs" />
     <Compile Include="Services\LogServiceTests.cs" />
     <Compile Include="Services\ReportServiceTests.cs" />
   </ItemGroup>

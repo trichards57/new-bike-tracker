@@ -1,5 +1,6 @@
 ﻿using BikeTracker.Controllers.API;
 using BikeTracker.Models.LocationModels;
+using BikeTracker.Models.LoggingModels;
 using BikeTracker.Models.ReportViewModels;
 using BikeTracker.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,6 +32,7 @@ namespace BikeTracker.Tests.Controllers.API
         private readonly string TestDateString;
         private readonly List<LocationRecord> TestReadingsSet1;
         private readonly List<LocationRecord> TestReadingsSet2;
+        private readonly List<LogEntry> TestLogEntries;
 
         public ReportControllerTests()
         {
@@ -42,17 +44,30 @@ namespace BikeTracker.Tests.Controllers.API
             TestDate = TestDates.First().Date;
             TestDateString = TestDate.ToString("yyyyMMdd");
             BadDate = Fixture.Create<string>();
+
+            TestLogEntries = new List<LogEntry>(Fixture.Build<LogEntry>().Without(l=>l.Properties).CreateMany());
+            TestLogEntries.AddRange(Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.Date).CreateMany());
         }
 
         public ReportController CreateController()
         {
             var service = CreateMockReportService();
-            var controller = new ReportController(service.Object);
+
+            var logService = CreateMockLogService();
+
+            var controller = new ReportController(service.Object, logService.Object);
 
             return controller;
         }
 
-        public Mock<IReportService> CreateMockReportService()
+        private Mock<ILogService> CreateMockLogService()
+        {
+            var service = new Mock<ILogService>(MockBehavior.Strict);
+
+            return service;
+        }
+
+        private Mock<IReportService> CreateMockReportService()
         {
             var service = new Mock<IReportService>(MockBehavior.Strict);
 
@@ -104,6 +119,27 @@ namespace BikeTracker.Tests.Controllers.API
             Assert.IsNotNull(res);
 
             Assert.IsTrue(TestCallsigns.SequenceEqual(res.Content));
+        }
+        
+        private async Task GetLogEntries(DateTimeOffset date)
+        {
+            var controller = CreateController();
+
+            var expectedResult = TestLogEntries.Where(l => l.Date == DateTimeOffset.Now.Date);
+
+            var result = await controller.LogEntries(date);
+
+            Assert.IsInstanceOfType(result, typeof(JsonResult<IEnumerable<LogEntryViewModel>>));
+
+            var res = result as JsonResult<IEnumerable<LogEntryViewModel>>;
+
+            foreach (var r in res.Content)
+            {
+                var original = expectedResult.First(l => l.Id == r.Id);
+
+                Assert.AreEqual(original.Date, r.Date);
+                Assert.AreEqual(LogFormatter.FormatLogEntry(original), r.Message);
+            }
         }
 
         private async Task GetCallsignLocations(string callsign, string startDate, string endDate, List<LocationRecord> readings)

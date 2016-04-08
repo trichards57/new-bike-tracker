@@ -12,10 +12,12 @@ namespace BikeTracker.Controllers.API
     public class ReportController : ApiController
     {
         private IReportService reportService;
+        private ILogService logService;
 
-        public ReportController(IReportService service)
+        public ReportController(IReportService service, ILogService logService)
         {
             reportService = service;
+            this.logService = logService;
         }
 
         [HttpGet, Route("api/Report/CallsignLocations")]
@@ -53,6 +55,11 @@ namespace BikeTracker.Controllers.API
         public async Task<IHttpActionResult> Callsigns()
         {
             return Json(await reportService.GetAllCallsigns());
+        }
+
+        public Task<IHttpActionResult> LogEntries(DateTimeOffset date)
+        {
+            throw new NotImplementedException();
         }
     }
 }

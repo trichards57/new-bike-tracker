@@ -196,15 +196,19 @@ namespace BikeTracker.Services
         /// or
         /// parameter cannot be empty
         /// </exception>
-        public async Task LogUserUpdated(string updatingUser, IEnumerable<string> changedProperties)
+        public async Task LogUserUpdated(string updatingUser, string updatedUser, IEnumerable<string> changedProperties)
         {
             if (updatingUser == null)
                 throw new ArgumentNullException(nameof(updatingUser));
+            if (updatedUser == null)
+                throw new ArgumentNullException(nameof(updatedUser));
             if (changedProperties == null)
                 throw new ArgumentNullException(nameof(changedProperties));
 
             if (string.IsNullOrWhiteSpace(updatingUser))
                 throw new ArgumentException("parameter cannot be empty", nameof(updatingUser));
+            if (string.IsNullOrWhiteSpace(updatedUser))
+                throw new ArgumentException("parameter cannot be empty", nameof(updatedUser));
 
             if (!changedProperties.Any())
                 throw new ArgumentException("parameter cannot be empty", nameof(changedProperties));
@@ -223,6 +227,8 @@ namespace BikeTracker.Services
 
             foreach (var lp in logProperties)
                 logEntry.Properties.Add(lp);
+
+            logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = updatedUser });
 
             dataContext.LogEntries.Add(logEntry);
             await dataContext.SaveChangesAsync();

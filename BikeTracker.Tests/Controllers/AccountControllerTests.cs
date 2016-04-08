@@ -455,7 +455,7 @@ namespace BikeTracker.Tests.Controllers
             var result = new Mock<ILogService>(MockBehavior.Strict);
 
             result.Setup(l => l.LogUserLoggedIn(MockHelpers.ConfirmedGoodUsername)).Returns(Task.FromResult<object>(null));
-            result.Setup(l => l.LogUserUpdated(MockHelpers.ConfirmedGoodUsername, It.Is<IEnumerable<string>>(s => s.Single() == "Password"))).Returns(Task.FromResult<object>(null));
+            result.Setup(l => l.LogUserUpdated(MockHelpers.ConfirmedGoodUsername, MockHelpers.ConfirmedGoodUsername, It.Is<IEnumerable<string>>(s => s.Single() == "Password"))).Returns(Task.FromResult<object>(null));
 
             return result;
         }
@@ -533,9 +533,9 @@ namespace BikeTracker.Tests.Controllers
             }
 
             if (attemptReset && expectedResult == ResultType.Success)
-                logService.Verify(s => s.LogUserUpdated(email, It.Is<IEnumerable<string>>(i => i.Single() == "Password")));
+                logService.Verify(s => s.LogUserUpdated(email, email, It.Is<IEnumerable<string>>(i => i.Single() == "Password")));
             else
-                logService.Verify(s => s.LogUserUpdated(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Never);
+                logService.Verify(s => s.LogUserUpdated(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Never);
 
         }
 

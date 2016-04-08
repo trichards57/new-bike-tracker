@@ -240,6 +240,7 @@
     <Compile Include="Models\Contexts\ILoggingContext.cs" />
     <Compile Include="Models\LoggingModels\LogEntry.cs" />
     <Compile Include="Models\LoggingModels\LogEntryProperty.cs" />
+    <Compile Include="Models\ReportViewModels\LogEntryViewModel.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="App_Start\IRoleManager.cs" />
     <Compile Include="App_Start\ISignInManager.cs" />
@@ -306,6 +307,7 @@
     <Compile Include="Services\IReportService.cs" />
     <Compile Include="Services\LocationService.cs" />
     <Compile Include="Services\LogEventType.cs" />
+    <Compile Include="Services\LogFormatter.cs" />
     <Compile Include="Services\LogService.cs" />
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Startup.cs" />

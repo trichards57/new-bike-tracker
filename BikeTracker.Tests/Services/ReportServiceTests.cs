@@ -8,10 +8,8 @@ using Ploeh.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BikeTracker.Tests.Services
@@ -20,8 +18,13 @@ namespace BikeTracker.Tests.Services
     [TestClass]
     public class ReportServiceTests
     {
-        private readonly List<LocationRecord> GoodLocations;
         private readonly Fixture Fixture = new Fixture();
+        private readonly List<LocationRecord> GoodLocations;
+
+        public ReportServiceTests()
+        {
+            GoodLocations = new List<LocationRecord>(Fixture.CreateMany<LocationRecord>());
+        }
 
         public Mock<ILocationContext> CreateMockLocationContext(DbSet<LocationRecord> locations = null, DbSet<Landmark> landmarks = null)
         {
@@ -30,11 +33,6 @@ namespace BikeTracker.Tests.Services
             context.SetupGet(c => c.LocationRecords).Returns(locations);
 
             return context;
-        }
-
-        public ReportServiceTests()
-        {
-            GoodLocations = new List<LocationRecord>(Fixture.CreateMany<LocationRecord>());
         }
 
         [TestMethod]
@@ -50,26 +48,10 @@ namespace BikeTracker.Tests.Services
             Assert.IsTrue(GoodLocations.Select(l => l.Callsign).Distinct().OrderBy(s => s).SequenceEqual(res.OrderBy(s => s)));
         }
 
-        private async Task GetCallsignRecord(string callsign)
-        {
-            var locations = MockHelpers.CreateMockLocationDbSet(GoodLocations);
-            var context = CreateMockLocationContext(locations.Object);
-
-            var service = new ReportService(context.Object);
-
-            await service.GetCallsignRecord(callsign, DateTimeOffset.Now.AddHours(-1), DateTimeOffset.Now);
-        }
-
         [TestMethod, ExpectedException(typeof(ArgumentException))]
         public async Task GetCallsignRecordEmptyCallsign()
         {
             await GetCallsignRecord(string.Empty);
-        }
-
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public async Task GetCallsignRecordNullCallsign()
-        {
-            await GetCallsignRecord(null);
         }
 
         [TestMethod]
@@ -131,6 +113,22 @@ namespace BikeTracker.Tests.Services
             var res = await service.GetCallsignRecord("WR02", DateTimeOffset.Now.AddHours(-1), DateTimeOffset.Now);
 
             Assert.IsTrue(res.OrderBy(l => l.ReadingTime).SequenceEqual(goodRecords.OrderBy(l => l.ReadingTime)));
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task GetCallsignRecordNullCallsign()
+        {
+            await GetCallsignRecord(null);
+        }
+
+        private async Task GetCallsignRecord(string callsign)
+        {
+            var locations = MockHelpers.CreateMockLocationDbSet(GoodLocations);
+            var context = CreateMockLocationContext(locations.Object);
+
+            var service = new ReportService(context.Object);
+
+            await service.GetCallsignRecord(callsign, DateTimeOffset.Now.AddHours(-1), DateTimeOffset.Now);
         }
     }
 }

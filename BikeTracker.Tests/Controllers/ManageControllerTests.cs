@@ -140,16 +140,16 @@ namespace BikeTracker.Tests.Controllers
                 userManager.Verify(u => u.ChangePasswordAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
 
             if (shouldReportSuccess && shouldReset)
-                logService.Verify(s => s.LogUserUpdated(username, It.Is<IEnumerable<string>>(i => i.Single() == "Password")));
+                logService.Verify(s => s.LogUserUpdated(username, username, It.Is<IEnumerable<string>>(i => i.Single() == "Password")));
             else
-                logService.Verify(s => s.LogUserUpdated(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Never);
+                logService.Verify(s => s.LogUserUpdated(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Never);
         }
 
         private Mock<ILogService> CreateMockLogService()
         {
             var result = new Mock<ILogService>(MockBehavior.Strict);
 
-            result.Setup(s => s.LogUserUpdated(MockHelpers.ConfirmedGoodUsername, It.Is<IEnumerable<string>>(i => i.Single() == "Password"))).Returns(Task.FromResult<object>(null));
+            result.Setup(s => s.LogUserUpdated(MockHelpers.ConfirmedGoodUsername, MockHelpers.ConfirmedGoodUsername, It.Is<IEnumerable<string>>(i => i.Single() == "Password"))).Returns(Task.FromResult<object>(null));
 
             return result;
         }

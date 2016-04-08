@@ -440,31 +440,43 @@ namespace BikeTracker.Tests.Services
         [TestMethod, ExpectedException(typeof(ArgumentException))]
         public async Task LogUserUpdateEmptyChanges()
         {
-            await LogUserUpdates(TestUsername, Enumerable.Empty<string>(), false);
+            await LogUserUpdates(TestUsername, TestNewUser, Enumerable.Empty<string>(), false);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
         public async Task LogUserUpdateEmptySourceUser()
         {
-            await LogUserUpdates(string.Empty, TestChanges);
+            await LogUserUpdates(string.Empty, TestNewUser, TestChanges);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogUserUpdateNullUpdatedUser()
+        {
+            await LogUserUpdates(TestUsername, null, TestChanges);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task LogUserUpdateEmptyUpdatedUser()
+        {
+            await LogUserUpdates(TestUsername, string.Empty, TestChanges);
         }
 
         [TestMethod]
         public async Task LogUserUpdateGoodData()
         {
-            await LogUserUpdates(TestUsername, TestChanges);
+            await LogUserUpdates(TestUsername, TestNewUser, TestChanges);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public async Task LogUserUpdateNoSourceUser()
         {
-            await LogUserUpdates(null, TestChanges);
+            await LogUserUpdates(null, TestNewUser, TestChanges);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public async Task LogUserUpdateNullChanges()
         {
-            await LogUserUpdates(TestUsername, null, false);
+            await LogUserUpdates(TestUsername, TestNewUser, null, false);
         }
 
         private bool CheckIMEIDeletedLogEntry(LogEntry entry, string deletingUser, string imei)
@@ -524,11 +536,12 @@ namespace BikeTracker.Tests.Services
             return true;
         }
 
-        private bool CheckUserUpdatedLogEntry(LogEntry entry, string updatingUser, IEnumerable<string> changes)
+        private bool CheckUserUpdatedLogEntry(LogEntry entry, string updatingUser, string updatedUser, IEnumerable<string> changes)
         {
-            var properties = changes.Select(c => new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = c }).ToArray();
+            var properties = changes.Select(c => new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = c }).ToList();
+            properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = updatedUser });
 
-            CheckLogEntry(entry, LogEventType.UserUpdated, updatingUser, properties);
+            CheckLogEntry(entry, LogEventType.UserUpdated, updatingUser, properties.ToArray());
             return true;
         }
 
@@ -687,7 +700,7 @@ namespace BikeTracker.Tests.Services
             }
         }
 
-        private async Task LogUserUpdates(string updatingUser, IEnumerable<string> changes, bool expectSuccess = true)
+        private async Task LogUserUpdates(string updatingUser, string updatedUser, IEnumerable<string> changes, bool expectSuccess = true)
         {
             var logEntrySet = CreateMockLogEntrySet();
             var logPropertySet = CreateMockLogPropertySet();
@@ -695,11 +708,11 @@ namespace BikeTracker.Tests.Services
 
             var service = new LogService(context.Object);
 
-            await service.LogUserUpdated(updatingUser, changes);
+            await service.LogUserUpdated(updatingUser, updatedUser, changes);
 
             if (expectSuccess)
             {
-                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckUserUpdatedLogEntry(le, updatingUser, changes))));
+                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckUserUpdatedLogEntry(le, updatingUser, updatedUser, changes))));
                 context.Verify(c => c.SaveChangesAsync());
             }
             else

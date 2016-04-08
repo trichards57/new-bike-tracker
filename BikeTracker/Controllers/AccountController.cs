@@ -273,7 +273,7 @@ namespace BikeTracker.Controllers
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
-                await LogService.LogUserUpdated(user.UserName, new[] { "Password" });
+                await LogService.LogUserUpdated(user.UserName, user.UserName, new[] { "Password" });
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
             AddErrors(result);

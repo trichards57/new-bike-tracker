@@ -65,7 +65,7 @@ namespace BikeTracker.Controllers
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                await LogService.LogUserUpdated(user.UserName, new[] { "Password" });
+                await LogService.LogUserUpdated(user.UserName, user.UserName, new[] { "Password" });
                 return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
             }
             AddErrors(result);
