@@ -36,8 +36,8 @@ namespace BikeTracker.Services
                     var vehicle = logEntry.Properties.First(p => p.PropertyType == LogPropertyType.VehicleType).PropertyValue;
                     return $"linked {imei} to callsign {callsign} with type {vehicle}";
                 case LogEventType.IMEIDeleted:
-                    var oldImei = logEntry.Properties.FirstOrDefault(p => p.PropertyType == LogPropertyType.IMEI).PropertyValue;
-                    return $"deleted {oldImei}";
+                    var oldIMEI = logEntry.Properties.FirstOrDefault(p => p.PropertyType == LogPropertyType.IMEI).PropertyValue;
+                    return $"deleted {oldIMEI}";
                 case LogEventType.MapInUse:
                     var startDate = DateTimeOffset.Parse(logEntry.Properties.First(p => p.PropertyType == LogPropertyType.StartDate).PropertyValue);
                     return $"used the map between {startDate.ToString("g")} and {logEntry.Date.ToString("g")}";
