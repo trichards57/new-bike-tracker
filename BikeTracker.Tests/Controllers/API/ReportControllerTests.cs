@@ -64,7 +64,7 @@ namespace BikeTracker.Tests.Controllers.API
         {
             var service = new Mock<ILogService>(MockBehavior.Strict);
 
-            service.Setup(s => s.GetLogEntries(null, null, DateTimeOffset.Now.Date, DateTimeOffset.Now.Date)).ReturnsAsync(TestLogEntries.Where(d => d.Date.Date == DateTimeOffset.Now.Date));
+            service.Setup(s => s.GetLogEntries(null, null, DateTimeOffset.Now.Date, DateTimeOffset.Now.Date.AddDays(1).AddSeconds(-1))).ReturnsAsync(TestLogEntries.Where(d => d.Date.Date == DateTimeOffset.Now.Date));
             
             return service;
         }

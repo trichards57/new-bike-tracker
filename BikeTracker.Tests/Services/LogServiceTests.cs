@@ -67,6 +67,8 @@ namespace BikeTracker.Tests.Services
                 .Setup(m => m.GetAsyncEnumerator())
                 .Returns(new TestDbAsyncEnumerator<LogEntry>(data.GetEnumerator()));
 
+            mockLogEntrySet.Setup(l => l.Include(It.IsAny<string>())).Returns(mockLogEntrySet.Object);
+
             mockLogEntrySet.As<IQueryable<LogEntry>>()
                 .Setup(m => m.Provider)
                 .Returns(new TestDbAsyncQueryProvider<LogEntry>(data.Provider));
