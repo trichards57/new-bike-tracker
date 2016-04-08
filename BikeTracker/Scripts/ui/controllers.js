@@ -605,6 +605,83 @@ appControllers.controller('IMEIListCtrl', ['$scope', 'IMEI', '$modal', '$window'
         });
     };
 
+    $scope.initialize();
+    $scope.refresh();
+}]);
+
+appControllers.controller('LogListCtrl', ['$scope', '$modal', '$window', '$http', function ($scope, $modal, $window, $http) {
+    "use strict";
+
+    $scope.initialize = function () {
+        $scope.previousTitle = $window.document.title;
+        $window.document.title = "System Log - SJA Tracker";
+
+        $scope.$on("$destroy", function () {
+            $window.document.title = $scope.previousTitle;
+        });
+    };
+
+    $scope.sortBy = 'Date';
+    $scope.sortReverse = false;
+    $scope.logFilter = '';
+
+    $scope.selectedDate = new Date();
+
+    $scope.showError = function (title, message) {
+        $modal.open({
+            animation: true,
+            templateUrl: "/Dialog/ErrorForm",
+            controller: "ErrorFormCtrl",
+            resolve: {
+                title: function () {
+                    return title;
+                },
+                message: function () {
+                    return message;
+                }
+            }
+        });
+    };
+
+    $scope.showAscending = function (param) {
+        return ($scope.sortBy !== param || ($scope.sortBy === param && !$scope.sortReverse));
+    };
+
+    $scope.updateSortBy = function (param) {
+        if ($scope.sortBy === param) {
+            $scope.sortReverse = !$scope.sortReverse;
+        } else {
+            $scope.sortBy = param;
+            $scope.sortReverse = false;
+        }
+    };
+
+    $scope.refresh = function () {
+        $scope.loading = true;
+
+        $http.get("/api/Report/LogEntries?date=" + moment($scope.selectedDate).format("YYYYMMDD")).then(function (response) {
+            $.each(response.data, function (k, v) {
+                v.DateString = moment(v.Date).calendar(null, {sameElse: 'DD/MM/YYYY HH:mm'});
+            });
+            $scope.logs = response.data;
+            $scope.loading = false;
+        }, function () {
+            $scope.showError("Failed to Load Callsigns", "It wasn't possible to load the callsigns from the server.");
+        });
+    };
+
+    $scope.openDate = function ($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        $scope.showDate = true;
+    };
+
+    $scope.dateOptions = {
+        formatYear: 'yy',
+        startingDay: 1,
+        showWeeks: false
+    };
 
     $scope.initialize();
     $scope.refresh();

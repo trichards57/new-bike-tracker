@@ -281,7 +281,7 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(user))
                 throw new ArgumentException("{0} cannot be empty", nameof(user));
 
-            var logEntry = dataContext.LogEntries.OrderBy(l => l.Date).LastOrDefault(l => l.SourceUser == user && l.Type == LogEventType.MapInUse);
+            var logEntry = await dataContext.LogEntries.OrderByDescending(l => l.Date).FirstOrDefaultAsync(l => l.SourceUser == user && l.Type == LogEventType.MapInUse);
 
             if (logEntry != null)
             {

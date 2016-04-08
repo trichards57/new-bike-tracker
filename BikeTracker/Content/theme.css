@@ -6852,7 +6852,7 @@ a.full-width-button {
   cursor: pointer;
 }
 .sub-navbar {
-  padding-top: 6px;
+  margin-top: 6px;
 }
 .button-pic {
   text-align: left;

@@ -32,6 +32,9 @@ namespace BikeTracker
             angularBundle.CdnFallbackExpression = "window.angular";
             bundles.Add(angularBundle);
 
+            var i18nBundle = new ScriptBundle("~/bundles/angular-i18n").Include("~/lib/angular-i18n/angular-locale_en-gb.js");
+            bundles.Add(i18nBundle);
+
             bundles.RegisterAngularModule("angular-route", "ngRoute", AngularRouteCDN, "~/lib/angular-route/angular-route.js");
             bundles.RegisterAngularModule("angular-resource", "ngResource", AngularResourceCDN, "~/lib/angular-resource/angular-resource.js");
             bundles.RegisterAngularModule("angular-bootstrap", "ui.bootstrap", AngularBootstrapCDN, "~/lib/angular-bootstrap/ui-bootstrap.js");

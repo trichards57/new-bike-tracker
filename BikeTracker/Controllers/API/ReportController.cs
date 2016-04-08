@@ -73,7 +73,8 @@ namespace BikeTracker.Controllers.API
             {
                 Date = e.Date,
                 Id = e.Id,
-                Message = LogFormatter.FormatLogEntry(e)
+                Message = LogFormatter.FormatLogEntry(e),
+                User = e.SourceUser
             }));
         }
     }

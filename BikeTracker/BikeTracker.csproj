@@ -1023,6 +1023,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="lib\angular-i18n\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

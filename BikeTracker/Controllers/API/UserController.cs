@@ -88,6 +88,18 @@ namespace BikeTracker.Controllers.API
             }
         }
 
+        public ILogService LogService
+        {
+            get
+            {
+                if (logService == null)
+                    logService = (ILogService)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(ILogService));
+
+                return logService;
+            }
+
+        }
+
         /// <summary>
         /// Deletes the specified user.
         /// </summary>
@@ -101,7 +113,7 @@ namespace BikeTracker.Controllers.API
             if (user != null)
             {
                 await UserManager.DeleteAsync(user);
-                await logService.LogUserDeleted(User.Identity.GetUserName(), user.UserName);
+                await LogService.LogUserDeleted(User.Identity.GetUserName(), user.UserName);
             }
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -152,15 +164,13 @@ namespace BikeTracker.Controllers.API
         {
             var users = await UserManager.Users.ToListAsync();
 
-            var userRoleTask = users.Select(async user =>
+            var userRole = users.Select(user =>
             {
-                var roles = await UserManager.GetRolesAsync(user.Id);
+                var roles = UserManager.GetRolesAsync(user.Id).Result;
                 var role = roles.FirstOrDefault();
-                var roleDetails = await RoleManager.FindByNameAsync(role);
+                var roleDetails = RoleManager.FindByNameAsync(role).Result;
                 return new { user, role = roleDetails };
             });
-
-            var userRole = await Task.WhenAll(userRoleTask);
 
             return userRole.Select(d => new UserAdminViewModel
             {
@@ -218,7 +228,7 @@ namespace BikeTracker.Controllers.API
             }
 
             if (changes.Count > 0)
-                await logService.LogUserUpdated(User.Identity.GetUserName(), user.UserName, changes);
+                await LogService.LogUserUpdated(User.Identity.GetUserName(), user.UserName, changes);
 
             return Ok();
         }
@@ -284,7 +294,7 @@ namespace BikeTracker.Controllers.API
 
                 await UserManager.GenerateEmailConfirmationEmailAsync(new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext), id, password);
 
-                await logService.LogUserCreated(User.Identity.GetUserName(), user.UserName);
+                await LogService.LogUserCreated(User.Identity.GetUserName(), user.UserName);
 
                 return Ok();
             }

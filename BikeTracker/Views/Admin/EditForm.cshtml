@@ -17,7 +17,7 @@
             <label for="editRole" class="control-label">Role:</label>
             <select id="editRole" class="form-control" ng-model="role">
                 @{
-                    var dbContext = new BikeTracker.Models.ApplicationDbContext();
+                    var dbContext = new BikeTracker.Models.Contexts.ApplicationDbContext();
                     foreach (var r in dbContext.Roles)
                     {
                         <option value="@r.Name">@r.DisplayName</option>

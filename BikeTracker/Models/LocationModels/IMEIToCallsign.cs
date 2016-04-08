@@ -15,7 +15,7 @@ namespace BikeTracker.Models.LocationModels
         /// <value>
         /// The call sign.
         /// </value>
-        [Display(Name = "Call Sign"), RegularExpression("^[A-Z]{2}((0[1-9])|[1-9][0-9]{1,2})$"), Required]
+        [Display(Name = "Call Sign"), RegularExpression(@"^[A-Z]{2}((0[1-9])|[1-9][0-9]{1,2})|WR\?\?\?$"), Required]
         public string CallSign { get; set; }
 
         /// <summary>

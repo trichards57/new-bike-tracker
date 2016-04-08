@@ -1,1 +1,74 @@
-﻿
+﻿<div>
+    <nav class="navbar navbar-default sub-navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#/IMEIs">System Log</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control" is-open="showDate" datepicker-options="dateOptions" datepicker-popup="shortDate" ng-model="selectedDate" ng-change="refresh()" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Search" ng-model="logFilter" />
+                        </div>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a ng-click="refresh()" role="button">
+                            Refresh <i class="glyphicon glyphicon-refresh"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <table class="table table-responsive">
+        <tr>
+            <th>
+                <a class="pointer" ng-click="updateSortBy('Date')">
+                    Date
+                    <i ng-if="showAscending('Date')" class="glyphicon glyphicon-sort-by-alphabet"></i>
+                    <i ng-if="!showAscending('Date')" class="glyphicon glyphicon-sort-by-alphabet-alt"></i>
+                </a>
+            </th>
+            <th>
+            </th>
+        </tr>
+        <tr ng-repeat="log in logs | orderBy:sortBy:sortReverse | filter:logFilter">
+            <td>
+                {{log.DateString}}
+            </td>
+            <td>
+                {{log.User}}
+                {{log.Message}}
+            </td>
+        </tr>
+        <tr ng-show="loading">
+            <td colspan="4">
+                <div class="progress progress-striped active">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        Loading Logs
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+

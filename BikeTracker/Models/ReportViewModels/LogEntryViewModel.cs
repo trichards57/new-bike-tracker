@@ -9,5 +9,6 @@ namespace BikeTracker.Models.ReportViewModels
         public DateTimeOffset Date { get; set; }
         public int Id { get; set; }
         public string Message { get; set; }
+        public string User { get; set; }
     }
 }

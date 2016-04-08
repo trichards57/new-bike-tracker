@@ -27,7 +27,7 @@ app.config(['$routeProvider', function ($routeProvider) {
         controller: 'ReportCtrl'
     }).when('/Reports/UserActivity', {
         templateUrl: '/Report/UserActivity',
-        controller: 'ReportCtrl'
+        controller: 'LogListCtrl'
     }).when('/Reports/Locations', {
         templateUrl: '/Report/Locations',
         controller: 'LocationReportCtrl'

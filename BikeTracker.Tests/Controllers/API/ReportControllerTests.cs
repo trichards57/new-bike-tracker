@@ -154,6 +154,7 @@ namespace BikeTracker.Tests.Controllers.API
 
                 Assert.AreEqual(original.Date, r.Date);
                 Assert.AreEqual(LogFormatter.FormatLogEntry(original), r.Message);
+                Assert.AreEqual(original.SourceUser, r.User);
             }
         }
 
