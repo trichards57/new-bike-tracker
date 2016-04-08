@@ -326,7 +326,7 @@ namespace BikeTracker.Services
             if (endDate < startDate)
                 throw new ArgumentException("End Date must not be before Start Date", nameof(endDate));
 
-            IEnumerable<LogEntry> result = dataContext.LogEntries.OrderBy(l => l.Date);
+            IEnumerable<LogEntry> result = dataContext.LogEntries.Include(le=>le.Properties).OrderBy(l => l.Date);
 
             if (startDate != null)
                 result = result.Where(le => le.Date >= startDate.Value);

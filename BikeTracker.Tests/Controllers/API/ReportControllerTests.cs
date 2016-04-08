@@ -45,8 +45,8 @@ namespace BikeTracker.Tests.Controllers.API
             TestDateString = TestDate.ToString("yyyyMMdd");
             BadDate = Fixture.Create<string>();
 
-            TestLogEntries = new List<LogEntry>(Fixture.Build<LogEntry>().Without(l=>l.Properties).CreateMany());
-            TestLogEntries.AddRange(Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.Date).CreateMany());
+            TestLogEntries = new List<LogEntry>(Fixture.Build<LogEntry>().With(p=>p.Type, LogEventType.UserLogIn).Without(l => l.Properties).CreateMany());
+            TestLogEntries.AddRange(Fixture.Build<LogEntry>().With(p => p.Type, LogEventType.UnknownEvent).Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.Date).CreateMany());
         }
 
         public ReportController CreateController()
@@ -64,6 +64,8 @@ namespace BikeTracker.Tests.Controllers.API
         {
             var service = new Mock<ILogService>(MockBehavior.Strict);
 
+            service.Setup(s => s.GetLogEntries(null, null, DateTimeOffset.Now.Date, DateTimeOffset.Now.Date)).ReturnsAsync(TestLogEntries.Where(d => d.Date.Date == DateTimeOffset.Now.Date));
+            
             return service;
         }
 
@@ -121,13 +123,26 @@ namespace BikeTracker.Tests.Controllers.API
             Assert.IsTrue(TestCallsigns.SequenceEqual(res.Content));
         }
         
-        private async Task GetLogEntries(DateTimeOffset date)
+        [TestMethod]
+        public async Task GetDaysLogEntries()
+        {
+            await GetLogEntries(DateTimeOffset.Now.Date);
+        }
+
+        [TestMethod]
+        public async Task GetDaysLogEntriesNullDate()
+        {
+            await GetLogEntries(null);
+        }
+
+        private async Task GetLogEntries(DateTimeOffset? date)
         {
             var controller = CreateController();
 
-            var expectedResult = TestLogEntries.Where(l => l.Date == DateTimeOffset.Now.Date);
+            var result = await controller.LogEntries(date?.ToString("yyyyMMdd"));
 
-            var result = await controller.LogEntries(date);
+            var actualDate = date ?? DateTimeOffset.Now.Date;
+            var expectedResult = TestLogEntries.Where(l => l.Date == actualDate.Date);
 
             Assert.IsInstanceOfType(result, typeof(JsonResult<IEnumerable<LogEntryViewModel>>));
 

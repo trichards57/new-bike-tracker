@@ -57,9 +57,24 @@ namespace BikeTracker.Controllers.API
             return Json(await reportService.GetAllCallsigns());
         }
 
-        public Task<IHttpActionResult> LogEntries(DateTimeOffset date)
+        [HttpGet, Route("api/Report/LogEntries")]
+        public async Task<IHttpActionResult> LogEntries(string date)
         {
-            throw new NotImplementedException();
+            DateTimeOffset day = DateTimeOffset.Now;
+            DateTimeOffset d;
+
+            var res = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+
+            if (res)
+                day = d;
+
+            var entries = await logService.GetLogEntries(startDate: day.Date, endDate: day.Date.AddDays(1).AddSeconds(-1));
+            return Json(entries.Select(e => new LogEntryViewModel
+            {
+                Date = e.Date,
+                Id = e.Id,
+                Message = LogFormatter.FormatLogEntry(e)
+            }));
         }
     }
 }
