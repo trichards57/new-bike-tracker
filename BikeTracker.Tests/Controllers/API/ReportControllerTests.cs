@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
+using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Controllers.API
 {
@@ -176,6 +177,19 @@ namespace BikeTracker.Tests.Controllers.API
             }
 
             Assert.AreEqual(readings.Count, res.Content.Count());
+        }
+
+        private async Task DownloadCallsignLocations(string callsign, string startDate, string endDate, List<LocationRecord> readings)
+        {
+            var controller = CreateController();
+
+            var result = await controller.DownloadCallsignLocations(callsign, startDate, endDate);
+
+            var res = result as FileResult;
+            Assert.IsNotNull(res);
+
+            Assert.AreEqual("text/csv", res.ContentType);
+            Assert.AreEqual($"{callsign}.csv", res.FileDownloadName);
         }
     }
 }

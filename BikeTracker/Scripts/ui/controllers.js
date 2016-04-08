@@ -106,6 +106,12 @@ appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', 
     };
     var map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), mapSettings);
 
+    $scope.downloadDates = function () {
+        var d = moment($scope.selectedDate).format("YYYYMMDD");
+
+        $window.open("/api/Report/DownloadCallsignLocations?callsign=" + $scope.selectedCallsign + "&startDate=" + d + "&endDate=" + d);
+    };
+
     $scope.showDates = function () {
 
         map.entities.clear();
