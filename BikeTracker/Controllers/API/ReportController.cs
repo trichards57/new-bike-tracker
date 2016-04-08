@@ -3,6 +3,7 @@ using BikeTracker.Services;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -76,6 +77,41 @@ namespace BikeTracker.Controllers.API
                 Message = LogFormatter.FormatLogEntry(e),
                 User = e.SourceUser
             }));
+        }
+
+        [HttpGet, Route("api/Report/DownloadCallsignLocations")]
+        public async Task<IHttpActionResult> DownloadCallsignLocations(string callsign, string startDate = null, string endDate = null)
+        {
+            var start = DateTimeOffset.MinValue;
+            var stop = DateTimeOffset.Now;
+
+            if (!string.IsNullOrWhiteSpace(startDate))
+            {
+                DateTimeOffset d;
+                var success = DateTimeOffset.TryParseExact(startDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+
+                if (success)
+                    start = d.Date;
+            }
+            if (!string.IsNullOrWhiteSpace(endDate))
+            {
+                DateTimeOffset d;
+                var success = DateTimeOffset.TryParseExact(endDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+
+                if (success)
+                    stop = d.Date.AddSeconds(86399);
+            }
+
+            var data = await reportService.GetCallsignRecord(callsign, start, stop);
+
+            var outputFile = new StringBuilder();
+
+            outputFile.AppendLine("Reading Time, Latitude, Longitude");
+
+            foreach (var d in data)
+                outputFile.AppendLine($"{d.ReadingTime.ToString("u")}, {d.Latitude}, {d.Longitude}");
+
+            return new FileStringResult { Content = outputFile.ToString(), Filename = $"{callsign}.csv" };
         }
     }
 }
