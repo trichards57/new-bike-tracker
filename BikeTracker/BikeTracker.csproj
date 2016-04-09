@@ -237,12 +237,19 @@
     <Compile Include="Migrations\201603201812414_StartLogging.Designer.cs">
       <DependentUpon>201603201812414_StartLogging.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604091308384_FailedLoads.cs" />
+    <Compile Include="Migrations\201604091308384_FailedLoads.Designer.cs">
+      <DependentUpon>201604091308384_FailedLoads.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Contexts\IIMEIContext.cs" />
     <Compile Include="Models\Contexts\ILoggingContext.cs" />
+    <Compile Include="Models\LocationModels\FailedLocationRecord.cs" />
+    <Compile Include="Models\LocationModels\FailureReason.cs" />
     <Compile Include="Models\LoggingModels\LogEntry.cs" />
     <Compile Include="Models\LoggingModels\LogEntryProperty.cs" />
-    <Compile Include="Models\ReportViewModels\CheckInRate.cs" />
+    <Compile Include="Models\ReportViewModels\CheckInRateViewModel.cs" />
     <Compile Include="Models\ReportViewModels\LogEntryViewModel.cs" />
+    <Compile Include="Models\ReportViewModels\SuccessRateViewModel.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="App_Start\IRoleManager.cs" />
     <Compile Include="App_Start\ISignInManager.cs" />
@@ -2219,6 +2226,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603201812414_StartLogging.resx">
       <DependentUpon>201603201812414_StartLogging.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604091308384_FailedLoads.resx">
+      <DependentUpon>201604091308384_FailedLoads.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

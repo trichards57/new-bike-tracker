@@ -27,6 +27,8 @@ namespace BikeTracker.Models.Contexts
         {
         }
 
+        public virtual DbSet<FailedLocationRecord> FailedRecords { get; set; }
+
         /// <summary>
         /// Gets the IMEI to callsigns relationships.
         /// </summary>

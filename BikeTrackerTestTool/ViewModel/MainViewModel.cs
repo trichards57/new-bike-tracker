@@ -24,15 +24,16 @@ namespace BikeTrackerTestTool.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private ServerLocation selectedLocation;
-        private int updateRate;
+        private readonly Random random = new Random();
+        private double failureRate;
         private string imei;
         private decimal latitude;
         private decimal longitude;
+        private string responseString = "[Nothing Received]";
+        private ServerLocation selectedLocation;
+        private int updateRate;
         private bool updateRunning;
         private Timer updateTimer;
-        private readonly Random random = new Random();
-        private string responseString = "[Nothing Received]";
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -59,32 +60,18 @@ namespace BikeTrackerTestTool.ViewModel
             Longitude = -2.552M;
             StartUpdate = new RelayCommand(ExecuteStartUpdate, CanExecuteStartUpdate);
             StopUpdate = new RelayCommand(ExecuteStopUpdate, CanExecuteStopUpdate);
-
+            FailureRate = 0.1;
         }
 
-        public ObservableCollection<ServerLocation> Locations { get; }
-
-        public ServerLocation SelectedLocation
+        public double FailureRate
         {
             get
             {
-                return selectedLocation;
+                return failureRate;
             }
             set
             {
-                Set(ref selectedLocation, value);
-            }
-        }
-
-        public int UpdateRate
-        {
-            get
-            {
-                return updateRate;
-            }
-            set
-            {
-                Set(ref updateRate, value);
+                Set(ref failureRate, value);
             }
         }
 
@@ -112,6 +99,8 @@ namespace BikeTrackerTestTool.ViewModel
             }
         }
 
+        public ObservableCollection<ServerLocation> Locations { get; }
+
         public decimal Longitude
         {
             get
@@ -121,6 +110,46 @@ namespace BikeTrackerTestTool.ViewModel
             set
             {
                 Set(ref longitude, value);
+            }
+        }
+
+        public string ResponseString
+        {
+            get
+            {
+                return responseString;
+            }
+            set
+            {
+                Set(ref responseString, value);
+            }
+        }
+
+        public ServerLocation SelectedLocation
+        {
+            get
+            {
+                return selectedLocation;
+            }
+            set
+            {
+                Set(ref selectedLocation, value);
+            }
+        }
+
+        public RelayCommand StartUpdate { get; }
+
+        public RelayCommand StopUpdate { get; }
+
+        public int UpdateRate
+        {
+            get
+            {
+                return updateRate;
+            }
+            set
+            {
+                Set(ref updateRate, value);
             }
         }
 
@@ -136,33 +165,14 @@ namespace BikeTrackerTestTool.ViewModel
             }
         }
 
-        public RelayCommand StartUpdate { get; }
-        public RelayCommand StopUpdate { get; }
-
-        private async void UpdateLocation(object state)
+        private bool CanExecuteStartUpdate()
         {
-            var lat = Latitude + (decimal)(random.NextDouble() * 0.0001);
-            var lon = Longitude + (decimal)(random.NextDouble() * 0.0001);
+            return !updateRunning;
+        }
 
-            var time = DateTime.Now;
-
-            var tString = time.ToString("HHmmss.fff");
-            var dString = time.ToString("ddMMyy");
-
-            var uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?imei={IMEI}&lat={lat}&lon={lon}&time={tString}&date={dString}");
-
-            var client = new WebClient();
-
-            try
-            {
-                ResponseString = await client.DownloadStringTaskAsync(uri);
-            }
-            catch (WebException e)
-            {
-                var stream = new StreamReader( e.Response.GetResponseStream());
-                var msg = await stream.ReadToEndAsync();
-                MessageBox.Show(msg);
-            }
+        private bool CanExecuteStopUpdate()
+        {
+            return updateRunning;
         }
 
         private void ExecuteStartUpdate()
@@ -184,25 +194,55 @@ namespace BikeTrackerTestTool.ViewModel
             StopUpdate.RaiseCanExecuteChanged();
         }
 
-        private bool CanExecuteStartUpdate()
+        private async void UpdateLocation(object state)
         {
-            return !updateRunning;
-        }
+            var lat = Latitude + (decimal)(random.NextDouble() * 0.0001);
+            var lon = Longitude + (decimal)(random.NextDouble() * 0.0001);
 
-        private bool CanExecuteStopUpdate()
-        {
-            return updateRunning;
-        }
+            var time = DateTime.Now;
 
-        public string ResponseString
-        {
-            get
+            var tString = time.ToString("HHmmss.fff");
+            var dString = time.ToString("ddMMyy");
+
+            Uri uri;
+
+            if (random.NextDouble() < FailureRate)
             {
-                return responseString;
+                var type = random.Next(4);
+                switch (type)
+                {
+                    case 0:// No Location
+                        uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?imei={IMEI}&time={tString}&date={dString}");
+                        break;
+
+                    case 1:// No Date or Time
+                        uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?imei={IMEI}&lat={lat}&lon={lon}");
+                        break;
+
+                    case 2:// No IMEI
+                        uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?lat={lat}&lon={lon}&time={tString}&date={dString}");
+                        break;
+
+                    case 3:// Bad Date or Time
+                    default:
+                        uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?imei={IMEI}&lat={lat}&lon={lon}&time=123&date=456");
+                        break;
+                }
             }
-            set
+            else
+                uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?imei={IMEI}&lat={lat}&lon={lon}&time={tString}&date={dString}");
+
+            var client = new WebClient();
+
+            try
             {
-                Set(ref responseString, value);
+                ResponseString = await client.DownloadStringTaskAsync(uri);
+            }
+            catch (WebException e)
+            {
+                var stream = new StreamReader(e.Response.GetResponseStream());
+                var msg = await stream.ReadToEndAsync();
+                MessageBox.Show(msg);
             }
         }
     }

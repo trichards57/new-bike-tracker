@@ -35,6 +35,9 @@ app.config(['$routeProvider', function ($routeProvider) {
     }).when('/Reports/Rates', {
         templateUrl: '/Report/Rates',
         controller: 'CheckInRateCtrl'
+    }).when('/Reports/Success', {
+        templateUrl: '/Report/Rates',
+        controller: 'SuccessRateCtrl'
     }).otherwise({
         redirectTo: '/'
     });

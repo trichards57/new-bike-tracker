@@ -17,6 +17,12 @@ namespace BikeTracker.Services
         Task ClearLandmark(int id);
 
         /// <summary>
+        /// Asynchronously expires any location associated with the given callsign.
+        /// </summary>
+        /// <param name="callsign">The callsign.</param>
+        Task ExpireLocation(string callsign);
+
+        /// <summary>
         /// Asynchronously gets a collection of the currently registered and valid landmarks.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{Landmark}"/> containing the landmarks.</returns>
@@ -27,6 +33,8 @@ namespace BikeTracker.Services
         /// </summary>
         /// <returns>An <see cref="IEnumerable{LocationRecord}"/> containing the landmarks.</returns>
         Task<IEnumerable<LocationRecord>> GetLocations();
+
+        Task RegisterBadLocation(string imei, FailureReason reason, DateTimeOffset receivedTime);
 
         /// <summary>
         /// Asynchronously registers a landmark.
@@ -46,11 +54,5 @@ namespace BikeTracker.Services
         /// <param name="latitude">The latitude of the callsign.</param>
         /// <param name="longitude">The longitude of the callsign.</param>
         Task RegisterLocation(string imei, DateTimeOffset readingTime, DateTimeOffset receivedTime, decimal latitude, decimal longitude);
-
-        /// <summary>
-        /// Asynchronously expires any location associated with the given callsign.
-        /// </summary>
-        /// <param name="callsign">The callsign.</param>
-        Task ExpireLocation(string callsign);
     }
 }

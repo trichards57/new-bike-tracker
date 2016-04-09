@@ -28,6 +28,8 @@ namespace BikeTracker.Services
         /// </returns>
         Task<IEnumerable<LocationRecord>> GetCallsignRecord(string callsign, DateTimeOffset startTime, DateTimeOffset endTime);
 
-        Task<IEnumerable<CheckInRate>> GetCheckInRatesByHour(string callsign, DateTimeOffset date);
+        Task<IEnumerable<CheckInRateViewModel>> GetCheckInRatesByHour(string callsign, DateTimeOffset date);
+
+        Task<IEnumerable<SuccessRateViewModel>> GetSuccessRatesByHour(string callsign, DateTimeOffset start);
     }
 }

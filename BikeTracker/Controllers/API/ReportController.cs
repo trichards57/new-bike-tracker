@@ -12,8 +12,8 @@ namespace BikeTracker.Controllers.API
     [Authorize(Roles = "GeneralAdmin")]
     public class ReportController : ApiController
     {
-        private IReportService reportService;
         private ILogService logService;
+        private IReportService reportService;
 
         public ReportController(IReportService service, ILogService logService)
         {
@@ -56,27 +56,6 @@ namespace BikeTracker.Controllers.API
         public async Task<IHttpActionResult> Callsigns()
         {
             return Json(await reportService.GetAllCallsigns());
-        }
-
-        [HttpGet, Route("api/Report/LogEntries")]
-        public async Task<IHttpActionResult> LogEntries(string date)
-        {
-            DateTimeOffset day = DateTimeOffset.Now;
-            DateTimeOffset d;
-
-            var res = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
-
-            if (res)
-                day = d;
-
-            var entries = await logService.GetLogEntries(startDate: day.Date, endDate: day.Date.AddDays(1).AddSeconds(-1));
-            return Json(entries.Select(e => new LogEntryViewModel
-            {
-                Date = e.Date,
-                Id = e.Id,
-                Message = LogFormatter.FormatLogEntry(e),
-                User = e.SourceUser
-            }));
         }
 
         [HttpGet, Route("api/Report/CheckInRatesByHour")]
@@ -131,6 +110,46 @@ namespace BikeTracker.Controllers.API
                 outputFile.AppendLine($"{d.ReadingTime.ToString("u")}, {d.Latitude}, {d.Longitude}");
 
             return new FileStringResult { Content = outputFile.ToString(), Filename = $"{callsign}.csv" };
+        }
+
+        [HttpGet, Route("api/Report/LogEntries")]
+        public async Task<IHttpActionResult> LogEntries(string date)
+        {
+            DateTimeOffset day = DateTimeOffset.Now;
+            DateTimeOffset d;
+
+            var res = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+
+            if (res)
+                day = d;
+
+            var entries = await logService.GetLogEntries(startDate: day.Date, endDate: day.Date.AddDays(1).AddSeconds(-1));
+            return Json(entries.Select(e => new LogEntryViewModel
+            {
+                Date = e.Date,
+                Id = e.Id,
+                Message = LogFormatter.FormatLogEntry(e),
+                User = e.SourceUser
+            }));
+        }
+
+        [HttpGet, Route("api/Report/SuccessRatesByHour")]
+        public async Task<IHttpActionResult> SuccessRatesByHour(string callsign, string date)
+        {
+            var start = DateTimeOffset.Now;
+
+            if (!string.IsNullOrWhiteSpace(date))
+            {
+                DateTimeOffset d;
+                var success = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+
+                if (success)
+                    start = d.Date;
+            }
+
+            var data = await reportService.GetSuccessRatesByHour(callsign, start);
+
+            return Json(data);
         }
     }
 }
