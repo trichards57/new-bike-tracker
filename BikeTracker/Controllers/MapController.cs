@@ -37,34 +37,60 @@ namespace BikeTracker.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<ActionResult> CheckIn(string imei, decimal? lat, decimal? lon, string time, string date)
+        public async Task<ActionResult> CheckIn(string imei, decimal? lat, decimal? lon, string time, string date, int v = 1)
         {
+            int version = v;
+            DateTimeOffset readingTime;
+
             if (lat == null || lon == null)
             {
                 await locationService.RegisterBadLocation(imei, FailureReason.NoLocation, DateTimeOffset.Now);
                 return Content("No Location Given");
             }
 
-            if (time == null || date == null)
+            if (version == 1)
             {
-                await locationService.RegisterBadLocation(imei, FailureReason.NoDateOrTime, DateTimeOffset.Now);
-                return Content("No Date or Time Given");
+                if (time == null || date == null)
+                {
+                    await locationService.RegisterBadLocation(imei, FailureReason.NoDateOrTime, DateTimeOffset.Now);
+                    return Content("No Date or Time Given");
+                }
+
+                var result = DateTimeOffset.TryParseExact(string.Format("{0} {1}", date, time), "ddMMyy HHmmss.fff", CultureInfo.InvariantCulture, DateTimeStyles.None, out readingTime);
+
+                if (!result)
+                {
+                    await locationService.RegisterBadLocation(imei, FailureReason.BadDateOrTime, DateTimeOffset.Now);
+                    return Content("Bad Date or Time Given");
+                }
+
+            }
+            else if (version == 2)
+            {
+                if (time == null)
+                {
+                    await locationService.RegisterBadLocation(imei, FailureReason.NoDateOrTime, DateTimeOffset.Now);
+                    return Content("No Date or Time Given");
+                }
+
+                var result = DateTimeOffset.TryParse(time, out readingTime);
+
+                if (!result)
+                {
+                    await locationService.RegisterBadLocation(imei, FailureReason.BadDateOrTime, DateTimeOffset.Now);
+                    return Content("Bad Date or Time Given");
+                }
+            }
+            else
+            {
+                await locationService.RegisterBadLocation(imei, FailureReason.BadVersion, DateTimeOffset.Now);
+                return Content("Bad Version Given");
             }
 
             if (string.IsNullOrEmpty(imei))
             {
                 await locationService.RegisterBadLocation(imei, FailureReason.NoIMEI, DateTimeOffset.Now);
                 return Content("No IMEI Given");
-            }
-
-            DateTimeOffset readingTime;
-
-            var result = DateTimeOffset.TryParseExact(string.Format("{0} {1}", date, time), "ddMMyy HHmmss.fff", CultureInfo.InvariantCulture, DateTimeStyles.None, out readingTime);
-
-            if (!result)
-            {
-                await locationService.RegisterBadLocation(imei, FailureReason.BadDateOrTime, DateTimeOffset.Now);
-                return Content("Bad Date or Time Given");
             }
 
             await locationService.RegisterLocation(imei, readingTime, DateTimeOffset.Now, lat.Value, lon.Value);

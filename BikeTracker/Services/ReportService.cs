@@ -86,16 +86,14 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(callsign))
                 throw new ArgumentException("parameter cannot be null", nameof(callsign));
 
-            var daysRecords = await dataContext.LocationRecords
-                .Where(l => DbFunctions.TruncateTime(l.ReadingTime) == date.Date && l.Callsign == callsign).ToListAsync();
-            var failRecords = await dataContext.FailedRecords
-                .Where(l => DbFunctions.TruncateTime(l.ReceivedTime) == date.Date && l.Callsign == callsign).ToListAsync();
+            var daysRecords = dataContext.LocationRecords.Where(l => l.Callsign == callsign);
+            var failRecords = dataContext.FailedRecords.Where(l => l.Callsign == callsign);
 
-            var result = Enumerable.Range(0, 24).Select(h => new SuccessRateViewModel
+            var result = Enumerable.Range(0, 24).Select(h => new { Start = date.Date.AddHours(h), End = date.Date.AddHours(h+1) }).Select(h => new SuccessRateViewModel
             {
-                Time = date.Date.AddHours(h),
-                SuccessCount = daysRecords.Count(l => l.ReadingTime.Hour == h),
-                FailureCount = failRecords.Count(l => l.ReceivedTime.Hour == h)
+                Time = h.Start,
+                SuccessCount = daysRecords.Count(l => l.ReadingTime >= h.Start && l.ReadingTime < h.End),
+                FailureCount = failRecords.Count(l => l.ReceivedTime >= h.Start && l.ReceivedTime < h.End)
             });
 
             return result;

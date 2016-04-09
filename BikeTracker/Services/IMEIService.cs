@@ -178,7 +178,7 @@ namespace BikeTracker.Services
 
             if (iToC != null)
             {
-                if (!string.IsNullOrWhiteSpace(callsign) && iToC.CallSign != callsign)
+                if (!string.IsNullOrWhiteSpace(callsign))
                 {
                     await LocationService.ExpireLocation(iToC.CallSign);
                 }

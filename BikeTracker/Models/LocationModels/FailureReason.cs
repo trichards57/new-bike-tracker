@@ -5,6 +5,7 @@
         NoLocation,
         NoDateOrTime,
         NoIMEI,
-        BadDateOrTime
+        BadDateOrTime,
+        BadVersion
     }
 }
