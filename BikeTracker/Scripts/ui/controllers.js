@@ -672,9 +672,82 @@ appControllers.controller('LogListCtrl', ['$scope', '$modal', '$window', '$http'
             $scope.logs = response.data;
             $scope.loading = false;
         }, function () {
-            $scope.showError("Failed to Load Callsigns", "It wasn't possible to load the callsigns from the server.");
+            $scope.showError("Failed to Load Log Entries", "It wasn't possible to load the log entries from the server.");
         });
     };
+
+    $scope.openDate = function ($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        $scope.showDate = true;
+    };
+
+    $scope.dateOptions = {
+        formatYear: 'yy',
+        startingDay: 1,
+        showWeeks: false
+    };
+
+    $scope.initialize();
+    $scope.refresh();
+}]);
+
+appControllers.controller('CheckInRateCtrl', ['$scope', '$modal', '$window', '$http', function ($scope, $modal, $window, $http) {
+    "use strict";
+
+    $scope.initialize = function () {
+        $scope.previousTitle = $window.document.title;
+        $window.document.title = "Check In Count - SJA Tracker";
+
+        $scope.$on("$destroy", function () {
+            $window.document.title = $scope.previousTitle;
+        });
+    };
+
+    $scope.selectedDate = new Date();
+
+    $scope.showError = function (title, message) {
+        $modal.open({
+            animation: true,
+            templateUrl: "/Dialog/ErrorForm",
+            controller: "ErrorFormCtrl",
+            resolve: {
+                title: function () {
+                    return title;
+                },
+                message: function () {
+                    return message;
+                }
+            }
+        });
+    };
+
+    $scope.refresh = function () {
+        $http.get("/api/Report/CheckInRatesByHour?callsign=" + $scope.selectedCallsign + "&date=" + moment($scope.selectedDate).format("YYYYMMDD")).then(function (response) {
+
+            $scope.labels = response.data.map(function (e) {
+                return moment(e.Time).format('HH:mm');
+            });
+            $scope.series = [$scope.selectedCallsign];
+            $scope.data = [response.data.map(function (e) {
+                return e.Count;
+            })];
+
+            $scope.logs = response.data;
+            $scope.loading = false;
+        }, function () {
+            $scope.showError("Failed to Load Log Entries", "It wasn't possible to load the log entries from the server.");
+        });
+
+    };
+
+    $http.get("/api/Report/Callsigns").then(function (response) {
+        $scope.callsigns = response.data;
+        $scope.selectedCallsign = $scope.callsigns[0];
+    }, function () {
+        $scope.showError("Failed to Load Callsigns", "It wasn't possible to load the callsigns from the server.");
+    });
 
     $scope.openDate = function ($event) {
         $event.preventDefault();

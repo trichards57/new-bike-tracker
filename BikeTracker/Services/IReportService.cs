@@ -1,4 +1,5 @@
 ﻿using BikeTracker.Models.LocationModels;
+using BikeTracker.Models.ReportViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,5 +27,7 @@ namespace BikeTracker.Services
         /// An <seealso cref="IEnumerable{LocationRecord}"/> containing any report made in the given period.
         /// </returns>
         Task<IEnumerable<LocationRecord>> GetCallsignRecord(string callsign, DateTimeOffset startTime, DateTimeOffset endTime);
+
+        Task<IEnumerable<CheckInRate>> GetCheckInRatesByHour(string callsign, DateTimeOffset date);
     }
 }

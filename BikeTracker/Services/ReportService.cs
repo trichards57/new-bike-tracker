@@ -1,5 +1,6 @@
 ﻿using BikeTracker.Models.Contexts;
 using BikeTracker.Models.LocationModels;
+using BikeTracker.Models.ReportViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -57,6 +58,25 @@ namespace BikeTracker.Services
 
             var callsignRecords = dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.ReadingTime >= startTime && l.ReadingTime <= endTime);
             return await callsignRecords.ToListAsync();
+        }
+
+        public async Task<IEnumerable<CheckInRate>> GetCheckInRatesByHour(string callsign, DateTimeOffset date)
+        {
+            if (callsign == null)
+                throw new ArgumentNullException(nameof(callsign));
+            if (string.IsNullOrWhiteSpace(callsign))
+                throw new ArgumentException("parameter cannot be null", nameof(callsign));
+
+            var daysRecords = await dataContext.LocationRecords
+                .Where(l => DbFunctions.TruncateTime(l.ReadingTime) == date.Date && l.Callsign == callsign).ToListAsync();
+
+            var result = Enumerable.Range(0,24).Select(h => new CheckInRate
+            {
+                Time = date.Date.AddHours(h),
+                Count = daysRecords.Count(l => l.ReadingTime.Hour == h)
+            });
+
+            return result;
         }
     }
 }

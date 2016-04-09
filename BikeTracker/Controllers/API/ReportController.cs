@@ -79,6 +79,25 @@ namespace BikeTracker.Controllers.API
             }));
         }
 
+        [HttpGet, Route("api/Report/CheckInRatesByHour")]
+        public async Task<IHttpActionResult> CheckInRatesByHour(string callsign, string date)
+        {
+            var start = DateTimeOffset.Now;
+
+            if (!string.IsNullOrWhiteSpace(date))
+            {
+                DateTimeOffset d;
+                var success = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+
+                if (success)
+                    start = d.Date;
+            }
+
+            var data = await reportService.GetCheckInRatesByHour(callsign, start);
+
+            return Json(data);
+        }
+
         [HttpGet, Route("api/Report/DownloadCallsignLocations")]
         public async Task<IHttpActionResult> DownloadCallsignLocations(string callsign, string startDate = null, string endDate = null)
         {

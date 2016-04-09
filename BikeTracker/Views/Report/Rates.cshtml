@@ -1,1 +1,41 @@
-﻿
+﻿<div>
+    <nav class="navbar navbar-default sub-navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#/IMEIs">Check In Count</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control" is-open="showDate" datepicker-options="dateOptions" datepicker-popup="shortDate" ng-model="selectedDate" ng-change="refresh()" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group small-bottom-margin">
+                        <select class="form-control" name="callsign-box" id="callsign-box" ng-model="selectedCallsign" ng-change="refresh()">
+                            <option ng-repeat="cs in callsigns | orderBy" value="{{cs}}">{{cs}}</option>
+                        </select>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a ng-click="refresh()" role="button">
+                            Refresh <i class="glyphicon glyphicon-refresh"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-series="series" chart-options="{bezierCurve : false}"></canvas>
+</div>
