@@ -22,24 +22,6 @@ namespace BikeTracker.Services
         private IIMEIService imeiService;
 
         /// <summary>
-        /// Gets the imei service.
-        /// </summary>
-        /// <value>
-        /// The imei service.
-        /// </value>
-        private IIMEIService IMEIService
-        {
-            get
-            {
-                if (imeiService == null)
-                    imeiService = DependencyResolver.Current.GetService<IIMEIService>();
-
-                return imeiService;
-
-            }
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="LocationService"/> class.
         /// </summary>
         /// <param name="context">The data context to store to.</param>
@@ -57,6 +39,23 @@ namespace BikeTracker.Services
         {
             this.imeiService = imeiService;
             dataContext = context;
+        }
+
+        /// <summary>
+        /// Gets the imei service.
+        /// </summary>
+        /// <value>
+        /// The imei service.
+        /// </value>
+        private IIMEIService IMEIService
+        {
+            get
+            {
+                if (imeiService == null)
+                    imeiService = DependencyResolver.Current.GetService<IIMEIService>();
+
+                return imeiService;
+            }
         }
 
         /// <summary>
@@ -119,6 +118,24 @@ namespace BikeTracker.Services
                 .FirstOrDefault()).Where(l => l != null);
 
             return Task.FromResult(latestLocations.AsEnumerable());
+        }
+
+        public async Task RegisterBadLocation(string imei, FailureReason reason, DateTimeOffset receivedTime)
+        {
+            string callsign = Services.IMEIService.DefaultCallsign;
+
+            if (!string.IsNullOrWhiteSpace(imei))
+                callsign = (await IMEIService.GetFromIMEI(imei)).CallSign;
+
+            var reportData = new FailedLocationRecord
+            {
+                Callsign = callsign,
+                Reason = reason,
+                ReceivedTime = receivedTime
+            };
+
+            dataContext.FailedRecords.Add(reportData);
+            await dataContext.SaveChangesAsync();
         }
 
         /// <summary>

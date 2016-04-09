@@ -9,6 +9,8 @@ namespace BikeTracker.Models.Contexts
     /// </summary>
     public interface ILocationContext
     {
+        DbSet<FailedLocationRecord> FailedRecords { get; }
+
         /// <summary>
         /// Gets the landmarks.
         /// </summary>
@@ -16,6 +18,7 @@ namespace BikeTracker.Models.Contexts
         /// The landmarks.
         /// </value>
         DbSet<Landmark> Landmarks { get; }
+
         /// <summary>
         /// Gets the location records.
         /// </summary>

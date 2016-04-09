@@ -8,7 +8,8 @@ var app = angular.module('app', [
     'ngResource',
     'ui.validate',
     'appControllers',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'chart.js'
 ]);
 
 app.config(['$routeProvider', function ($routeProvider) {
@@ -33,7 +34,10 @@ app.config(['$routeProvider', function ($routeProvider) {
         controller: 'LocationReportCtrl'
     }).when('/Reports/Rates', {
         templateUrl: '/Report/Rates',
-        controller: 'ReportCtrl'
+        controller: 'CheckInRateCtrl'
+    }).when('/Reports/Success', {
+        templateUrl: '/Report/Rates',
+        controller: 'SuccessRateCtrl'
     }).otherwise({
         redirectTo: '/'
     });

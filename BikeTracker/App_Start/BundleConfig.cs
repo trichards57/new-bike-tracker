@@ -40,6 +40,9 @@ namespace BikeTracker
             bundles.RegisterAngularModule("angular-bootstrap", "ui.bootstrap", AngularBootstrapCDN, "~/lib/angular-bootstrap/ui-bootstrap.js");
             bundles.RegisterAngularModule("angular-bootstrap-templates", "ui.bootstrap.tpls", AngularBootstrapTemplatesCDN, "~/lib/angular-bootstrap/ui-bootstrap-tpls.js");
 
+            bundles.Add(new ScriptBundle("~/bundles/angular-chart").Include("~/lib/Chart.js/Chart.js")
+                .Include("~/lib/angular-chart.js/angular-chart.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/site-core")
                 .Include("~/Scripts/ui/app.js")
                 .Include("~/Scripts/ui/controllers.js")
@@ -55,7 +58,8 @@ namespace BikeTracker
             bootstrapBundle.CdnFallbackExpression = "$.fn.modal";
             bundles.Add(bootstrapBundle);
 
-            var styleBundle = new StyleBundle("~/bundles/css").Include("~/Content/theme.css");
+            var styleBundle = new StyleBundle("~/bundles/css").Include("~/Content/theme.css")
+                .Include("~/lib/angular-chart.js/angular-chart.css");
             bundles.Add(styleBundle);
         }
     }

@@ -2,7 +2,12 @@
   {
     "outputFile": "Content/theme.css",
     "inputFile": "Content/theme.less",
-    "minify": { "enabled": true },
-    "includeInProject": true
+    "minify": {
+      "enabled": true
+    }
+  },
+  {
+    "outputFile": "lib/angular-chart.js/angular-chart.css",
+    "inputFile": "lib/angular-chart.js/angular-chart.less"
   }
 ]
