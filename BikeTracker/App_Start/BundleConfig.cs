@@ -41,7 +41,7 @@ namespace BikeTracker
             bundles.RegisterAngularModule("angular-bootstrap-templates", "ui.bootstrap.tpls", AngularBootstrapTemplatesCDN, "~/lib/angular-bootstrap/ui-bootstrap-tpls.js");
 
             bundles.Add(new ScriptBundle("~/bundles/angular-chart").Include("~/lib/Chart.js/Chart.js")
-                .Include("~/lib/angular-chart.js/angular-chart.js"));
+                .Include("~/lib/angular-chart.js/dist/angular-chart.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/site-core")
                 .Include("~/Scripts/ui/app.js")
