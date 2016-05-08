@@ -17,35 +17,19 @@ namespace BikeTracker.Services
     public class IMEIService : IIMEIService
     {
         /// <summary>
+        /// The default callsign used if none is supplied.
+        /// </summary>
+        public static readonly string DefaultCallsign = "WR???";
+
+        /// <summary>
         /// The data context used to store the data.
         /// </summary>
-        private IIMEIContext dataContext;
+        private readonly IIMEIContext _dataContext;
+
         /// <summary>
         /// The service used to handle location details.
         /// </summary>
         private ILocationService locationService;
-
-        /// <summary>
-        /// Gets the location service.
-        /// </summary>
-        /// <value>
-        /// The location service.
-        /// </value>
-        private ILocationService LocationService
-        {
-            get
-            {
-                if (locationService == null)
-                    locationService = DependencyResolver.Current.GetService<ILocationService>();
-
-                return locationService;
-            }
-        }
-
-        /// <summary>
-        /// The default callsign used if none is supplied.
-        /// </summary>
-        public static readonly string DefaultCallsign = "WR???";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IMEIService"/> class.
@@ -63,9 +47,17 @@ namespace BikeTracker.Services
         /// <remarks>If <paramref name="locationService"/> is null, it will be loaded from the DependencyResolver</remarks>
         public IMEIService(IIMEIContext context, ILocationService locationService)
         {
-            dataContext = context;
+            _dataContext = context;
             this.locationService = locationService;
         }
+
+        /// <summary>
+        /// Gets the location service.
+        /// </summary>
+        /// <value>
+        /// The location service.
+        /// </value>
+        private ILocationService LocationService => locationService ?? (locationService = DependencyResolver.Current.GetService<ILocationService>());
 
         /// <summary>
         /// Asynchronously deletes the provided IMEI from the service's records.
@@ -75,7 +67,7 @@ namespace BikeTracker.Services
         /// This function will not report an error if the IMEI does not exist.
         public async Task DeleteIMEI(string imei)
         {
-            var callsign = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
+            var callsign = await _dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
 
             await DeleteIMEI(callsign);
         }
@@ -88,7 +80,7 @@ namespace BikeTracker.Services
         /// This function will not report an error if the IMEI does not exist.
         public async Task DeleteIMEIById(int id)
         {
-            var callsign = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
+            var callsign = await _dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
 
             await DeleteIMEI(callsign);
         }
@@ -101,7 +93,7 @@ namespace BikeTracker.Services
         /// </returns>
         public Task<IEnumerable<IMEIToCallsign>> GetAllAsync()
         {
-            return Task.FromResult<IEnumerable<IMEIToCallsign>>(dataContext.IMEIToCallsigns);
+            return Task.FromResult<IEnumerable<IMEIToCallsign>>(_dataContext.IMEIToCallsigns);
         }
 
         /// <summary>
@@ -114,7 +106,7 @@ namespace BikeTracker.Services
         /// </returns>
         public async Task<IMEIToCallsign> GetFromId(int id)
         {
-            return await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
+            return await _dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.Id == id);
         }
 
         /// <summary>
@@ -127,7 +119,7 @@ namespace BikeTracker.Services
         /// </returns>
         public Task<IQueryable<IMEIToCallsign>> GetFromIdQueryable(int id)
         {
-            return Task.FromResult(dataContext.IMEIToCallsigns.Where(i => i.Id == id));
+            return Task.FromResult(_dataContext.IMEIToCallsigns.Where(i => i.Id == id));
         }
 
         /// <summary>
@@ -148,13 +140,12 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(imei))
                 throw new ArgumentException("{0} cannot be empty or only whitespace.", nameof(imei));
 
-            var iToC = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
+            var iToC = await _dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
 
-            if (iToC == null)
-            {
-                await RegisterCallsign(imei);
-                iToC = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
-            }
+            if (iToC != null) return iToC;
+
+            await RegisterCallsign(imei);
+            iToC = await _dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
 
             return iToC;
         }
@@ -174,7 +165,7 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(imei))
                 throw new ArgumentException("{0} must not be empty or only whitespace", nameof(imei));
 
-            var iToC = await dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
+            var iToC = await _dataContext.IMEIToCallsigns.FirstOrDefaultAsync(i => i.IMEI == imei);
 
             if (iToC != null)
             {
@@ -185,7 +176,7 @@ namespace BikeTracker.Services
 
                 iToC.CallSign = string.IsNullOrWhiteSpace(callsign) ? iToC.CallSign : callsign;
                 iToC.Type = type ?? iToC.Type;
-                await dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync();
             }
             else
             {
@@ -196,8 +187,8 @@ namespace BikeTracker.Services
                     Type = type ?? VehicleType.Unknown
                 };
 
-                dataContext.IMEIToCallsigns.Add(iToC);
-                await dataContext.SaveChangesAsync();
+                _dataContext.IMEIToCallsigns.Add(iToC);
+                await _dataContext.SaveChangesAsync();
             }
         }
 
@@ -205,7 +196,7 @@ namespace BikeTracker.Services
         /// Deletes the provided IMEIToCallsign relationship from the data context.
         /// </summary>
         /// <param name="imei">The IMEI to delete.</param>
-        /// This method will not return an error if the IMEI is null or does not exist. 
+        /// This method will not return an error if the IMEI is null or does not exist.
         /// It will also trigger any location reports in the data context associated with that callsign
         /// to be expired to try and cut down on duplicate reports.
         private async Task DeleteIMEI(IMEIToCallsign imei)
@@ -215,8 +206,8 @@ namespace BikeTracker.Services
 
             await LocationService.ExpireLocation(imei.CallSign);
 
-            dataContext.IMEIToCallsigns.Remove(imei);
-            await dataContext.SaveChangesAsync();
+            _dataContext.IMEIToCallsigns.Remove(imei);
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

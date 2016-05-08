@@ -20,7 +20,9 @@ namespace BikeTracker.Controllers
         /// <summary>
         /// The authentication manager
         /// </summary>
-        private IAuthenticationManager _authManager;
+        private readonly IAuthenticationManager _authManager;
+
+        private readonly ILogService _logService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -36,6 +38,8 @@ namespace BikeTracker.Controllers
         /// <param name="userManager">The user manager to use.</param>
         /// <param name="signInManager">The sign in manager to use.</param>
         /// <param name="urlHelper">The URL helper to use.</param>
+        /// <param name="authManager">The authentication manager to use.</param>
+        /// <param name="logService">The logging service to use.</param>
         /// <remarks>
         /// This overload is used to allow dependency injection for testing.
         /// </remarks>
@@ -44,20 +48,7 @@ namespace BikeTracker.Controllers
         {
             Url = urlHelper ?? Url;
             _authManager = authManager;
-            this.logService = logService;
-        }
-
-        private ILogService logService;
-
-        private ILogService LogService
-        {
-            get
-            {
-                if (logService == null)
-                    logService = DependencyResolver.Current.GetService<ILogService>();
-
-                return logService;
-            }
+            _logService = logService;
         }
 
         /// <summary>
@@ -66,13 +57,9 @@ namespace BikeTracker.Controllers
         /// <value>
         /// The authentication manager.
         /// </value>
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return _authManager ?? HttpContext.GetOwinContext().Authentication;
-            }
-        }
+        private IAuthenticationManager AuthenticationManager => _authManager ?? HttpContext.GetOwinContext().Authentication;
+
+        private ILogService LogService => _logService ?? DependencyResolver.Current.GetService<ILogService>();
 
         /// <summary>
         /// Uses the provided callback code to confirm a user's email address.
@@ -81,7 +68,7 @@ namespace BikeTracker.Controllers
         /// <param name="code">The confirmation code.</param>
         /// <returns>
         /// The ConfirmEmail view if successful, otherwise the Error view.  In either case, no model.
-        /// </returns> 
+        /// </returns>
         /// @mapping GET /Account/ConfirmEmail
         /// @anon
         [AllowAnonymous]

@@ -13,111 +13,18 @@ namespace BikeTracker.Tests.Services
         private readonly Fixture Fixture = new Fixture();
 
         [TestMethod]
-        public void FormatUnknownEvent()
+        public void FormatIMEIDeleted()
         {
-            var le = new LogEntry { Type = LogEventType.UnknownEvent };
-            var expected = "unknown event logged";
-            FormatLogEntry(le, expected);
-        }
+            var imei = Fixture.Create<string>();
 
-        [TestMethod]
-        public void FormatUserLogIn()
-        {
-            var le = new LogEntry { Type = LogEventType.UserLogIn };
-            var expected = "logged in";
-            FormatLogEntry(le, expected);
-        }
-
-        [TestMethod]
-        public void FormatUserCreated()
-        {
-            var name = Fixture.Create<string>();
-            var le = new LogEntry { Type = LogEventType.UserCreated, Properties = new[] { new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name } } };
-            var expected = $"created account for {name}";
-            FormatLogEntry(le, expected);
-        }
-
-        [TestMethod]
-        public void FormatUserDeleted()
-        {
-            var name = Fixture.Create<string>();
-            var le = new LogEntry { Type = LogEventType.UserDeleted, Properties = new[] { new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name } } };
-            var expected = $"deleted account for {name}";
-            FormatLogEntry(le, expected);
-        }
-
-        [TestMethod]
-        public void FormatUserUpdatedPassword()
-        {
-            var name = Fixture.Create<string>();
-            var le = new LogEntry {
-                Type = LogEventType.UserUpdated, Properties = new[] { new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Password" }, new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name } } };
-            var expected = $"changed password for {name}";
-            FormatLogEntry(le, expected);
-        }
-
-        [TestMethod]
-        public void FormatUserUpdatedEmail()
-        {
-            var name = Fixture.Create<string>();
-            var le = new LogEntry {
-                Type = LogEventType.UserUpdated,
-                Properties = new[] {
-                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Email" },
-                    new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name }
-                }
-            };
-            var expected = $"changed email for {name}";
-            FormatLogEntry(le, expected);
-        }
-
-        [TestMethod]
-        public void FormatUserUpdatedRole()
-        {
-            var name = Fixture.Create<string>();
-            var le = new LogEntry {
-                Type = LogEventType.UserUpdated,
-                Properties = new[] {
-                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Role" },
-                    new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name }
-                }
-            };
-            var expected = $"changed role for {name}";
-            FormatLogEntry(le, expected);
-        }
-
-        [TestMethod]
-        public void FormatUserUpdatedEmailRoleAndPassword()
-        {
-            var name = Fixture.Create<string>();
             var le = new LogEntry
             {
-                Type = LogEventType.UserUpdated,
+                Type = LogEventType.IMEIDeleted,
                 Properties = new[] {
-                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Role" },
-                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Email" },
-                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Password" },
-                    new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name }
+                    new LogEntryProperty { PropertyType = LogPropertyType.IMEI, PropertyValue = imei },
                 }
             };
-            var expected = $"changed email, password and role for {name}";
-            FormatLogEntry(le, expected);
-        }
-
-        [TestMethod]
-        public void FormatUserUpdatedEmailAndPassword()
-        {
-            var name = Fixture.Create<string>();
-            var le = new LogEntry
-            {
-                Type = LogEventType.UserUpdated,
-                Properties = new[] {
-                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Email" },
-                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Password" },
-                    new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name }
-                }
-            };
-            var expected = $"changed email and password for {name}";
+            var expected = $"deleted {imei}";
             FormatLogEntry(le, expected);
         }
 
@@ -142,22 +49,6 @@ namespace BikeTracker.Tests.Services
         }
 
         [TestMethod]
-        public void FormatIMEIDeleted()
-        {
-            var imei = Fixture.Create<string>();
-
-            var le = new LogEntry
-            {
-                Type = LogEventType.IMEIDeleted,
-                Properties = new[] {
-                    new LogEntryProperty { PropertyType = LogPropertyType.IMEI, PropertyValue = imei },
-                }
-            };
-            var expected = $"deleted {imei}";
-            FormatLogEntry(le, expected);
-        }
-
-        [TestMethod]
         public void FormatMapInUse()
         {
             var startDate = Fixture.Create<DateTimeOffset>();
@@ -175,7 +66,121 @@ namespace BikeTracker.Tests.Services
             FormatLogEntry(le, expected);
         }
 
-        private void FormatLogEntry(LogEntry entry, string expectedString)
+        [TestMethod]
+        public void FormatUnknownEvent()
+        {
+            var le = new LogEntry { Type = LogEventType.UnknownEvent };
+            const string expected = "unknown event logged";
+            FormatLogEntry(le, expected);
+        }
+
+        [TestMethod]
+        public void FormatUserCreated()
+        {
+            var name = Fixture.Create<string>();
+            var le = new LogEntry { Type = LogEventType.UserCreated, Properties = new[] { new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name } } };
+            var expected = $"created account for {name}";
+            FormatLogEntry(le, expected);
+        }
+
+        [TestMethod]
+        public void FormatUserDeleted()
+        {
+            var name = Fixture.Create<string>();
+            var le = new LogEntry { Type = LogEventType.UserDeleted, Properties = new[] { new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name } } };
+            var expected = $"deleted account for {name}";
+            FormatLogEntry(le, expected);
+        }
+
+        [TestMethod]
+        public void FormatUserLogIn()
+        {
+            var le = new LogEntry { Type = LogEventType.UserLogIn };
+            const string expected = "logged in";
+            FormatLogEntry(le, expected);
+        }
+
+        [TestMethod]
+        public void FormatUserUpdatedEmail()
+        {
+            var name = Fixture.Create<string>();
+            var le = new LogEntry
+            {
+                Type = LogEventType.UserUpdated,
+                Properties = new[] {
+                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Email" },
+                    new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name }
+                }
+            };
+            var expected = $"changed email for {name}";
+            FormatLogEntry(le, expected);
+        }
+
+        [TestMethod]
+        public void FormatUserUpdatedEmailAndPassword()
+        {
+            var name = Fixture.Create<string>();
+            var le = new LogEntry
+            {
+                Type = LogEventType.UserUpdated,
+                Properties = new[] {
+                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Email" },
+                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Password" },
+                    new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name }
+                }
+            };
+            var expected = $"changed email and password for {name}";
+            FormatLogEntry(le, expected);
+        }
+
+        [TestMethod]
+        public void FormatUserUpdatedEmailRoleAndPassword()
+        {
+            var name = Fixture.Create<string>();
+            var le = new LogEntry
+            {
+                Type = LogEventType.UserUpdated,
+                Properties = new[] {
+                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Role" },
+                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Email" },
+                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Password" },
+                    new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name }
+                }
+            };
+            var expected = $"changed email, password and role for {name}";
+            FormatLogEntry(le, expected);
+        }
+
+        [TestMethod]
+        public void FormatUserUpdatedPassword()
+        {
+            var name = Fixture.Create<string>();
+            var le = new LogEntry
+            {
+                Type = LogEventType.UserUpdated,
+                Properties = new[] { new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Password" }, new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name } }
+            };
+            var expected = $"changed password for {name}";
+            FormatLogEntry(le, expected);
+        }
+
+        [TestMethod]
+        public void FormatUserUpdatedRole()
+        {
+            var name = Fixture.Create<string>();
+            var le = new LogEntry
+            {
+                Type = LogEventType.UserUpdated,
+                Properties = new[] {
+                    new LogEntryProperty { PropertyType = LogPropertyType.PropertyChange, PropertyValue = "Role" },
+                    new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = name }
+                }
+            };
+            var expected = $"changed role for {name}";
+            FormatLogEntry(le, expected);
+        }
+
+        private static void FormatLogEntry(LogEntry entry, string expectedString)
         {
             var result = LogFormatter.FormatLogEntry(entry);
 

@@ -12,7 +12,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
-using System.Web.Mvc;
 
 namespace BikeTracker.Tests.Controllers.API
 {
@@ -21,32 +20,27 @@ namespace BikeTracker.Tests.Controllers.API
     public class ReportControllerTests
     {
         private const int DateTimeOffsetTolerance = 5;
-
-        // seconds
         private readonly string BadDate;
-
         private readonly Fixture Fixture = new Fixture();
         private readonly string TestCallsign;
         private readonly List<string> TestCallsigns;
         private readonly DateTimeOffset TestDate;
-        private readonly List<DateTimeOffset> TestDates;
         private readonly string TestDateString;
+        private readonly List<LogEntry> TestLogEntries;
         private readonly List<LocationRecord> TestReadingsSet1;
         private readonly List<LocationRecord> TestReadingsSet2;
-        private readonly List<LogEntry> TestLogEntries;
 
         public ReportControllerTests()
         {
             TestCallsigns = new List<string>(Fixture.CreateMany<string>());
-            TestDates = new List<DateTimeOffset>(Fixture.CreateMany<DateTimeOffset>());
             TestCallsign = TestCallsigns.First();
             TestReadingsSet1 = new List<LocationRecord>(Fixture.CreateMany<LocationRecord>());
             TestReadingsSet2 = new List<LocationRecord>(Fixture.CreateMany<LocationRecord>());
-            TestDate = TestDates.First().Date;
+            TestDate = Fixture.Create<DateTimeOffset>().Date;
             TestDateString = TestDate.ToString("yyyyMMdd");
             BadDate = Fixture.Create<string>();
 
-            TestLogEntries = new List<LogEntry>(Fixture.Build<LogEntry>().With(p=>p.Type, LogEventType.UserLogIn).Without(l => l.Properties).CreateMany());
+            TestLogEntries = new List<LogEntry>(Fixture.Build<LogEntry>().With(p => p.Type, LogEventType.UserLogIn).Without(l => l.Properties).CreateMany());
             TestLogEntries.AddRange(Fixture.Build<LogEntry>().With(p => p.Type, LogEventType.UnknownEvent).Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.Date).CreateMany());
         }
 
@@ -59,32 +53,6 @@ namespace BikeTracker.Tests.Controllers.API
             var controller = new ReportController(service.Object, logService.Object);
 
             return controller;
-        }
-
-        private Mock<ILogService> CreateMockLogService()
-        {
-            var service = new Mock<ILogService>(MockBehavior.Strict);
-
-            service.Setup(s => s.GetLogEntries(null, null, DateTimeOffset.Now.Date, DateTimeOffset.Now.Date.AddDays(1).AddSeconds(-1))).ReturnsAsync(TestLogEntries.Where(d => d.Date.Date == DateTimeOffset.Now.Date));
-            
-            return service;
-        }
-
-        private Mock<IReportService> CreateMockReportService()
-        {
-            var service = new Mock<IReportService>(MockBehavior.Strict);
-
-            service.Setup(s => s.GetAllCallsigns()).ReturnsAsync(TestCallsigns);
-
-            service.Setup(s => s.GetCallsignRecord(TestCallsign, DateTimeOffset.MinValue, It.Is<DateTimeOffset>(d => Math.Abs((d - DateTimeOffset.Now).TotalSeconds) < DateTimeOffsetTolerance)))
-                .ReturnsAsync(TestReadingsSet1);
-
-            service.Setup(s => s.GetCallsignRecord(TestCallsign,
-                It.Is<DateTimeOffset>(d => Math.Abs((d - TestDate).TotalSeconds) < DateTimeOffsetTolerance)
-                , It.Is<DateTimeOffset>(d => Math.Abs((d - TestDate.AddDays(1)).TotalSeconds) < DateTimeOffsetTolerance)))
-                .ReturnsAsync(TestReadingsSet2);
-
-            return service;
         }
 
         [TestMethod]
@@ -123,7 +91,7 @@ namespace BikeTracker.Tests.Controllers.API
 
             Assert.IsTrue(TestCallsigns.SequenceEqual(res.Content));
         }
-        
+
         [TestMethod]
         public async Task GetDaysLogEntries()
         {
@@ -136,27 +104,30 @@ namespace BikeTracker.Tests.Controllers.API
             await GetLogEntries(null);
         }
 
-        private async Task GetLogEntries(DateTimeOffset? date)
+        private Mock<ILogService> CreateMockLogService()
         {
-            var controller = CreateController();
+            var service = new Mock<ILogService>(MockBehavior.Strict);
 
-            var result = await controller.LogEntries(date?.ToString("yyyyMMdd"));
+            service.Setup(s => s.GetLogEntries(null, null, DateTimeOffset.Now.Date, DateTimeOffset.Now.Date.AddDays(1).AddSeconds(-1))).ReturnsAsync(TestLogEntries.Where(d => d.Date.Date == DateTimeOffset.Now.Date));
 
-            var actualDate = date ?? DateTimeOffset.Now.Date;
-            var expectedResult = TestLogEntries.Where(l => l.Date == actualDate.Date);
+            return service;
+        }
 
-            Assert.IsInstanceOfType(result, typeof(JsonResult<IEnumerable<LogEntryViewModel>>));
+        private Mock<IReportService> CreateMockReportService()
+        {
+            var service = new Mock<IReportService>(MockBehavior.Strict);
 
-            var res = result as JsonResult<IEnumerable<LogEntryViewModel>>;
+            service.Setup(s => s.GetAllCallsigns()).ReturnsAsync(TestCallsigns);
 
-            foreach (var r in res.Content)
-            {
-                var original = expectedResult.First(l => l.Id == r.Id);
+            service.Setup(s => s.GetCallsignRecord(TestCallsign, DateTimeOffset.MinValue, It.Is<DateTimeOffset>(d => Math.Abs((d - DateTimeOffset.Now).TotalSeconds) < DateTimeOffsetTolerance)))
+                .ReturnsAsync(TestReadingsSet1);
 
-                Assert.AreEqual(original.Date, r.Date);
-                Assert.AreEqual(LogFormatter.FormatLogEntry(original), r.Message);
-                Assert.AreEqual(original.SourceUser, r.User);
-            }
+            service.Setup(s => s.GetCallsignRecord(TestCallsign,
+                It.Is<DateTimeOffset>(d => Math.Abs((d - TestDate).TotalSeconds) < DateTimeOffsetTolerance),
+                It.Is<DateTimeOffset>(d => Math.Abs((d - TestDate.AddDays(1)).TotalSeconds) < DateTimeOffsetTolerance)))
+                .ReturnsAsync(TestReadingsSet2);
+
+            return service;
         }
 
         private async Task GetCallsignLocations(string callsign, string startDate, string endDate, List<LocationRecord> readings)
@@ -179,17 +150,28 @@ namespace BikeTracker.Tests.Controllers.API
             Assert.AreEqual(readings.Count, res.Content.Count());
         }
 
-        private async Task DownloadCallsignLocations(string callsign, string startDate, string endDate, List<LocationRecord> readings)
+        private async Task GetLogEntries(DateTimeOffset? date)
         {
             var controller = CreateController();
 
-            var result = await controller.DownloadCallsignLocations(callsign, startDate, endDate);
+            var result = await controller.LogEntries(date?.ToString("yyyyMMdd"));
 
-            var res = result as FileResult;
+            var actualDate = date ?? DateTimeOffset.Now.Date;
+            var expectedResult = TestLogEntries.Where(l => l.Date == actualDate.Date).ToList();
+
+            Assert.IsInstanceOfType(result, typeof(JsonResult<IEnumerable<LogEntryViewModel>>));
+
+            var res = result as JsonResult<IEnumerable<LogEntryViewModel>>;
             Assert.IsNotNull(res);
 
-            Assert.AreEqual("text/csv", res.ContentType);
-            Assert.AreEqual($"{callsign}.csv", res.FileDownloadName);
+            foreach (var r in res.Content)
+            {
+                var original = expectedResult.First(l => l.Id == r.Id);
+
+                Assert.AreEqual(original.Date, r.Date);
+                Assert.AreEqual(LogFormatter.FormatLogEntry(original), r.Message);
+                Assert.AreEqual(original.SourceUser, r.User);
+            }
         }
     }
 }

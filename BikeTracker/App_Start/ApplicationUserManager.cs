@@ -16,7 +16,7 @@ namespace BikeTracker
     /// Used to support user management for the website.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public class ApplicationUserManager : UserManager<ApplicationUser, string>, IUserManager
+    public sealed class ApplicationUserManager : UserManager<ApplicationUser, string>, IUserManager
     {
         public const int MinPasswordLength = 6;
 
@@ -84,17 +84,15 @@ namespace BikeTracker
         {
             var res = await base.ChangePasswordAsync(userId, currentPassword, newPassword);
 
-            if (res.Succeeded)
-            {
-                var user = await Store.FindByIdAsync(userId);
-                user.MustResetPassword = false;
-                await Store.UpdateAsync(user);
-            }
+            if (!res.Succeeded) return res;
+            var user = await Store.FindByIdAsync(userId);
+            user.MustResetPassword = false;
+            await Store.UpdateAsync(user);
 
             return res;
         }
 
-        public virtual async Task GenerateEmailConfirmationEmailAsync(UrlHelper url, string id)
+        public async Task GenerateEmailConfirmationEmailAsync(UrlHelper url, string id)
         {
             await GenerateEmailConfirmationEmailAsync(url, id, null);
         }
@@ -104,12 +102,13 @@ namespace BikeTracker
         /// </summary>
         /// <param name="url">The URL helper from the controller asking for the email.</param>
         /// <param name="id">The id of the user who needs their email confirmed.</param>
+        /// <param name="temporaryPassword">Temporary password sent to the user.</param>
         /// <returns>
         /// Generates a boiler-plate email including the confirmation token to send to
         /// the user.  Uses <see cref="ApplicationMessage"/> to generate both an HTML
         /// and Plain Text email when <see cref="EmailService"/> is used.
         /// </returns>
-        public virtual async Task GenerateEmailConfirmationEmailAsync(UrlHelper url, string id, string temporaryPassword)
+        public async Task GenerateEmailConfirmationEmailAsync(UrlHelper url, string id, string temporaryPassword)
         {
             var token = await GenerateEmailConfirmationTokenAsync(id);
             var callbackUrl = url.Action("ConfirmEmail", "Account", new { userId = id, code = token }, "http");
@@ -155,7 +154,7 @@ namespace BikeTracker
         /// the user.  Uses <see cref="ApplicationMessage"/> to generate both an HTML
         /// and Plain Text email when <see cref="EmailService"/> is used.
         /// </returns>
-        public virtual async Task GeneratePasswordResetEmailAsync(UrlHelper url, string id)
+        public async Task GeneratePasswordResetEmailAsync(UrlHelper url, string id)
         {
             var token = await GeneratePasswordResetTokenAsync(id);
             var callbackUrl = url.Action("ResetPassword", "Account", new { userId = id, code = token }, "http");
@@ -183,12 +182,10 @@ namespace BikeTracker
         {
             var res = await base.SetEmailAsync(userId, email);
 
-            if (res.Succeeded)
-            {
-                var user = await Store.FindByIdAsync(userId);
-                user.UserName = email;
-                await Store.UpdateAsync(user);
-            }
+            if (!res.Succeeded) return res;
+            var user = await Store.FindByIdAsync(userId);
+            user.UserName = email;
+            await Store.UpdateAsync(user);
 
             return res;
         }

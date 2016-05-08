@@ -16,9 +16,7 @@ namespace BikeTracker.Tests.Controllers
 
             var res = controller.Home();
 
-            var partialView = res as PartialViewResult;
-
-            Assert.IsNotNull(partialView);
+            Assert.IsNotNull(res);
         }
 
         [TestMethod]

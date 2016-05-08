@@ -6,23 +6,13 @@ namespace BikeTracker
     [ExcludeFromCodeCoverage]
     public static class BundleConfig
     {
-        private readonly static string AngularCDN = "//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular.min.js";
-        private readonly static string AngularRouteCDN = "//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular-route.min.js";
-        private readonly static string AngularResourceCDN = "//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular-resource.min.js";
-        private readonly static string AngularBootstrapCDN = "//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap.min.js";
-        private readonly static string AngularBootstrapTemplatesCDN = "//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js";
-
-        private readonly static string JQueryCDN = "//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js";
-
-        private readonly static string BootstrapCDN = "//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
-
-        private static void RegisterAngularModule(this BundleCollection bundles, string bundleName, string moduleName, string cdn, string local)
-        {
-            var angularBundle = new ScriptBundle($"~/bundles/{bundleName}", cdn).Include(local);
-            angularBundle.CdnFallbackExpression = $"(function() {{ try {{ window.angular.module('{moduleName}'); }} catch (e) {{ return false; }} return true; }})()";
-
-            bundles.Add(angularBundle);
-        }
+        private const string AngularBootstrapCDN = "//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap.min.js";
+        private const string AngularBootstrapTemplatesCDN = "//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js";
+        private const string AngularCDN = "//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular.min.js";
+        private const string AngularResourceCDN = "//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular-resource.min.js";
+        private const string AngularRouteCDN = "//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular-route.min.js";
+        private const string BootstrapCDN = "//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
+        private const string JQueryCDN = "//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js";
 
         public static void RegisterBundles(BundleCollection bundles)
         {
@@ -61,6 +51,14 @@ namespace BikeTracker
             var styleBundle = new StyleBundle("~/bundles/css").Include("~/Content/theme.css")
                 .Include("~/lib/angular-chart.js/angular-chart.css");
             bundles.Add(styleBundle);
+        }
+
+        private static void RegisterAngularModule(this BundleCollection bundles, string bundleName, string moduleName, string cdn, string local)
+        {
+            var angularBundle = new ScriptBundle($"~/bundles/{bundleName}", cdn).Include(local);
+            angularBundle.CdnFallbackExpression = $"(function() {{ try {{ window.angular.module('{moduleName}'); }} catch (e) {{ return false; }} return true; }})()";
+
+            bundles.Add(angularBundle);
         }
     }
 }

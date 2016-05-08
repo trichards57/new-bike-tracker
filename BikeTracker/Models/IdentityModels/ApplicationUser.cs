@@ -19,7 +19,7 @@ namespace BikeTracker.Models.IdentityModels
         /// <value>
         ///   <c>true</c> if they must reset their password; otherwise, <c>false</c>.
         /// </value>
-        public bool MustResetPassword { get; set; } = false;
+        public bool MustResetPassword { get; set; }
 
         /// <summary>
         /// Generates the user identity asynchronously.

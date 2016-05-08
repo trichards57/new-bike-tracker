@@ -23,21 +23,19 @@ namespace BikeTracker.Tests.Services
     public class LocationServiceTests
     {
         private const int DateTimeTolerance = 5;
-        private readonly LocationRecord BadLocation;
+        private readonly Landmark BadLandmark;
         private readonly Fixture Fixture = new Fixture();
         private readonly IMEIToCallsign GoodCallsign;
-        private readonly string UnknownIMEI;
         private readonly Landmark GoodLandmark;
-        private readonly Landmark BadLandmark;
         private readonly List<Landmark> GoodLandmarks;
         private readonly LocationRecord GoodLocation;
         private readonly List<LocationRecord> GoodLocations;
+        private readonly string UnknownIMEI;
 
         public LocationServiceTests()
         {
             GoodLocations = new List<LocationRecord>(Fixture.CreateMany<LocationRecord>());
             GoodLocation = GoodLocations.First();
-            BadLocation = Fixture.Create<LocationRecord>();
             BadLandmark = Fixture.Create<Landmark>();
             GoodCallsign = Fixture.Create<IMEIToCallsign>();
             UnknownIMEI = Fixture.Create<string>();
@@ -45,80 +43,16 @@ namespace BikeTracker.Tests.Services
             GoodLandmark = GoodLandmarks.First();
         }
 
-        public Mock<IIMEIService> CreateMockIMEIService()
+        [TestMethod]
+        public async Task ClearLandmarkBadId()
         {
-            var service = new Mock<IIMEIService>(MockBehavior.Strict);
-
-            service.Setup(s => s.GetFromIMEI(GoodCallsign.IMEI)).ReturnsAsync(GoodCallsign);
-            service.Setup(s => s.GetFromIMEI(UnknownIMEI)).ReturnsAsync(new IMEIToCallsign { CallSign = IMEIService.DefaultCallsign, IMEI = UnknownIMEI });
-
-            return service;
-        }
-
-        public Mock<DbSet<Landmark>> CreateMockLandmarkDbSet()
-        {
-            var mockLocationEntrySet = new Mock<DbSet<Landmark>>();
-
-            var data = GoodLandmarks.AsQueryable();
-
-            mockLocationEntrySet.Setup(e => e.Add(It.IsAny<Landmark>())).Callback<Landmark>(i => GoodLandmarks.Add(i));
-
-            mockLocationEntrySet.As<IDbAsyncEnumerable<Landmark>>()
-                .Setup(m => m.GetAsyncEnumerator())
-                .Returns(new TestDbAsyncEnumerator<Landmark>(data.GetEnumerator()));
-
-            mockLocationEntrySet.As<IQueryable<Landmark>>()
-                .Setup(m => m.Provider)
-                .Returns(new TestDbAsyncQueryProvider<Landmark>(data.Provider));
-
-            mockLocationEntrySet.As<IQueryable<Landmark>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockLocationEntrySet.As<IQueryable<Landmark>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockLocationEntrySet.As<IQueryable<Landmark>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-
-            return mockLocationEntrySet;
-        }
-
-        public Mock<ILocationContext> CreateMockLocationContext(DbSet<LocationRecord> locations = null, DbSet<Landmark> landmarks = null)
-        {
-            var context = new Mock<ILocationContext>(MockBehavior.Strict);
-
-            context.SetupGet(c => c.LocationRecords).Returns(locations);
-            context.SetupGet(c => c.Landmarks).Returns(landmarks);
-            context.Setup(s => s.SaveChangesAsync()).Returns(Task.FromResult(1));
-
-            return context;
+            await ClearLandmark(BadLandmark.Id);
         }
 
         [TestMethod]
         public async Task ClearLandmarkGoodData()
         {
             await ClearLandmark(GoodLandmark.Id, GoodLandmark);
-        }
-
-        [TestMethod]
-        public async Task ClearLandmarkBadId()
-        {
-            await ClearLandmark(BadLandmark.Id, shouldUpdate: false);
-        }
-
-        private async Task ClearLandmark(int id, Landmark linkedObject = null, bool shouldUpdate = true)
-        {
-            var landmarks = CreateMockLandmarkDbSet();
-            var context = CreateMockLocationContext(landmarks: landmarks.Object);
-
-            var service = new LocationService(context.Object);
-
-            await service.ClearLandmark(id);
-
-            if (shouldUpdate)
-            {
-                Assert.IsTrue((linkedObject.Expiry - DateTimeOffset.Now).TotalSeconds < -DateTimeTolerance);
-                context.Verify(c => c.SaveChangesAsync());
-            }
-            else
-            {
-                context.Verify(c => c.SaveChangesAsync(), Times.Never);
-            }
         }
 
         [TestMethod]
@@ -209,7 +143,7 @@ namespace BikeTracker.Tests.Services
 
             var service = new LocationService(context.Object);
 
-            var res = await service.GetLocations();
+            var res = (await service.GetLocations()).ToList();
 
             var wr01 = res.Single(l => l.Callsign == "WR01");
             Assert.AreEqual(2, wr01.Latitude);
@@ -260,25 +194,111 @@ namespace BikeTracker.Tests.Services
             await RegisterLocation(GoodCallsign, GoodLocation.ReadingTime, GoodLocation.ReceiveTime, GoodLocation.Latitude, GoodLocation.Longitude);
         }
 
-        [TestMethod]
-        public async Task RegisterLocationUnknownIMEI()
-        {
-            await RegisterLocation(new IMEIToCallsign { IMEI = UnknownIMEI, CallSign = IMEIService.DefaultCallsign }, GoodLocation.ReadingTime, GoodLocation.ReceiveTime, GoodLocation.Latitude, GoodLocation.Longitude, shouldUseResolver: true);
-        }
-
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public async Task RegisterLocationNullIMEI()
         {
             await RegisterLocation(new IMEIToCallsign { IMEI = null }, GoodLocation.ReadingTime, GoodLocation.ReceiveTime, GoodLocation.Latitude, GoodLocation.Longitude);
         }
 
+        [TestMethod]
+        public async Task RegisterLocationUnknownIMEI()
+        {
+            await RegisterLocation(new IMEIToCallsign { IMEI = UnknownIMEI, CallSign = IMEIService.DefaultCallsign }, GoodLocation.ReadingTime, GoodLocation.ReceiveTime, GoodLocation.Latitude, GoodLocation.Longitude, shouldUseResolver: true);
+        }
+
+        private static Mock<ILocationContext> CreateMockLocationContext(DbSet<LocationRecord> locations = null, DbSet<Landmark> landmarks = null)
+        {
+            var context = new Mock<ILocationContext>(MockBehavior.Strict);
+
+            context.SetupGet(c => c.LocationRecords).Returns(locations);
+            context.SetupGet(c => c.Landmarks).Returns(landmarks);
+            context.Setup(s => s.SaveChangesAsync()).Returns(Task.FromResult(1));
+
+            return context;
+        }
+
+        private static bool ValidateLandmarkRecord(Landmark landmark, string name, decimal latitude, decimal longitude, DateTimeOffset? expiry)
+        {
+            if (expiry == null)
+                expiry = DateTimeOffset.Now.AddDays(7);
+
+            Assert.AreEqual(latitude, landmark.Latitude);
+            Assert.AreEqual(longitude, landmark.Longitude);
+            Assert.AreEqual(name, landmark.Name);
+            Assert.IsTrue(Math.Abs((expiry.Value - landmark.Expiry).TotalSeconds) < DateTimeTolerance);
+            return true;
+        }
+
+        private static bool ValidateLocationRecord(LocationRecord record, IMEIToCallsign imei, decimal latitude, decimal longitude, DateTimeOffset readingTime, DateTimeOffset receivedTime)
+        {
+            Assert.AreEqual(latitude, record.Latitude);
+            Assert.AreEqual(longitude, record.Longitude);
+            Assert.AreEqual(readingTime, record.ReadingTime);
+            Assert.AreEqual(receivedTime, record.ReceiveTime);
+            Assert.AreEqual(imei.CallSign, record.Callsign);
+            Assert.AreEqual(imei.Type, record.Type);
+
+            return true;
+        }
+
+        private async Task ClearLandmark(int id, Landmark linkedObject = null)
+        {
+            var landmarks = CreateMockLandmarkDbSet();
+            var context = CreateMockLocationContext(landmarks: landmarks.Object);
+
+            var service = new LocationService(context.Object);
+
+            await service.ClearLandmark(id);
+
+            if (linkedObject != null)
+            {
+                Assert.IsTrue((linkedObject.Expiry - DateTimeOffset.Now).TotalSeconds < -DateTimeTolerance);
+                context.Verify(c => c.SaveChangesAsync());
+            }
+            else
+            {
+                context.Verify(c => c.SaveChangesAsync(), Times.Never);
+            }
+        }
+
+        private Mock<IIMEIService> CreateMockIMEIService()
+        {
+            var service = new Mock<IIMEIService>(MockBehavior.Strict);
+
+            service.Setup(s => s.GetFromIMEI(GoodCallsign.IMEI)).ReturnsAsync(GoodCallsign);
+            service.Setup(s => s.GetFromIMEI(UnknownIMEI)).ReturnsAsync(new IMEIToCallsign { CallSign = IMEIService.DefaultCallsign, IMEI = UnknownIMEI });
+
+            return service;
+        }
+
+        private Mock<DbSet<Landmark>> CreateMockLandmarkDbSet()
+        {
+            var mockLocationEntrySet = new Mock<DbSet<Landmark>>();
+
+            var data = GoodLandmarks.AsQueryable();
+
+            mockLocationEntrySet.Setup(e => e.Add(It.IsAny<Landmark>())).Callback<Landmark>(i => GoodLandmarks.Add(i));
+
+            mockLocationEntrySet.As<IDbAsyncEnumerable<Landmark>>()
+                .Setup(m => m.GetAsyncEnumerator())
+                .Returns(new TestDbAsyncEnumerator<Landmark>(data.GetEnumerator()));
+
+            mockLocationEntrySet.As<IQueryable<Landmark>>()
+                .Setup(m => m.Provider)
+                .Returns(new TestDbAsyncQueryProvider<Landmark>(data.Provider));
+
+            mockLocationEntrySet.As<IQueryable<Landmark>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockLocationEntrySet.As<IQueryable<Landmark>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockLocationEntrySet.As<IQueryable<Landmark>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            return mockLocationEntrySet;
+        }
+
         private async Task ExpireLocation(string callsign, bool shouldUpdate)
         {
-            LocationRecord lr = null;
-
             if (shouldUpdate)
             {
-                lr = Fixture.Create<LocationRecord>();
+                var lr = Fixture.Create<LocationRecord>();
                 lr.Callsign = callsign;
                 lr.Expired = false;
                 GoodLocations.Add(lr);
@@ -340,30 +360,6 @@ namespace BikeTracker.Tests.Services
                 locations.Verify(l => l.Add(It.Is<LocationRecord>(lr => ValidateLocationRecord(lr, imei, latitude, longitude, readingTime, receivedTime))));
                 context.Verify(c => c.SaveChangesAsync());
             }
-        }
-
-        private bool ValidateLandmarkRecord(Landmark landmark, string name, decimal latitude, decimal longitude, DateTimeOffset? expiry)
-        {
-            if (expiry == null)
-                expiry = DateTimeOffset.Now.AddDays(7);
-
-            Assert.AreEqual(latitude, landmark.Latitude);
-            Assert.AreEqual(longitude, landmark.Longitude);
-            Assert.AreEqual(name, landmark.Name);
-            Assert.IsTrue(Math.Abs((expiry.Value - landmark.Expiry).TotalSeconds) < DateTimeTolerance);
-            return true;
-        }
-
-        private bool ValidateLocationRecord(LocationRecord record, IMEIToCallsign imei, decimal latitude, decimal longitude, DateTimeOffset readingTime, DateTimeOffset receivedTime)
-        {
-            Assert.AreEqual(latitude, record.Latitude);
-            Assert.AreEqual(longitude, record.Longitude);
-            Assert.AreEqual(readingTime, record.ReadingTime);
-            Assert.AreEqual(receivedTime, record.ReceiveTime);
-            Assert.AreEqual(imei.CallSign, record.Callsign);
-            Assert.AreEqual(imei.Type, record.Type);
-
-            return true;
         }
     }
 }

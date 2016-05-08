@@ -14,8 +14,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -36,11 +34,11 @@ namespace BikeTracker.Tests.Controllers.API
         private readonly ApplicationRole GoodRole;
         private readonly string TestBadEmail;
         private readonly string TestGoodEmail;
+        private readonly IEnumerable<string> TestRoleResult;
         private readonly List<ApplicationRole> TestRoles;
         private readonly ApplicationUser TestUser;
         private readonly string TestUsername;
         private readonly List<ApplicationUser> TestUsers;
-        private IEnumerable<string> TestRoleResult;
 
         public UserControllerTests()
         {
@@ -66,7 +64,7 @@ namespace BikeTracker.Tests.Controllers.API
         [TestMethod]
         public async Task DeleteBadUser()
         {
-            await DeleteUser(BadUserId, expectSuccess: false);
+            await DeleteUser(BadUserId, false);
         }
 
         [TestMethod]
@@ -80,7 +78,6 @@ namespace BikeTracker.Tests.Controllers.API
         {
             var controller = CreateController();
 
-            var role = TestRoles.First();
             var res = (await controller.Get(BadUserId)).Queryable;
 
             Assert.IsNotNull(res);
@@ -211,15 +208,16 @@ namespace BikeTracker.Tests.Controllers.API
         private bool CheckUpdateProperties(IEnumerable<string> properties, bool changeRole, bool changeEmail)
         {
             var res = true;
+            var enumerable = properties as IList<string> ?? properties.ToList();
             if (changeEmail)
-                res &= properties.Contains("Email");
+                res &= enumerable.Contains("Email");
             else
-                res &= !properties.Contains("Email");
+                res &= !enumerable.Contains("Email");
 
             if (changeRole)
-                res &= properties.Contains("Role");
+                res &= enumerable.Contains("Role");
             else
-                res &= !properties.Contains("Role");
+                res &= !enumerable.Contains("Role");
 
             return res;
         }
@@ -232,27 +230,6 @@ namespace BikeTracker.Tests.Controllers.API
             var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
 
             return controller;
-        }
-
-        private async Task DeleteUser(string id, bool expectSuccess = true, ApplicationUser testUser = null)
-        {
-            var userManager = CreateMockUserManager();
-            var roleManager = CreateMockRoleManager();
-            var logService = CreateMockLogService();
-            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
-
-            var principal = MockHelpers.CreateMockPrincipal(TestUsername);
-            controller.User = principal.Object;
-
-            var res = await controller.Delete(id);
-
-            if (expectSuccess)
-            {
-                userManager.Verify(u => u.DeleteAsync(testUser));
-                logService.Verify(l => l.LogUserDeleted(TestUsername, testUser.UserName));
-            }
-
-            Assert.IsInstanceOfType(res, typeof(StatusCodeResult));
         }
 
         private Mock<ILogService> CreateMockLogService()
@@ -323,14 +300,37 @@ namespace BikeTracker.Tests.Controllers.API
             return userManager;
         }
 
+        private async Task DeleteUser(string id, bool expectSuccess = true, ApplicationUser testUser = null)
+        {
+            var userManager = CreateMockUserManager();
+            var roleManager = CreateMockRoleManager();
+            var logService = CreateMockLogService();
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
+
+            var principal = MockHelpers.CreateMockPrincipal(TestUsername);
+            controller.User = principal.Object;
+
+            var res = await controller.Delete(id);
+
+            if (expectSuccess)
+            {
+                userManager.Verify(u => u.DeleteAsync(testUser));
+                logService.Verify(l => l.LogUserDeleted(TestUsername, testUser.UserName));
+            }
+
+            Assert.IsInstanceOfType(res, typeof(StatusCodeResult));
+        }
+
         private async Task PutUser(string id, string email, ApplicationRole role, IEnumerable<string> oldRoles = null, bool changeRole = true, bool changeEmail = true, string username = null, ResultType expectedResult = ResultType.Success)
         {
             var userManager = CreateMockUserManager();
             var roleManager = CreateMockRoleManager();
             var configuration = new Mock<HttpConfiguration>();
             var logService = CreateMockLogService();
-            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
-            controller.Configuration = configuration.Object;
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object)
+            {
+                Configuration = configuration.Object
+            };
 
             var principal = MockHelpers.CreateMockPrincipal(TestUsername);
             controller.User = principal.Object;
@@ -403,8 +403,10 @@ namespace BikeTracker.Tests.Controllers.API
             var roleManager = CreateMockRoleManager();
             var configuration = new Mock<HttpConfiguration>();
             var logService = CreateMockLogService();
-            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object);
-            controller.Configuration = configuration.Object;
+            var controller = new UserController(userManager.Object, roleManager.Object, logService.Object)
+            {
+                Configuration = configuration.Object
+            };
 
             var principal = MockHelpers.CreateMockPrincipal(TestUsername);
             controller.User = principal.Object;
@@ -413,9 +415,7 @@ namespace BikeTracker.Tests.Controllers.API
             var context = new HttpContext(request, new HttpResponse(new StringWriter()));
             HttpContext.Current = context;
 
-            var parameters = new ODataActionParameters();
-            parameters.Add("role", role);
-            parameters.Add("email", email);
+            var parameters = new ODataActionParameters { { "role", role }, { "email", email } };
 
             var res = await controller.Register(parameters);
 

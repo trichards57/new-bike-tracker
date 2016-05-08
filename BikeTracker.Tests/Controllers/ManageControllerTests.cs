@@ -110,8 +110,7 @@ namespace BikeTracker.Tests.Controllers
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
 
             var controller = new ManageController(userManager.Object, signInManager.Object, useDependencyService ? null : logService.Object);
-            var context = new ControllerContext();
-            context.HttpContext = httpContext.Object;
+            var context = new ControllerContext { HttpContext = httpContext.Object };
             controller.ControllerContext = context;
 
             var model = new ChangePasswordViewModel

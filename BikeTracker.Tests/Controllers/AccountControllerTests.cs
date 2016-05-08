@@ -24,14 +24,6 @@ namespace BikeTracker.Tests.Controllers
     [TestClass]
     public class AccountControllerTests
     {
-        private readonly Fixture Fixture = new Fixture();
-        private readonly string TestUsername;
-
-        public AccountControllerTests()
-        {
-            TestUsername = Fixture.Create<string>();
-        }
-
         private enum Result
         {
             VerificationFailure,
@@ -536,7 +528,6 @@ namespace BikeTracker.Tests.Controllers
                 logService.Verify(s => s.LogUserUpdated(email, email, It.Is<IEnumerable<string>>(i => i.Single() == "Password")));
             else
                 logService.Verify(s => s.LogUserUpdated(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Never);
-
         }
 
         private async Task SubmitLogin(LoginViewModel loginModel, ApplicationUser user, string returnUrl, Result expectedResult)

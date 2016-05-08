@@ -14,12 +14,12 @@ namespace BikeTracker.Services
         /// <summary>
         /// The data context used to store the data
         /// </summary>
-        private ILocationContext dataContext;
+        private readonly ILocationContext _dataContext;
 
         /// <summary>
         /// The <see cref="IIMEIService"/> used to translate IMEIs into callsigns.
         /// </summary>
-        private IIMEIService imeiService;
+        private IIMEIService _imeiService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationService"/> class.
@@ -37,8 +37,8 @@ namespace BikeTracker.Services
         /// <remarks>If <paramref name="imeiService"/> is null, it will be loaded from the DependencyResolver</remarks>
         public LocationService(ILocationContext context, IIMEIService imeiService)
         {
-            this.imeiService = imeiService;
-            dataContext = context;
+            _imeiService = imeiService;
+            _dataContext = context;
         }
 
         /// <summary>
@@ -47,16 +47,7 @@ namespace BikeTracker.Services
         /// <value>
         /// The imei service.
         /// </value>
-        private IIMEIService IMEIService
-        {
-            get
-            {
-                if (imeiService == null)
-                    imeiService = DependencyResolver.Current.GetService<IIMEIService>();
-
-                return imeiService;
-            }
-        }
+        private IIMEIService IMEIService => _imeiService ?? (_imeiService = DependencyResolver.Current.GetService<IIMEIService>());
 
         /// <summary>
         /// Asynchronously clears the landmark identified by the provided <paramref name="id" />.
@@ -65,12 +56,12 @@ namespace BikeTracker.Services
         /// <returns></returns>
         public async Task ClearLandmark(int id)
         {
-            var landmark = dataContext.Landmarks.FirstOrDefault(l => l.Id == id);
+            var landmark = _dataContext.Landmarks.FirstOrDefault(l => l.Id == id);
             if (landmark != null)
             {
                 landmark.Expiry = DateTimeOffset.Now.AddDays(-1);
 
-                await dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync();
             }
         }
 
@@ -83,12 +74,12 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(callsign))
                 return;
 
-            var oldLocations = dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.Expired == false);
+            var oldLocations = _dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.Expired == false);
 
             foreach (var l in oldLocations)
                 l.Expired = true;
 
-            await dataContext.SaveChangesAsync();
+            await _dataContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -99,7 +90,7 @@ namespace BikeTracker.Services
         /// </returns>
         public Task<IEnumerable<Landmark>> GetLandmarks()
         {
-            var landmarks = dataContext.Landmarks.Where(l => l.Expiry >= DateTimeOffset.Now);
+            var landmarks = _dataContext.Landmarks.Where(l => l.Expiry >= DateTimeOffset.Now);
 
             return Task.FromResult(landmarks.AsEnumerable());
         }
@@ -112,8 +103,8 @@ namespace BikeTracker.Services
         /// </returns>
         public Task<IEnumerable<LocationRecord>> GetLocations()
         {
-            var reportedCallsigns = dataContext.LocationRecords.Select(l => l.Callsign).Distinct();
-            var latestLocations = reportedCallsigns.Select(c => dataContext.LocationRecords.Where(l => l.Callsign == c && l.Expired == false)
+            var reportedCallsigns = _dataContext.LocationRecords.Select(l => l.Callsign).Distinct();
+            var latestLocations = reportedCallsigns.Select(c => _dataContext.LocationRecords.Where(l => l.Callsign == c && l.Expired == false)
                 .OrderByDescending(l => l.ReadingTime)
                 .FirstOrDefault()).Where(l => l != null);
 
@@ -122,7 +113,7 @@ namespace BikeTracker.Services
 
         public async Task RegisterBadLocation(string imei, FailureReason reason, DateTimeOffset receivedTime)
         {
-            string callsign = Services.IMEIService.DefaultCallsign;
+            var callsign = Services.IMEIService.DefaultCallsign;
 
             if (!string.IsNullOrWhiteSpace(imei))
                 callsign = (await IMEIService.GetFromIMEI(imei)).CallSign;
@@ -134,8 +125,8 @@ namespace BikeTracker.Services
                 ReceivedTime = receivedTime
             };
 
-            dataContext.FailedRecords.Add(reportData);
-            await dataContext.SaveChangesAsync();
+            _dataContext.FailedRecords.Add(reportData);
+            await _dataContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -162,8 +153,8 @@ namespace BikeTracker.Services
                 Expiry = expiry ?? DateTimeOffset.Now.AddDays(7)
             };
 
-            dataContext.Landmarks.Add(landmark);
-            await dataContext.SaveChangesAsync();
+            _dataContext.Landmarks.Add(landmark);
+            await _dataContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -195,8 +186,8 @@ namespace BikeTracker.Services
                 Type = vehicle.Type
             };
 
-            dataContext.LocationRecords.Add(locationData);
-            await dataContext.SaveChangesAsync();
+            _dataContext.LocationRecords.Add(locationData);
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

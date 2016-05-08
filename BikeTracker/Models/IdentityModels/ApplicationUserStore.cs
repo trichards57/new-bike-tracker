@@ -7,7 +7,7 @@ namespace BikeTracker.Models.IdentityModels
     /// <summary>
     /// Represents the store used to manage user details.
     /// </summary>
-    /// <seealso cref="Microsoft.AspNet.Identity.EntityFramework.UserStore{ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim}" />
+    /// <seealso cref="UserStore{TUser,TRole,TKey,TUserLogin,TUserRole,TUserClaim}" />
     [ExcludeFromCodeCoverage]
     public class ApplicationUserStore : UserStore<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>
     {

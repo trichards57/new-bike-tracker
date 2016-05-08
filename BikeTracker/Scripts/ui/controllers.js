@@ -19,7 +19,7 @@
 */
 /*global angular $ Microsoft moment */
 
-var appControllers = angular.module('appControllers', ['appServices']);
+var appControllers = angular.module("appControllers", ["appServices"]);
 
 appControllers.controller("DeleteFormCtrl", ["$scope", "$modalInstance", "name", function ($scope, $modalInstance, name) {
     "use strict";
@@ -44,7 +44,7 @@ appControllers.controller("ErrorFormCtrl", ["$scope", "$modalInstance", "title",
     };
 }]);
 
-appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', '$http', function ($scope, $window, $modal, $http) {
+appControllers.controller("LocationReportCtrl", ["$scope", "$window", "$modal", "$http", function ($scope, $window, $modal, $http) {
     "use strict";
 
     $scope.initialize = function () {
@@ -74,7 +74,7 @@ appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', 
 
     $scope.callsigns = [];
 
-    $scope.selectedCallsign = '';
+    $scope.selectedCallsign = "";
 
     $scope.selectedDate = new Date();
 
@@ -86,7 +86,7 @@ appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', 
     };
 
     $scope.dateOptions = {
-        formatYear: 'yy',
+        formatYear: "yy",
         startingDay: 1,
         showWeeks: false
     };
@@ -113,7 +113,6 @@ appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', 
     };
 
     $scope.showDates = function () {
-
         map.entities.clear();
 
         var d = moment($scope.selectedDate).format("YYYYMMDD");
@@ -124,7 +123,7 @@ appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', 
             reports.forEach(function (dat) {
                 var content = "<div class='callsign-flag text-success bg-success'>";
                 var reportD = moment(dat.ReadingTime);
-                content += reportD.format('HH:mm');
+                content += reportD.format("HH:mm");
                 content += "</div>";
 
                 var options = {
@@ -145,7 +144,7 @@ appControllers.controller('LocationReportCtrl', ['$scope', '$window', '$modal', 
     $scope.initialize();
 }]);
 
-appControllers.controller('ReportCtrl', ["$scope", "$window", function ($scope, $window) {
+appControllers.controller("ReportCtrl", ["$scope", "$window", function ($scope, $window) {
     "use strict";
 
     $scope.initialize = function () {
@@ -160,7 +159,7 @@ appControllers.controller('ReportCtrl', ["$scope", "$window", function ($scope, 
     $scope.initialize();
 }]);
 
-appControllers.controller('ControlPanelCtrl', ["$scope", "$window", function ($scope, $window) {
+appControllers.controller("ControlPanelCtrl", ["$scope", "$window", function ($scope, $window) {
     "use strict";
 
     $scope.initialize = function () {
@@ -175,7 +174,7 @@ appControllers.controller('ControlPanelCtrl', ["$scope", "$window", function ($s
     $scope.initialize();
 }]);
 
-appControllers.controller('EditUserCtrl', ["$scope", "$modalInstance", "$window", "createMode", "email", "role", function ($scope, $modalInstance, $window, createMode, email, role) {
+appControllers.controller("EditUserCtrl", ["$scope", "$modalInstance", "$window", "createMode", "email", "role", function ($scope, $modalInstance, $window, createMode, email, role) {
     "use strict";
 
     $scope.initialize = function () {
@@ -214,7 +213,7 @@ appControllers.controller('EditUserCtrl', ["$scope", "$modalInstance", "$window"
     $scope.initialize();
 }]);
 
-appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', '$window', function ($scope, User, $modal, $window) {
+appControllers.controller("AdminCtrl", ["$scope", "User", "$modal", "$window", function ($scope, User, $modal, $window) {
     "use strict";
 
     $scope.initialize = function () {
@@ -226,9 +225,9 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', '$window', f
         });
     };
 
-    $scope.sortBy = 'UserName';
+    $scope.sortBy = "UserName";
     $scope.sortReverse = false;
-    $scope.userFilter = '';
+    $scope.userFilter = "";
 
     $scope.dialogEmail = "";
     $scope.dialogRole = "";
@@ -387,8 +386,7 @@ appControllers.controller('AdminCtrl', ['$scope', 'User', '$modal', '$window', f
     $scope.refresh();
 }]);
 
-appControllers.controller('EditIMEICtrl', ["$scope", "$modalInstance", "$window", "createMode", "imei", "callsign", "type", function ($scope, $modalInstance, $window, createMode, imei, callsign, type) {
-
+appControllers.controller("EditIMEICtrl", ["$scope", "$modalInstance", "$window", "createMode", "imei", "callsign", "type", function ($scope, $modalInstance, $window, createMode, imei, callsign, type) {
     "use strict";
 
     $scope.initialize = function () {
@@ -431,7 +429,7 @@ appControllers.controller('EditIMEICtrl', ["$scope", "$modalInstance", "$window"
     $scope.initialize();
 }]);
 
-appControllers.controller('IMEIListCtrl', ['$scope', 'IMEI', '$modal', '$window', function ($scope, IMEI, $modal, $window) {
+appControllers.controller("IMEIListCtrl", ["$scope", "IMEI", "$modal", "$window", function ($scope, IMEI, $modal, $window) {
     "use strict";
 
     $scope.initialize = function () {
@@ -443,9 +441,9 @@ appControllers.controller('IMEIListCtrl', ['$scope', 'IMEI', '$modal', '$window'
         });
     };
 
-    $scope.sortBy = 'IMEI';
+    $scope.sortBy = "IMEI";
     $scope.sortReverse = false;
-    $scope.imeiFilter = '';
+    $scope.imeiFilter = "";
 
     $scope.dialogIMEI = "";
     $scope.dialogCallsign = "";
@@ -615,7 +613,7 @@ appControllers.controller('IMEIListCtrl', ['$scope', 'IMEI', '$modal', '$window'
     $scope.refresh();
 }]);
 
-appControllers.controller('LogListCtrl', ['$scope', '$modal', '$window', '$http', function ($scope, $modal, $window, $http) {
+appControllers.controller("LogListCtrl", ["$scope", "$modal", "$window", "$http", function ($scope, $modal, $window, $http) {
     "use strict";
 
     $scope.initialize = function () {
@@ -627,9 +625,9 @@ appControllers.controller('LogListCtrl', ['$scope', '$modal', '$window', '$http'
         });
     };
 
-    $scope.sortBy = 'Date';
+    $scope.sortBy = "Date";
     $scope.sortReverse = false;
-    $scope.logFilter = '';
+    $scope.logFilter = "";
 
     $scope.selectedDate = new Date();
 
@@ -667,7 +665,7 @@ appControllers.controller('LogListCtrl', ['$scope', '$modal', '$window', '$http'
 
         $http.get("/api/Report/LogEntries?date=" + moment($scope.selectedDate).format("YYYYMMDD")).then(function (response) {
             $.each(response.data, function (k, v) {
-                v.DateString = moment(v.Date).calendar(null, { sameElse: 'DD/MM/YYYY HH:mm' });
+                v.DateString = moment(v.Date).calendar(null, { sameElse: "DD/MM/YYYY HH:mm" });
             });
             $scope.logs = response.data;
             $scope.loading = false;
@@ -684,7 +682,7 @@ appControllers.controller('LogListCtrl', ['$scope', '$modal', '$window', '$http'
     };
 
     $scope.dateOptions = {
-        formatYear: 'yy',
+        formatYear: "yy",
         startingDay: 1,
         showWeeks: false
     };
@@ -693,7 +691,7 @@ appControllers.controller('LogListCtrl', ['$scope', '$modal', '$window', '$http'
     $scope.refresh();
 }]);
 
-appControllers.controller('CheckInRateCtrl', ['$scope', '$modal', '$window', '$http', function ($scope, $modal, $window, $http) {
+appControllers.controller("CheckInRateCtrl", ["$scope", "$modal", "$window", "$http", function ($scope, $modal, $window, $http) {
     "use strict";
 
     $scope.initialize = function () {
@@ -725,9 +723,8 @@ appControllers.controller('CheckInRateCtrl', ['$scope', '$modal', '$window', '$h
 
     $scope.refresh = function () {
         $http.get("/api/Report/CheckInRatesByHour?callsign=" + $scope.selectedCallsign + "&date=" + moment($scope.selectedDate).format("YYYYMMDD")).then(function (response) {
-
             $scope.labels = response.data.map(function (e) {
-                return moment(e.Time).format('HH:mm');
+                return moment(e.Time).format("HH:mm");
             });
             $scope.series = [$scope.selectedCallsign];
             $scope.data = [response.data.map(function (e) {
@@ -739,7 +736,6 @@ appControllers.controller('CheckInRateCtrl', ['$scope', '$modal', '$window', '$h
         }, function () {
             $scope.showError("Failed to Load Log Entries", "It wasn't possible to load the log entries from the server.");
         });
-
     };
 
     $http.get("/api/Report/Callsigns").then(function (response) {
@@ -757,7 +753,7 @@ appControllers.controller('CheckInRateCtrl', ['$scope', '$modal', '$window', '$h
     };
 
     $scope.dateOptions = {
-        formatYear: 'yy',
+        formatYear: "yy",
         startingDay: 1,
         showWeeks: false
     };
@@ -766,7 +762,7 @@ appControllers.controller('CheckInRateCtrl', ['$scope', '$modal', '$window', '$h
     $scope.refresh();
 }]);
 
-appControllers.controller('SuccessRateCtrl', ['$scope', '$modal', '$window', '$http', function ($scope, $modal, $window, $http) {
+appControllers.controller("SuccessRateCtrl", ["$scope", "$modal", "$window", "$http", function ($scope, $modal, $window, $http) {
     "use strict";
 
     $scope.initialize = function () {
@@ -798,9 +794,8 @@ appControllers.controller('SuccessRateCtrl', ['$scope', '$modal', '$window', '$h
 
     $scope.refresh = function () {
         $http.get("/api/Report/SuccessRatesByHour?callsign=" + $scope.selectedCallsign + "&date=" + moment($scope.selectedDate).format("YYYYMMDD")).then(function (response) {
-
             $scope.labels = response.data.map(function (e) {
-                return moment(e.Time).format('HH:mm');
+                return moment(e.Time).format("HH:mm");
             });
             $scope.series = ["Success", "Failure"];
             $scope.data = [response.data.map(function (e) {
@@ -815,7 +810,6 @@ appControllers.controller('SuccessRateCtrl', ['$scope', '$modal', '$window', '$h
         }, function () {
             $scope.showError("Failed to Entries", "It wasn't possible to load the entries from the server.");
         });
-
     };
 
     $http.get("/api/Report/Callsigns").then(function (response) {
@@ -833,7 +827,7 @@ appControllers.controller('SuccessRateCtrl', ['$scope', '$modal', '$window', '$h
     };
 
     $scope.dateOptions = {
-        formatYear: 'yy',
+        formatYear: "yy",
         startingDay: 1,
         showWeeks: false
     };

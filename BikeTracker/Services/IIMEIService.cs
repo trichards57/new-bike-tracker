@@ -11,13 +11,6 @@ namespace BikeTracker.Services
     public interface IIMEIService
     {
         /// <summary>
-        /// Asynchronously deletes the provided IMEI from the service's records.
-        /// </summary>
-        /// <param name="imei">The IMEI to delete.</param>
-        /// This function will not report an error if the IMEI does not exist.
-        Task DeleteIMEI(string imei);
-
-        /// <summary>
         /// Asynchronously deletes the IMEI associated with the provided <paramref name="id"/> from the service's records.
         /// </summary>
         /// <param name="id">The identifier for the IMEI entry.</param>

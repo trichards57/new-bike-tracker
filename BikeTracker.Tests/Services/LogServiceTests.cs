@@ -3,6 +3,7 @@ using BikeTracker.Models.LocationModels;
 using BikeTracker.Models.LoggingModels;
 using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Ploeh.AutoFixture;
@@ -44,17 +45,6 @@ namespace BikeTracker.Tests.Services
             LogEntries = new List<LogEntry>();
         }
 
-        public Mock<ILoggingContext> CreateLoggingContext(DbSet<LogEntry> logEntrySet, DbSet<LogEntryProperty> logPropertySet)
-        {
-            var context = new Mock<ILoggingContext>(MockBehavior.Strict);
-
-            context.SetupGet(c => c.LogEntries).Returns(logEntrySet);
-            context.SetupGet(c => c.LogProperties).Returns(logPropertySet);
-            context.Setup(c => c.SaveChangesAsync()).ReturnsAsync(1);
-
-            return context;
-        }
-
         public Mock<DbSet<LogEntry>> CreateMockLogEntrySet()
         {
             var mockLogEntrySet = new Mock<DbSet<LogEntry>>();
@@ -80,13 +70,6 @@ namespace BikeTracker.Tests.Services
             return mockLogEntrySet;
         }
 
-        public Mock<DbSet<LogEntryProperty>> CreateMockLogPropertySet()
-        {
-            var mockLogPropertySet = new Mock<DbSet<LogEntryProperty>>();
-
-            return mockLogPropertySet;
-        }
-
         [TestMethod]
         public async Task GetLogEntriesAfterDate()
         {
@@ -94,12 +77,10 @@ namespace BikeTracker.Tests.Services
 
             var expectedResult = new List<LogEntry>();
 
-            LogEntry le;
-
             for (var i = 1; i <= 10; i++)
                 data.Add(Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.AddDays(-i).Date).Create());
 
-            le = Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.Date).Create();
+            var le = Fixture.Build<LogEntry>().Without(l => l.Properties).With(l => l.Date, DateTimeOffset.Now.Date).Create();
             data.Add(le);
             expectedResult.Add(le);
 
@@ -117,7 +98,7 @@ namespace BikeTracker.Tests.Services
         public async Task GetLogEntriesBadDates()
         {
             var data = new List<LogEntry>();
-            await GetLogEntries(data, data, startDate: DateTimeOffset.Now.AddDays(1).Date, endDate: DateTimeOffset.Now.AddDays(-1).Date, expectSuccess: false);
+            await GetLogEntries(data, startDate: DateTimeOffset.Now.AddDays(1).Date, endDate: DateTimeOffset.Now.AddDays(-1).Date);
         }
 
         [TestMethod]
@@ -208,7 +189,7 @@ namespace BikeTracker.Tests.Services
 
             var expectedResult = data.OrderBy(t => t.Date).Take(TestPageSize).ToList();
 
-            await GetLogEntries(data, expectedResult, TestPageSize, null);
+            await GetLogEntries(data, expectedResult, TestPageSize);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
@@ -216,7 +197,7 @@ namespace BikeTracker.Tests.Services
         {
             var data = Fixture.Build<LogEntry>().Without(l => l.Properties).CreateMany().ToList();
 
-            await GetLogEntries(data, null, null, 0, expectSuccess: false);
+            await GetLogEntries(data, page: 0);
         }
 
         [TestMethod]
@@ -311,7 +292,7 @@ namespace BikeTracker.Tests.Services
         public async Task LogMapInUseNewGoodData()
         {
             LogEntries.Clear();
-            await LogMapInUse(TestUsername, true);
+            await LogMapInUse(TestUsername);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
@@ -332,7 +313,7 @@ namespace BikeTracker.Tests.Services
 
             LogEntries.Add(le);
 
-            await LogMapInUse(TestUsername, true);
+            await LogMapInUse(TestUsername);
         }
 
         [TestMethod]
@@ -451,12 +432,6 @@ namespace BikeTracker.Tests.Services
             await LogUserUpdates(string.Empty, TestNewUser, TestChanges);
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public async Task LogUserUpdateNullUpdatedUser()
-        {
-            await LogUserUpdates(TestUsername, null, TestChanges);
-        }
-
         [TestMethod, ExpectedException(typeof(ArgumentException))]
         public async Task LogUserUpdateEmptyUpdatedUser()
         {
@@ -481,22 +456,13 @@ namespace BikeTracker.Tests.Services
             await LogUserUpdates(TestUsername, TestNewUser, null, false);
         }
 
-        private bool CheckIMEIDeletedLogEntry(LogEntry entry, string deletingUser, string imei)
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task LogUserUpdateNullUpdatedUser()
         {
-            CheckLogEntry(entry, LogEventType.IMEIDeleted, deletingUser, new LogEntryProperty { PropertyType = LogPropertyType.IMEI, PropertyValue = imei });
-            return true;
+            await LogUserUpdates(TestUsername, null, TestChanges);
         }
 
-        private bool CheckIMEIRegisteredLogEntry(LogEntry entry, string registeringUser, string imei, string callsign, VehicleType type)
-        {
-            CheckLogEntry(entry, LogEventType.IMEIRegistered, registeringUser, new LogEntryProperty { PropertyType = LogPropertyType.IMEI, PropertyValue = imei },
-                new LogEntryProperty { PropertyValue = callsign, PropertyType = LogPropertyType.Callsign },
-                new LogEntryProperty { PropertyType = LogPropertyType.VehicleType, PropertyValue = type.ToString() });
-
-            return true;
-        }
-
-        private void CheckLogEntry(LogEntry entry, LogEventType type, string sourceUser, params LogEntryProperty[] properties)
+        private static void CheckLogEntry(LogEntry entry, LogEventType type, string sourceUser, params LogEntryProperty[] properties)
         {
             Assert.AreEqual(sourceUser, entry.SourceUser);
             Assert.AreEqual(type, entry.Type);
@@ -511,6 +477,39 @@ namespace BikeTracker.Tests.Services
 
             Assert.AreEqual(properties.Length, entry.Properties.Count);
             Assert.IsTrue(Math.Abs((entry.Date - DateTimeOffset.Now).TotalSeconds) < TimeTolerance);
+        }
+
+        private static Mock<ILoggingContext> CreateLoggingContext(DbSet<LogEntry> logEntrySet, DbSet<LogEntryProperty> logPropertySet)
+        {
+            var context = new Mock<ILoggingContext>(MockBehavior.Strict);
+
+            context.SetupGet(c => c.LogEntries).Returns(logEntrySet);
+            context.SetupGet(c => c.LogProperties).Returns(logPropertySet);
+            context.Setup(c => c.SaveChangesAsync()).ReturnsAsync(1);
+
+            return context;
+        }
+
+        private static Mock<DbSet<LogEntryProperty>> CreateMockLogPropertySet()
+        {
+            var mockLogPropertySet = new Mock<DbSet<LogEntryProperty>>();
+
+            return mockLogPropertySet;
+        }
+
+        private bool CheckIMEIDeletedLogEntry(LogEntry entry, string deletingUser, string imei)
+        {
+            CheckLogEntry(entry, LogEventType.IMEIDeleted, deletingUser, new LogEntryProperty { PropertyType = LogPropertyType.IMEI, PropertyValue = imei });
+            return true;
+        }
+
+        private bool CheckIMEIRegisteredLogEntry(LogEntry entry, string registeringUser, string imei, string callsign, VehicleType type)
+        {
+            CheckLogEntry(entry, LogEventType.IMEIRegistered, registeringUser, new LogEntryProperty { PropertyType = LogPropertyType.IMEI, PropertyValue = imei },
+                new LogEntryProperty { PropertyValue = callsign, PropertyType = LogPropertyType.Callsign },
+                new LogEntryProperty { PropertyType = LogPropertyType.VehicleType, PropertyValue = type.ToString() });
+
+            return true;
         }
 
         private bool CheckMapLogEntry(LogEntry entry, string username, DateTimeOffset startDate)
@@ -547,7 +546,8 @@ namespace BikeTracker.Tests.Services
             return true;
         }
 
-        private async Task GetLogEntries(IEnumerable<LogEntry> dataSet, IEnumerable<LogEntry> expectedDataSet, int? pageSize = null, int? page = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, bool expectSuccess = true)
+        [AssertionMethod]
+        private async Task GetLogEntries(IEnumerable<LogEntry> dataSet, IEnumerable<LogEntry> expectedDataSet = null, int? pageSize = null, int? page = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null)
         {
             LogEntries.Clear();
             LogEntries.AddRange(dataSet);
@@ -560,7 +560,7 @@ namespace BikeTracker.Tests.Services
 
             var result = await service.GetLogEntries(pageSize, page, startDate, endDate);
 
-            if (expectSuccess)
+            if (expectedDataSet != null)
             {
                 Assert.IsTrue(expectedDataSet.OrderBy(l => l.Date).SequenceEqual(result));
             }
@@ -710,11 +710,12 @@ namespace BikeTracker.Tests.Services
 
             var service = new LogService(context.Object);
 
-            await service.LogUserUpdated(updatingUser, updatedUser, changes);
+            var changedProperties = changes as IList<string> ?? changes.ToList();
+            await service.LogUserUpdated(updatingUser, updatedUser, changedProperties);
 
             if (expectSuccess)
             {
-                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckUserUpdatedLogEntry(le, updatingUser, updatedUser, changes))));
+                logEntrySet.Verify(l => l.Add(It.Is<LogEntry>(le => CheckUserUpdatedLogEntry(le, updatingUser, updatedUser, changedProperties))));
                 context.Verify(c => c.SaveChangesAsync());
             }
             else

@@ -7,7 +7,6 @@ using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
 using System.Data.Entity;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -31,16 +30,17 @@ namespace BikeTracker.Controllers.API
         /// <summary>
         /// The log service to use
         /// </summary>
-        private ILogService logService;
+        private readonly ILogService _logService;
+
         /// <summary>
         /// The role manager to use
         /// </summary>
-        private IRoleManager roleManager;
+        private readonly IRoleManager _roleManager;
+
         /// <summary>
         /// The user manager to use
         /// </summary>
-        private IUserManager userManager;
-
+        private readonly IUserManager _userManager;
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
@@ -55,10 +55,12 @@ namespace BikeTracker.Controllers.API
         /// <param name="logService">The log service to inject.</param>
         public UserController(IUserManager userManager, IRoleManager roleManager, ILogService logService)
         {
-            this.userManager = userManager;
-            this.roleManager = roleManager;
-            this.logService = logService;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _logService = logService;
         }
+
+        private ILogService LogService => _logService ?? (ILogService)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(ILogService));
 
         /// <summary>
         /// Gets the role manager.
@@ -66,13 +68,7 @@ namespace BikeTracker.Controllers.API
         /// <value>
         /// The role manager.
         /// </value>
-        public IRoleManager RoleManager
-        {
-            get
-            {
-                return roleManager ?? HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
-            }
-        }
+        private IRoleManager RoleManager => _roleManager ?? HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
 
         /// <summary>
         /// Gets the user manager.
@@ -80,25 +76,7 @@ namespace BikeTracker.Controllers.API
         /// <value>
         /// The user manager.
         /// </value>
-        public IUserManager UserManager
-        {
-            get
-            {
-                return userManager ?? HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-        }
-
-        public ILogService LogService
-        {
-            get
-            {
-                if (logService == null)
-                    logService = (ILogService)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(ILogService));
-
-                return logService;
-            }
-
-        }
+        private IUserManager UserManager => _userManager ?? HttpContext.Current.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
         /// <summary>
         /// Deletes the specified user.
@@ -110,11 +88,9 @@ namespace BikeTracker.Controllers.API
         public async Task<IHttpActionResult> Delete([FromODataUri] string key)
         {
             var user = await UserManager.FindByIdAsync(key);
-            if (user != null)
-            {
-                await UserManager.DeleteAsync(user);
-                await LogService.LogUserDeleted(User.Identity.GetUserName(), user.UserName);
-            }
+            if (user == null) return StatusCode(HttpStatusCode.NoContent);
+            await UserManager.DeleteAsync(user);
+            await LogService.LogUserDeleted(User.Identity.GetUserName(), user.UserName);
 
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -130,27 +106,23 @@ namespace BikeTracker.Controllers.API
         public async Task<SingleResult<UserAdminViewModel>> Get([FromODataUri] string key)
         {
             var user = await UserManager.FindByIdAsync(key);
-            if (user != null)
+            if (user == null) return SingleResult.Create(Enumerable.Empty<UserAdminViewModel>().AsQueryable());
+            var roles = await UserManager.GetRolesAsync(key);
+            var role = roles.FirstOrDefault();
+            var roleDetails = await RoleManager.FindByNameAsync(role);
+
+            return SingleResult.Create(new List<UserAdminViewModel>
             {
-                var roles = await UserManager.GetRolesAsync(key);
-                var role = roles.FirstOrDefault();
-                var roleDetails = await RoleManager.FindByNameAsync(role);
-
-                return SingleResult.Create(new List<UserAdminViewModel>
+                new UserAdminViewModel
                 {
-                    new UserAdminViewModel
-                    {
-                        Id = user.Id,
-                        EmailAddress = user.Email,
-                        Role = roleDetails.Name,
-                        RoleDisplayName = roleDetails.DisplayName,
-                        RoleId = roleDetails.Id,
-                        UserName = user.UserName
-                    }
-                }.AsQueryable());
-            }
-
-            return SingleResult.Create(new List<UserAdminViewModel>().AsQueryable());
+                    Id = user.Id,
+                    EmailAddress = user.Email,
+                    Role = roleDetails.Name,
+                    RoleDisplayName = roleDetails.DisplayName,
+                    RoleId = roleDetails.Id,
+                    UserName = user.UserName
+                }
+            }.AsQueryable());
         }
 
         /// <summary>
@@ -242,7 +214,7 @@ namespace BikeTracker.Controllers.API
         /// HTTP 200 - OK if the user is registered
         /// </returns>
         /// <remarks>
-        /// Needs parameters role and email.  If role isn't provided, it is set to 
+        /// Needs parameters role and email.  If role isn't provided, it is set to
         /// Normal.
         /// </remarks>
         /// @mapping POST /odata/User.Register
@@ -287,19 +259,15 @@ namespace BikeTracker.Controllers.API
             while (!(await UserManager.PasswordValidator.ValidateAsync(password)).Succeeded);
 
             var result = await UserManager.CreateAsync(user, password);
-            if (result.Succeeded)
-            {
-                var id = (await UserManager.FindByEmailAsync(email)).Id;
-                await UserManager.AddToRoleAsync(id, role);
+            if (!result.Succeeded) return BadRequest(ModelState);
+            var id = (await UserManager.FindByEmailAsync(email)).Id;
+            await UserManager.AddToRoleAsync(id, role);
 
-                await UserManager.GenerateEmailConfirmationEmailAsync(new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext), id, password);
+            await UserManager.GenerateEmailConfirmationEmailAsync(new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext), id, password);
 
-                await LogService.LogUserCreated(User.Identity.GetUserName(), user.UserName);
+            await LogService.LogUserCreated(User.Identity.GetUserName(), user.UserName);
 
-                return Ok();
-            }
-
-            return BadRequest(ModelState);
+            return Ok();
         }
     }
 }

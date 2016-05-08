@@ -212,25 +212,25 @@ namespace BikeTrackerTestTool.ViewModel
                 switch (type)
                 {
                     case 0:// No Location
-                        uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?imei={IMEI}&time={tString}&date={dString}");
+                        uri = new Uri($"{SelectedLocation.Path}/Map/CheckIn?imei={IMEI}&time={tString}&date={dString}");
                         break;
 
                     case 1:// No Date or Time
-                        uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?imei={IMEI}&lat={lat}&lon={lon}");
+                        uri = new Uri($"{SelectedLocation.Path}/Map/CheckIn?imei={IMEI}&lat={lat}&lon={lon}");
                         break;
 
                     case 2:// No IMEI
-                        uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?lat={lat}&lon={lon}&time={tString}&date={dString}");
+                        uri = new Uri($"{SelectedLocation.Path}/Map/CheckIn?lat={lat}&lon={lon}&time={tString}&date={dString}");
                         break;
 
-                    case 3:// Bad Date or Time
+                    // Bad Date or Time
                     default:
-                        uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?imei={IMEI}&lat={lat}&lon={lon}&time=123&date=456");
+                        uri = new Uri($"{SelectedLocation.Path}/Map/CheckIn?imei={IMEI}&lat={lat}&lon={lon}&time=123&date=456");
                         break;
                 }
             }
             else
-                uri = new Uri($"{SelectedLocation.Path.ToString()}/Map/CheckIn?imei={IMEI}&lat={lat}&lon={lon}&time={tString}&date={dString}");
+                uri = new Uri($"{SelectedLocation.Path}/Map/CheckIn?imei={IMEI}&lat={lat}&lon={lon}&time={tString}&date={dString}");
 
             var client = new WebClient();
 

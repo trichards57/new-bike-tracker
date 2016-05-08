@@ -26,7 +26,7 @@ namespace BikeTracker.Tests.Services
             GoodLocations = new List<LocationRecord>(Fixture.CreateMany<LocationRecord>());
         }
 
-        public Mock<ILocationContext> CreateMockLocationContext(DbSet<LocationRecord> locations = null, DbSet<Landmark> landmarks = null)
+        public Mock<ILocationContext> CreateMockLocationContext(DbSet<LocationRecord> locations = null)
         {
             var context = new Mock<ILocationContext>(MockBehavior.Strict);
 

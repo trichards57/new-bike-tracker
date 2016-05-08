@@ -12,13 +12,13 @@ namespace BikeTracker.Controllers.API
     [Authorize(Roles = "GeneralAdmin")]
     public class ReportController : ApiController
     {
-        private ILogService logService;
-        private IReportService reportService;
+        private readonly ILogService _logService;
+        private readonly IReportService _reportService;
 
         public ReportController(IReportService service, ILogService logService)
         {
-            reportService = service;
-            this.logService = logService;
+            _reportService = service;
+            _logService = logService;
         }
 
         [HttpGet, Route("api/Report/CallsignLocations")]
@@ -44,7 +44,7 @@ namespace BikeTracker.Controllers.API
                     stop = d.Date.AddSeconds(86399);
             }
 
-            return Json((await reportService.GetCallsignRecord(callsign, start, stop)).Select(r => new CallsignLocationReportViewModel
+            return Json((await _reportService.GetCallsignRecord(callsign, start, stop)).Select(r => new CallsignLocationReportViewModel
             {
                 Latitude = r.Latitude,
                 Longitude = r.Longitude,
@@ -55,7 +55,7 @@ namespace BikeTracker.Controllers.API
         [HttpGet, Route("api/Report/Callsigns")]
         public async Task<IHttpActionResult> Callsigns()
         {
-            return Json(await reportService.GetAllCallsigns());
+            return Json(await _reportService.GetAllCallsigns());
         }
 
         [HttpGet, Route("api/Report/CheckInRatesByHour")]
@@ -72,7 +72,7 @@ namespace BikeTracker.Controllers.API
                     start = d.Date;
             }
 
-            var data = await reportService.GetCheckInRatesByHour(callsign, start);
+            var data = await _reportService.GetCheckInRatesByHour(callsign, start);
 
             return Json(data);
         }
@@ -80,27 +80,10 @@ namespace BikeTracker.Controllers.API
         [HttpGet, Route("api/Report/DownloadCallsignLocations")]
         public async Task<IHttpActionResult> DownloadCallsignLocations(string callsign, string startDate = null, string endDate = null)
         {
-            var start = DateTimeOffset.MinValue;
-            var stop = DateTimeOffset.Now;
+            var start = TryParseDate(startDate, DateTimeOffset.MinValue).Date;
+            var stop = TryParseDate(endDate, DateTimeOffset.Now).Date.AddSeconds(86399);
 
-            if (!string.IsNullOrWhiteSpace(startDate))
-            {
-                DateTimeOffset d;
-                var success = DateTimeOffset.TryParseExact(startDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
-
-                if (success)
-                    start = d.Date;
-            }
-            if (!string.IsNullOrWhiteSpace(endDate))
-            {
-                DateTimeOffset d;
-                var success = DateTimeOffset.TryParseExact(endDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
-
-                if (success)
-                    stop = d.Date.AddSeconds(86399);
-            }
-
-            var data = await reportService.GetCallsignRecord(callsign, start, stop);
+            var data = await _reportService.GetCallsignRecord(callsign, start, stop);
 
             var outputFile = new StringBuilder();
 
@@ -115,7 +98,7 @@ namespace BikeTracker.Controllers.API
         [HttpGet, Route("api/Report/LogEntries")]
         public async Task<IHttpActionResult> LogEntries(string date)
         {
-            DateTimeOffset day = DateTimeOffset.Now;
+            var day = DateTimeOffset.Now;
             DateTimeOffset d;
 
             var res = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
@@ -123,7 +106,7 @@ namespace BikeTracker.Controllers.API
             if (res)
                 day = d;
 
-            var entries = await logService.GetLogEntries(startDate: day.Date, endDate: day.Date.AddDays(1).AddSeconds(-1));
+            var entries = await _logService.GetLogEntries(startDate: day.Date, endDate: day.Date.AddDays(1).AddSeconds(-1));
             return Json(entries.Select(e => new LogEntryViewModel
             {
                 Date = e.Date,
@@ -147,9 +130,19 @@ namespace BikeTracker.Controllers.API
                     start = d.Date;
             }
 
-            var data = await reportService.GetSuccessRatesByHour(callsign, start);
+            var data = await _reportService.GetSuccessRatesByHour(callsign, start);
 
             return Json(data);
+        }
+
+        private static DateTimeOffset TryParseDate(string date, DateTimeOffset defaultDate)
+        {
+            if (string.IsNullOrWhiteSpace(date)) return defaultDate;
+
+            DateTimeOffset d;
+            var success = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+
+            return success ? d : defaultDate;
         }
     }
 }

@@ -24,7 +24,7 @@ using System.Web.Mvc;
 namespace BikeTracker.Tests.Helpers
 {
     [ExcludeFromCodeCoverage]
-    public class MockHelpers
+    public static class MockHelpers
     {
         public static readonly string BadId;
         public static readonly string BadPassword;
@@ -42,23 +42,23 @@ namespace BikeTracker.Tests.Helpers
         public static readonly string UnconfirmedGoodPassword;
         public static readonly ApplicationUser UnconfirmedGoodUser;
         public static readonly string UnconfirmedGoodUsername;
-        private static readonly Fixture fixture = new Fixture();
+        private static readonly Fixture Fixture = new Fixture();
 
         static MockHelpers()
         {
-            BadPassword = fixture.Create<string>();
-            BadUsername = fixture.Create<MailAddress>().Address;
-            BadId = fixture.Create<string>();
-            ConfirmedGoodId = fixture.Create<Guid>().ToString("D");
-            ConfirmedGoodPassword = fixture.Create<string>();
-            ConfirmedGoodUsername = fixture.Create<MailAddress>().Address;
-            GoodToken = fixture.Create<string>();
-            BadToken = fixture.Create<string>();
-            ExternalUri = fixture.Create<Uri>().ToString();
-            LocalUri = fixture.Create<Uri>().ToString();
-            UnconfirmedGoodId = fixture.Create<Guid>().ToString("D");
-            UnconfirmedGoodPassword = fixture.Create<string>();
-            UnconfirmedGoodUsername = fixture.Create<MailAddress>().Address;
+            BadPassword = Fixture.Create<string>();
+            BadUsername = Fixture.Create<MailAddress>().Address;
+            BadId = Fixture.Create<string>();
+            ConfirmedGoodId = Fixture.Create<Guid>().ToString("D");
+            ConfirmedGoodPassword = Fixture.Create<string>();
+            ConfirmedGoodUsername = Fixture.Create<MailAddress>().Address;
+            GoodToken = Fixture.Create<string>();
+            BadToken = Fixture.Create<string>();
+            ExternalUri = Fixture.Create<Uri>().ToString();
+            LocalUri = Fixture.Create<Uri>().ToString();
+            UnconfirmedGoodId = Fixture.Create<Guid>().ToString("D");
+            UnconfirmedGoodPassword = Fixture.Create<string>();
+            UnconfirmedGoodUsername = Fixture.Create<MailAddress>().Address;
             ConfirmedGoodUser = new ApplicationUser
             {
                 Id = ConfirmedGoodId,
@@ -94,8 +94,7 @@ namespace BikeTracker.Tests.Helpers
             var httpContext = CreateMockHttpContext();
 
             var controller = new ManageController(userManager.Object, signInManager.Object, null);
-            var context = new ControllerContext();
-            context.HttpContext = httpContext.Object;
+            var context = new ControllerContext { HttpContext = httpContext.Object };
             controller.ControllerContext = context;
 
             return controller;
@@ -119,10 +118,42 @@ namespace BikeTracker.Tests.Helpers
             return context;
         }
 
+        public static Mock<DbSet<LocationRecord>> CreateMockLocationDbSet(IList<LocationRecord> records)
+        {
+            var mockLocationEntrySet = new Mock<DbSet<LocationRecord>>();
+
+            var data = records.AsQueryable();
+
+            mockLocationEntrySet.Setup(e => e.Add(It.IsAny<LocationRecord>())).Callback<LocationRecord>(records.Add);
+
+            mockLocationEntrySet.As<IDbAsyncEnumerable<LocationRecord>>()
+                .Setup(m => m.GetAsyncEnumerator())
+                .Returns(new TestDbAsyncEnumerator<LocationRecord>(data.GetEnumerator()));
+
+            mockLocationEntrySet.As<IQueryable<LocationRecord>>()
+                .Setup(m => m.Provider)
+                .Returns(new TestDbAsyncQueryProvider<LocationRecord>(data.Provider));
+
+            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            return mockLocationEntrySet;
+        }
+
+        public static Mock<IPrincipal> CreateMockPrincipal(string username)
+        {
+            var identity = new ClaimsIdentity();
+            identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, username));
+
+            var mockPrinciple = new Mock<IPrincipal>();
+            mockPrinciple.SetupGet(i => i.Identity).Returns(identity);
+
+            return mockPrinciple;
+        }
+
         public static Mock<ISignInManager> CreateMockSignInManager()
         {
-            var userManager = CreateMockUserManager();
-            var authManger = new Mock<IAuthenticationManager>(MockBehavior.Strict);
             var signInManager = new Mock<ISignInManager>(MockBehavior.Strict);
 
             signInManager.Setup(m =>
@@ -158,41 +189,6 @@ namespace BikeTracker.Tests.Helpers
                 .Returns(true);
 
             return urlHelper;
-        }
-
-        public static Mock<DbSet<LocationRecord>> CreateMockLocationDbSet(IList<LocationRecord> records)
-        {
-            var mockLocationEntrySet = new Mock<DbSet<LocationRecord>>();
-
-            var data = records.AsQueryable();
-
-            mockLocationEntrySet.Setup(e => e.Add(It.IsAny<LocationRecord>())).Callback<LocationRecord>(i => records.Add(i));
-
-            mockLocationEntrySet.As<IDbAsyncEnumerable<LocationRecord>>()
-                .Setup(m => m.GetAsyncEnumerator())
-                .Returns(new TestDbAsyncEnumerator<LocationRecord>(data.GetEnumerator()));
-
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>()
-                .Setup(m => m.Provider)
-                .Returns(new TestDbAsyncQueryProvider<LocationRecord>(data.Provider));
-
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockLocationEntrySet.As<IQueryable<LocationRecord>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-
-            return mockLocationEntrySet;
-        }
-
-
-        public static Mock<IPrincipal> CreateMockPrincipal(string username)
-        {
-            var identity = new ClaimsIdentity();
-            identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, username));
-
-            var mockPrinciple = new Mock<IPrincipal>();
-            mockPrinciple.SetupGet(i => i.Identity).Returns(identity);
-
-            return mockPrinciple;
         }
 
         public static Mock<IUserManager> CreateMockUserManager()
@@ -294,7 +290,7 @@ namespace BikeTracker.Tests.Helpers
             var validationContext = new ValidationContext(model, null, null);
             Validator.TryValidateObject(model, validationContext, results, true);
 
-            if (model is IValidatableObject) (model as IValidatableObject).Validate(validationContext);
+            (model as IValidatableObject)?.Validate(validationContext);
 
             foreach (var v in results)
             {

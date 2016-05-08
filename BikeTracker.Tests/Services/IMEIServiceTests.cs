@@ -211,21 +211,19 @@ namespace BikeTracker.Tests.Services
         [TestMethod]
         public async Task RegisterCallsignCreateNullCallsign()
         {
-            string newCallsign = null;
             var newIMEI = Fixture.Create<string>();
             var type = VehicleType.Ambulance;
 
-            await RegisterCallsignCreate(newIMEI, newCallsign, type);
+            await RegisterCallsignCreate(newIMEI, null, type);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public async Task RegisterCallsignCreateNullIMEI()
         {
             var newCallsign = Fixture.Create<string>();
-            string newIMEI = null;
             var type = VehicleType.Ambulance;
 
-            await RegisterCallsignCreate(newIMEI, newCallsign, type, false);
+            await RegisterCallsignCreate(null, newCallsign, type, false);
         }
 
         [TestMethod]
@@ -233,12 +231,78 @@ namespace BikeTracker.Tests.Services
         {
             var newCallsign = Fixture.Create<string>();
             var newIMEI = Fixture.Create<string>();
-            VehicleType? type = null;
 
-            await RegisterCallsignCreate(newIMEI, newCallsign, type);
+            await RegisterCallsignCreate(newIMEI, newCallsign, null);
         }
 
-        private void ConfirmDelete(Mock<DbSet<IMEIToCallsign>> imeis, Mock<IIMEIContext> context, Mock<ILocationService> locationService, IMEIToCallsign imeiObj, bool tryDelete)
+        [TestMethod]
+        public async Task RegisterCallsignSameCallsign()
+        {
+            var imei = GoodCallsign.IMEI;
+            var callsign = GoodCallsign.CallSign;
+            var type = Fixture.Create<VehicleType>();
+
+            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign);
+        }
+
+        [TestMethod]
+        public async Task RegisterCallsignUpdateEmptyCallsign()
+        {
+            var imei = GoodCallsign.IMEI;
+            var callsign = string.Empty;
+            var type = Fixture.Create<VehicleType>();
+
+            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public async Task RegisterCallsignUpdateEmptyIMEI()
+        {
+            var imei = string.Empty;
+            var callsign = Fixture.Create<string>();
+            var type = Fixture.Create<VehicleType>();
+
+            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign, false);
+        }
+
+        [TestMethod]
+        public async Task RegisterCallsignUpdateGoodData()
+        {
+            var imei = GoodCallsign.IMEI;
+            var callsign = Fixture.Create<string>();
+            var type = Fixture.Create<VehicleType>();
+
+            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign);
+        }
+
+        [TestMethod]
+        public async Task RegisterCallsignUpdateNoType()
+        {
+            var imei = GoodCallsign.IMEI;
+            var callsign = Fixture.Create<string>();
+
+            await RegisterCallsignUpdate(imei, callsign, null, GoodCallsign);
+        }
+
+        [TestMethod]
+        public async Task RegisterCallsignUpdateNullCallsign()
+        {
+            var imei = GoodCallsign.IMEI;
+            var type = Fixture.Create<VehicleType>();
+
+            await RegisterCallsignUpdate(imei, null, type, GoodCallsign);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public async Task RegisterCallsignUpdateNullIMEI()
+        {
+            var callsign = Fixture.Create<string>();
+            var type = Fixture.Create<VehicleType>();
+
+            await RegisterCallsignUpdate(null, callsign, type, GoodCallsign, false);
+        }
+
+        private static void ConfirmDelete(Mock<DbSet<IMEIToCallsign>> imeis, Mock<IIMEIContext> context, Mock<ILocationService> locationService, IMEIToCallsign imeiObj, bool tryDelete)
         {
             if (tryDelete)
             {
@@ -361,6 +425,8 @@ namespace BikeTracker.Tests.Services
             if (shouldReturn)
             {
                 Assert.IsNotNull(res);
+                Assert.IsNotNull(expectedResult);
+
                 if (!shouldRegister)
                 {
                     // If the system is expected to register the item, ID won't have been generated
@@ -369,119 +435,6 @@ namespace BikeTracker.Tests.Services
                 Assert.AreEqual(expectedResult.CallSign, res.CallSign);
                 Assert.AreEqual(expectedResult.IMEI, res.IMEI);
                 Assert.AreEqual(expectedResult.Type, res.Type);
-            }
-        }
-
-        [TestMethod]
-        public async Task RegisterCallsignUpdateGoodData()
-        {
-            var imei = GoodCallsign.IMEI;
-            var callsign = Fixture.Create<string>();
-            var type = Fixture.Create<VehicleType>();
-
-            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign);
-        }
-
-        [TestMethod]
-        public async Task RegisterCallsignUpdateNoType()
-        {
-            var imei = GoodCallsign.IMEI;
-            var callsign = Fixture.Create<string>();
-            VehicleType? type = null;
-
-            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign);
-        }
-
-        [TestMethod]
-        public async Task RegisterCallsignSameCallsign()
-        {
-            var imei = GoodCallsign.IMEI;
-            var callsign = GoodCallsign.CallSign;
-            var type = Fixture.Create<VehicleType>();
-
-            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign);
-        }
-
-        [TestMethod]
-        public async Task RegisterCallsignUpdateNullCallsign()
-        {
-            var imei = GoodCallsign.IMEI;
-            string callsign = null;
-            var type = Fixture.Create<VehicleType>();
-
-            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign);
-        }
-
-        [TestMethod]
-        public async Task RegisterCallsignUpdateEmptyCallsign()
-        {
-            var imei = GoodCallsign.IMEI;
-            var callsign = string.Empty;
-            var type = Fixture.Create<VehicleType>();
-
-            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign);
-        }
-
-        [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public async Task RegisterCallsignUpdateEmptyIMEI()
-        {
-            var imei = string.Empty;
-            var callsign = Fixture.Create<string>();
-            var type = Fixture.Create<VehicleType>();
-
-            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign, false);
-        }
-
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public async Task RegisterCallsignUpdateNullIMEI()
-        {
-            string imei = null;
-            var callsign = Fixture.Create<string>();
-            var type = Fixture.Create<VehicleType>();
-
-            await RegisterCallsignUpdate(imei, callsign, type, GoodCallsign, false);
-        }
-
-        private async Task RegisterCallsignUpdate(string imei, string callsign, VehicleType? type, IMEIToCallsign linkedObject = null, bool shouldUpdate = true)
-        {
-            IMEIToCallsign oldValues;
-
-            oldValues = new IMEIToCallsign();
-            oldValues.CallSign = linkedObject.CallSign;
-            oldValues.Id = linkedObject.Id;
-            oldValues.IMEI = linkedObject.IMEI;
-            oldValues.Type = linkedObject.Type;
-
-            var imeis = CreateMockIMEIDbSet();
-            var context = CreateMockIMEIContext(imeis.Object);
-            var locationService = CreateMockLocationService();
-
-            var service = new IMEIService(context.Object, locationService.Object);
-
-            await service.RegisterCallsign(imei, callsign, type);
-
-            if (string.IsNullOrWhiteSpace(callsign) || callsign.Equals(oldValues.CallSign))
-            {
-                locationService.Verify(l => l.ExpireLocation(It.IsAny<string>()), Times.Never);
-            }
-            else
-            {
-                locationService.Verify(l => l.ExpireLocation(oldValues.CallSign));
-            }
-
-            if (shouldUpdate)
-            {
-                Assert.AreEqual(imei, linkedObject.IMEI);
-                Assert.AreEqual(string.IsNullOrWhiteSpace(callsign) ? oldValues.CallSign : callsign, linkedObject.CallSign);
-                Assert.AreEqual(type ?? oldValues.Type, linkedObject.Type);
-                context.Verify(c => c.SaveChangesAsync());
-            }
-            else
-            {
-                Assert.AreEqual(imei, linkedObject.IMEI);
-                Assert.AreEqual(oldValues.CallSign, linkedObject.CallSign);
-                Assert.AreEqual(oldValues.Type, linkedObject.Type);
-                context.Verify(c => c.SaveChangesAsync(), Times.Never);
             }
         }
 
@@ -510,6 +463,49 @@ namespace BikeTracker.Tests.Services
             else
             {
                 imeis.Verify(i => i.Add(It.IsAny<IMEIToCallsign>()), Times.Never);
+                context.Verify(c => c.SaveChangesAsync(), Times.Never);
+            }
+        }
+
+        private async Task RegisterCallsignUpdate(string imei, string callsign, VehicleType? type, IMEIToCallsign linkedObject, bool shouldUpdate = true)
+        {
+            var oldValues = new IMEIToCallsign
+            {
+                CallSign = linkedObject.CallSign,
+                Id = linkedObject.Id,
+                IMEI = linkedObject.IMEI,
+                Type = linkedObject.Type
+            };
+
+            var imeis = CreateMockIMEIDbSet();
+            var context = CreateMockIMEIContext(imeis.Object);
+            var locationService = CreateMockLocationService();
+
+            var service = new IMEIService(context.Object, locationService.Object);
+
+            await service.RegisterCallsign(imei, callsign, type);
+
+            if (string.IsNullOrWhiteSpace(callsign))
+            {
+                locationService.Verify(l => l.ExpireLocation(It.IsAny<string>()), Times.Never);
+            }
+            else
+            {
+                locationService.Verify(l => l.ExpireLocation(oldValues.CallSign));
+            }
+
+            if (shouldUpdate)
+            {
+                Assert.AreEqual(imei, linkedObject.IMEI);
+                Assert.AreEqual(string.IsNullOrWhiteSpace(callsign) ? oldValues.CallSign : callsign, linkedObject.CallSign);
+                Assert.AreEqual(type ?? oldValues.Type, linkedObject.Type);
+                context.Verify(c => c.SaveChangesAsync());
+            }
+            else
+            {
+                Assert.AreEqual(imei, linkedObject.IMEI);
+                Assert.AreEqual(oldValues.CallSign, linkedObject.CallSign);
+                Assert.AreEqual(oldValues.Type, linkedObject.Type);
                 context.Verify(c => c.SaveChangesAsync(), Times.Never);
             }
         }

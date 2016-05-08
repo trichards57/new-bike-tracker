@@ -7,96 +7,94 @@ var fadeTime = 5;
 $(document).ready(function () {
     "use strict";
 
-    $('#callsign-box').change(function () {
-        $('#callsign-box option:selected').each(function (i, s) {
+    $("#callsign-box").change(function () {
+        $("#callsign-box option:selected").each(function (i, s) {
             var loc = $(s).val();
 
-            if (loc !== 'empty') {
-                var parts = loc.split(' ');
+            if (loc !== "empty") {
+                var parts = loc.split(" ");
                 var lat = parseFloat(parts[0]);
                 var lon = parseFloat(parts[1]);
                 map.setView(
                   {
                       center: new Microsoft.Maps.Location(lat, lon)
                   });
-                $('#callsign-box>option:eq(0)').prop('selected', true);
+                $("#callsign-box>option:eq(0)").prop("selected", true);
             }
         });
     });
 
-    $('#delete-landmark').click(function () {
-        $('#landmark-box option:selected').each(function (i, s) {
+    $("#delete-landmark").click(function () {
+        $("#landmark-box option:selected").each(function (i, s) {
             var id = $(s).val();
 
-            if (id !== 'empty') {
+            if (id !== "empty") {
                 var url = "Map/ClearLandmark?id=" + id;
 
                 $.get(url).done(function () {
-                    $('#landmark-delete-alert').removeClass('collapse').addClass('in');
-                    setTimeout(function () { $('#landmark-delete-alert').removeClass('in'); }, fadeTime * 1000);
-                    setTimeout(function () { $('#landmark-delete-alert').addClass('collapse'); }, (fadeTime + 2) * 1000);
+                    $("#landmark-delete-alert").removeClass("collapse").addClass("in");
+                    setTimeout(function () { $("#landmark-delete-alert").removeClass("in"); }, fadeTime * 1000);
+                    setTimeout(function () { $("#landmark-delete-alert").addClass("collapse"); }, (fadeTime + 2) * 1000);
                     refresh();
                 });
             }
         });
     });
 
-    $('#hide-unknown').change(function (e) {
-        hideUnknown = $('#hide-unknown').prop('checked');
+    $("#hide-unknown").change(function (e) {
+        hideUnknown = $("#hide-unknown").prop("checked");
         clearTimeout(refreshTimeout);
         refresh();
     });
 
-    $('#refresh-button').click(function (e) {
+    $("#refresh-button").click(function (e) {
         clearTimeout(refreshTimeout);
         refresh();
     });
 
-    $('#landmarkSave').click(function (e) {
-        if ($('#landmarkName').val() == null || $.trim($('#landmarkName').val()) === '') {
+    $("#landmarkSave").click(function (e) {
+        if ($("#landmarkName").val() == null || $.trim($("#landmarkName").val()) === "") {
             return;
         }
 
-        var name = $.trim($('#landmarkName').val());
-        var lat = $.trim($('#landmarkLatitude').val());
-        var lon = $.trim($('#landmarkLongitude').val());
+        var name = $.trim($("#landmarkName").val());
+        var lat = $.trim($("#landmarkLatitude").val());
+        var lon = $.trim($("#landmarkLongitude").val());
 
         var url = "Map/AddLandmark?name=" + name + "&lat=" + lat + "&lon=" + lon;
 
-        $('#landmarkModal').modal('hide');
+        $("#landmarkModal").modal("hide");
 
         $.get(url).done(function () {
-            $('#landmark-success-alert').addClass('in').removeClass('collapse');
-            setTimeout(function () { $('#landmark-success-alert').removeClass('in'); }, fadeTime * 1000);
-            setTimeout(function () { $('#landmark-success-alert').addClass('collapse'); }, (fadeTime + 2) * 1000);
+            $("#landmark-success-alert").addClass("in").removeClass("collapse");
+            setTimeout(function () { $("#landmark-success-alert").removeClass("in"); }, fadeTime * 1000);
+            setTimeout(function () { $("#landmark-success-alert").addClass("collapse"); }, (fadeTime + 2) * 1000);
             clearTimeout(refreshTimeout);
             refresh();
         }).fail(function () {
-            $('#landmark-fail-alert').addClass('in').removeClass('collapse');
-            setTimeout(function () { $('#landmark-fail-alert').removeClass('in'); }, fadeTime * 1000);
-            setTimeout(function () { $('#landmark-fail-alert').addClass('collapse'); }, (fadeTime + 2) * 1000);
+            $("#landmark-fail-alert").addClass("in").removeClass("collapse");
+            setTimeout(function () { $("#landmark-fail-alert").removeClass("in"); }, fadeTime * 1000);
+            setTimeout(function () { $("#landmark-fail-alert").addClass("collapse"); }, (fadeTime + 2) * 1000);
             clearTimeout(refreshTimeout);
             refresh();
         });
     });
 
-    $('#landmarkName').on('input', function () {
-        if ($('#landmarkName').val() == null || $.trim($('#landmarkName').val()) === '')
-        {
-            $('#landmarkSave').prop('disabled', true).addClass('disabled');
+    $("#landmarkName").on("input", function () {
+        if ($("#landmarkName").val() == null || $.trim($("#landmarkName").val()) === "") {
+            $("#landmarkSave").prop("disabled", true).addClass("disabled");
         }
-        else
-        {
-            $('#landmarkSave').prop('disabled', false).removeClass('disabled');
+        else {
+            $("#landmarkSave").prop("disabled", false).removeClass("disabled");
         }
     });
 
-    $('#landmarkName').keydown(function () {
-        if ($('#landmarkName').val() == null || $.trim($('#landmarkName').val()) === '') {
-            $('#landmarkSave').prop('disabled', true).addClass('disabled');
+    $("#landmarkName").keydown(function () {
+        if ($("#landmarkName").val() == null || $.trim($("#landmarkName").val()) === "") {
+            $("#landmarkSave").prop("disabled", true).addClass("disabled");
         }
         else {
-            $('#landmarkSave').prop('disabled', false).removeClass('disabled');
+            $("#landmarkSave").prop("disabled", false).removeClass("disabled");
         }
     });
 
@@ -116,14 +114,13 @@ function centreLocation(position) {
 function refresh() {
     "use strict";
 
-    $.get('/Map/GetLocations', function (data) {
-
+    $.get("/Map/GetLocations", function (data) {
         map.entities.clear();
-        $('#callsign-box').find('option').remove();
-        $('#landmark-box').find('option').remove();
-        $('#callsign-box').append($('<option>', {
-            value: 'empty',
-            text: 'Pick Callsign'
+        $("#callsign-box").find("option").remove();
+        $("#landmark-box").find("option").remove();
+        $("#callsign-box").append($("<option>", {
+            value: "empty",
+            text: "Pick Callsign"
         }));
 
         for (var i = 0; i < data.length; i++) {
@@ -136,7 +133,7 @@ function refresh() {
             if (timeSinceReading >= 60)
                 continue;
 
-            if (hideUnknown && dat.Callsign.indexOf('?') > -1)
+            if (hideUnknown && dat.Callsign.indexOf("?") > -1)
                 continue;
 
             var color = "text-success bg-success";
@@ -148,8 +145,7 @@ function refresh() {
 
             var content = "<div class='callsign-flag " + color + "' data-type='callsign' data-id='" + dat.Id + "'>";
 
-            switch (dat.Type)
-            {
+            switch (dat.Type) {
                 case 1: // Bike
                     content += "<img src='/Content/bike15.png' />";
                     break;
@@ -178,15 +174,15 @@ function refresh() {
 
             map.entities.push(pin);
 
-            $('#callsign-box').append($('<option>', {
-                value: dat.Latitude + ' ' + dat.Longitude,
+            $("#callsign-box").append($("<option>", {
+                value: dat.Latitude + " " + dat.Longitude,
                 text: dat.Callsign
             }));
         }
 
         refreshTimeout = setTimeout(refresh, updateRate * 1000);
 
-        $.get('/Map/GetLandmarks', function (data) {
+        $.get("/Map/GetLandmarks", function (data) {
             for (var i = 0; i < data.length; i++) {
                 var dat = data[i];
 
@@ -196,7 +192,7 @@ function refresh() {
 
                 map.entities.push(pin);
 
-                $('#landmark-box').append($('<option>', {
+                $("#landmark-box").append($("<option>", {
                     value: dat.Id,
                     text: dat.Name
                 }));
@@ -207,7 +203,6 @@ function refresh() {
                 $("#loggedOutAlert").show();
             }
         })
-
     }).fail(function (xhr) {
         if (xhr.status == 401) // Unauthorised
         {
@@ -217,15 +212,15 @@ function refresh() {
 }
 
 function ShowAddLandmark(e) {
-    if (e.targetType == 'map' && e.isPrimary) {
-        $('#landmarkName').val('');
-        $('#landmarkSave').prop('disabled', true).addClass('disabled');
-        $('#landmarkModal').modal('show');
+    if (e.targetType == "map" && e.isPrimary) {
+        $("#landmarkName").val("");
+        $("#landmarkSave").prop("disabled", true).addClass("disabled");
+        $("#landmarkModal").modal("show");
 
         var point = new Microsoft.Maps.Point(e.getX(), e.getY());
         var loc = e.target.tryPixelToLocation(point);
-        $('#landmarkLatitude').val(loc.latitude)
-        $('#landmarkLongitude').val(loc.longitude);
+        $("#landmarkLatitude").val(loc.latitude)
+        $("#landmarkLongitude").val(loc.longitude);
         e.handled = true;
     }
 };
@@ -240,7 +235,7 @@ function GetMap() {
                            zoom: 14
                        });
 
-    Microsoft.Maps.Events.addHandler(map, 'dblclick', ShowAddLandmark);
+    Microsoft.Maps.Events.addHandler(map, "dblclick", ShowAddLandmark);
 
     refresh();
 };

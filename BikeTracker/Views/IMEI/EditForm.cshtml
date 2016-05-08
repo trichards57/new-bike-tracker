@@ -9,14 +9,14 @@
     <form role="form" name="editForm" novalidate>
         <div class="form-group">
             <label for="editName" class="control-label">IMEI:</label>
-            <input name="editName" type="tel" pattern="[0-9]*" class="form-control" required ng-model="imei" />
+            <input id="editName" name="editName" type="tel" pattern="[0-9]*" class="form-control" required ng-model="imei" />
             <div ng-show="editForm.$submitted || editForm.editName.$dirty">
                 <span class="text-danger" ng-show="editForm.editName.$error.required">You need to give a valid IMEI.</span>
             </div>
         </div>
         <div class="form-group">
             <label for="editCallsign" class="control-label">Call Sign:</label>
-            <input ng-pattern="/^[A-Z]{2}((0[1-9])|[1-9][0-9]{1,2})$/" name="editCallsign" type="text" class="form-control" required ng-model="callsign" />
+            <input id="editCallsign" ng-pattern="/^[A-Z]{2}((0[1-9])|[1-9][0-9]{1,2})$/" name="editCallsign" type="text" class="form-control" required ng-model="callsign" />
             <div ng-show="editForm.$submitted || editForm.editCallsign.$dirty">
                 <span class="text-danger" ng-show="editForm.editCallsign.$error.pattern">That doesn't look like a valid callsign.</span>
                 <span class="text-danger" ng-show="editForm.editCallsign.$error.required">You need to give a callsign.</span>

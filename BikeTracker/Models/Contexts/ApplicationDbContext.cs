@@ -11,12 +11,12 @@ namespace BikeTracker.Models.Contexts
     /// <summary>
     /// Main database for the application.
     /// </summary>
-    /// <seealso cref="Microsoft.AspNet.Identity.EntityFramework.IdentityDbContext{BikeTracker.Models.IdentityModels.ApplicationUser, BikeTracker.Models.IdentityModels.ApplicationRole, System.String, Microsoft.AspNet.Identity.EntityFramework.IdentityUserLogin, Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole, Microsoft.AspNet.Identity.EntityFramework.IdentityUserClaim}" />
+    /// <seealso cref="IdentityDbContext{TUser,TRole,TKey,TUserLogin,TUserRole,TUserClaim}" />
     /// <seealso cref="BikeTracker.Models.Contexts.ILocationContext" />
     /// <seealso cref="BikeTracker.Models.Contexts.ILoggingContext" />
     /// <seealso cref="BikeTracker.Models.Contexts.IIMEIContext" />
     [ExcludeFromCodeCoverage]
-    public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>,
+    public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>,
         ILocationContext, ILoggingContext, IIMEIContext
     {
         /// <summary>
@@ -27,7 +27,7 @@ namespace BikeTracker.Models.Contexts
         {
         }
 
-        public virtual DbSet<FailedLocationRecord> FailedRecords { get; set; }
+        public DbSet<FailedLocationRecord> FailedRecords { get; set; }
 
         /// <summary>
         /// Gets the IMEI to callsigns relationships.
@@ -35,7 +35,7 @@ namespace BikeTracker.Models.Contexts
         /// <value>
         /// The IMEI to callsigns.
         /// </value>
-        public virtual DbSet<IMEIToCallsign> IMEIToCallsigns { get; set; }
+        public DbSet<IMEIToCallsign> IMEIToCallsigns { get; set; }
 
         /// <summary>
         /// Gets the landmarks.
@@ -43,7 +43,7 @@ namespace BikeTracker.Models.Contexts
         /// <value>
         /// The landmarks.
         /// </value>
-        public virtual DbSet<Landmark> Landmarks { get; set; }
+        public DbSet<Landmark> Landmarks { get; set; }
 
         /// <summary>
         /// Gets the location records.
@@ -51,7 +51,7 @@ namespace BikeTracker.Models.Contexts
         /// <value>
         /// The location records.
         /// </value>
-        public virtual DbSet<LocationRecord> LocationRecords { get; set; }
+        public DbSet<LocationRecord> LocationRecords { get; set; }
 
         /// <summary>
         /// Gets the log entries.
@@ -59,7 +59,7 @@ namespace BikeTracker.Models.Contexts
         /// <value>
         /// The log entries.
         /// </value>
-        public virtual DbSet<LogEntry> LogEntries { get; set; }
+        public DbSet<LogEntry> LogEntries { get; set; }
 
         /// <summary>
         /// Gets the log properties.
@@ -67,7 +67,7 @@ namespace BikeTracker.Models.Contexts
         /// <value>
         /// The log properties.
         /// </value>
-        public virtual DbSet<LogEntryProperty> LogProperties { get; set; }
+        public DbSet<LogEntryProperty> LogProperties { get; set; }
 
         /// <summary>
         /// Creates an instance of this data context.
@@ -76,26 +76,6 @@ namespace BikeTracker.Models.Contexts
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
-        }
-
-        /// <summary>
-        /// Gets the RDS connection reported by the environment variables.
-        /// </summary>
-        /// <returns>A connection string for the RDS connection.</returns>
-        public static string GetRDSConnection()
-        {
-            var appConfig = ConfigurationManager.AppSettings;
-
-            string dbname = appConfig["RDS_DB_NAME"];
-
-            if (string.IsNullOrEmpty(dbname)) return null;
-
-            string username = appConfig["RDS_USERNAME"];
-            string password = appConfig["RDS_PASSWORD"];
-            string hostname = appConfig["RDS_HOSTNAME"];
-            string port = appConfig["RDS_PORT"];
-
-            return "Data Source=" + hostname + ";Initial Catalog=" + dbname + ";User ID=" + username + ";Password=" + password + ";";
         }
 
         /// <summary>
@@ -116,6 +96,25 @@ namespace BikeTracker.Models.Contexts
             modelBuilder.Entity<Landmark>().Property(o => o.Name).IsRequired().HasMaxLength(20);
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        /// <summary>
+        /// Gets the RDS connection reported by the environment variables.
+        /// </summary>
+        /// <returns>A connection string for the RDS connection.</returns>
+        private static string GetRDSConnection()
+        {
+            var appConfig = ConfigurationManager.AppSettings;
+
+            var dbname = appConfig["RDS_DB_NAME"];
+
+            if (string.IsNullOrEmpty(dbname)) return null;
+
+            var username = appConfig["RDS_USERNAME"];
+            var password = appConfig["RDS_PASSWORD"];
+            var hostname = appConfig["RDS_HOSTNAME"];
+
+            return "Data Source=" + hostname + ";Initial Catalog=" + dbname + ";User ID=" + username + ";Password=" + password + ";";
         }
     }
 }

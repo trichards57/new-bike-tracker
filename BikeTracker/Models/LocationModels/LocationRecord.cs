@@ -16,13 +16,15 @@ namespace BikeTracker.Models.LocationModels
         /// The callsign.
         /// </value>
         public string Callsign { get; set; }
+
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="LocationRecord"/> is expired.
         /// </summary>
         /// <value>
         ///   <c>true</c> if expired; otherwise, <c>false</c>.
         /// </value>
-        public bool Expired { get; set; } = false;
+        public bool Expired { get; set; }
+
         /// <summary>
         /// Gets or sets the identifier for the report.
         /// </summary>
@@ -30,6 +32,7 @@ namespace BikeTracker.Models.LocationModels
         /// The identifier.
         /// </value>
         public int Id { get; set; }
+
         /// <summary>
         /// Gets or sets the latitude of the report.
         /// </summary>
@@ -37,6 +40,7 @@ namespace BikeTracker.Models.LocationModels
         /// The latitude.
         /// </value>
         public decimal Latitude { get; set; }
+
         /// <summary>
         /// Gets or sets the longitude of the report.
         /// </summary>
@@ -44,6 +48,7 @@ namespace BikeTracker.Models.LocationModels
         /// The longitude.
         /// </value>
         public decimal Longitude { get; set; }
+
         /// <summary>
         /// Gets or sets the time the location reading was made.
         /// </summary>
@@ -51,6 +56,7 @@ namespace BikeTracker.Models.LocationModels
         /// The reading time.
         /// </value>
         public DateTimeOffset ReadingTime { get; set; }
+
         /// <summary>
         /// Gets or sets the time the location reading was received by the server.
         /// </summary>
@@ -58,6 +64,7 @@ namespace BikeTracker.Models.LocationModels
         /// The receive time.
         /// </value>
         public DateTimeOffset ReceiveTime { get; set; }
+
         /// <summary>
         /// Gets or sets the type of vehicle the reading is from.
         /// </summary>

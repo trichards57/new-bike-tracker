@@ -12,7 +12,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -173,10 +172,9 @@ namespace BikeTracker.Tests.Controllers
 
             var controller = new MapController(locationService.Object, imeiService.Object, null);
 
-            string testDate = null;
             var testTime = TestDate.ToString("HHmmss.fff");
 
-            var res = await controller.CheckIn(TestIMEI, TestLatitude, TestLongitude, testTime, testDate);
+            var res = await controller.CheckIn(TestIMEI, TestLatitude, TestLongitude, testTime, null);
 
             var view = res as ContentResult;
 
@@ -246,9 +244,8 @@ namespace BikeTracker.Tests.Controllers
             var controller = new MapController(locationService.Object, imeiService.Object, null);
 
             var testDate = TestDate.ToString("ddMMyy");
-            string testTime = null;
 
-            var res = await controller.CheckIn(TestIMEI, TestLatitude, TestLongitude, testTime, testDate);
+            var res = await controller.CheckIn(TestIMEI, TestLatitude, TestLongitude, null, testDate);
 
             var view = res as ContentResult;
 
@@ -274,8 +271,7 @@ namespace BikeTracker.Tests.Controllers
             var controller = new MapController(locationService.Object, imeiService.Object, logService.Object);
 
             var httpContext = CreateMockHttpContext();
-            var context = new ControllerContext();
-            context.HttpContext = httpContext.Object;
+            var context = new ControllerContext { HttpContext = httpContext.Object };
 
             controller.ControllerContext = context;
 
@@ -285,16 +281,17 @@ namespace BikeTracker.Tests.Controllers
             var data = res.Data as IEnumerable<Landmark>;
             Assert.IsNotNull(data);
 
-            foreach (var d in data)
+            var enumerable = data as IList<Landmark> ?? data.ToList();
+            foreach (var d in enumerable)
             {
-                var original = Landmarks.FirstOrDefault(l => l.Id == d.Id);
+                var original = Landmarks.First(l => l.Id == d.Id);
                 Assert.AreEqual(original.Name, d.Name);
                 Assert.AreEqual(original.Latitude, d.Latitude);
                 Assert.AreEqual(original.Longitude, d.Longitude);
                 Assert.AreEqual(original.Expiry, d.Expiry);
             }
 
-            Assert.AreEqual(Locations.Count(), data.Count());
+            Assert.AreEqual(Locations.Count(), enumerable.Count);
 
             logService.Verify(l => l.LogMapInUse(TestUsername));
         }
@@ -309,8 +306,7 @@ namespace BikeTracker.Tests.Controllers
             var controller = new MapController(locationService.Object, imeiService.Object, logService.Object);
 
             var httpContext = CreateMockHttpContext();
-            var context = new ControllerContext();
-            context.HttpContext = httpContext.Object;
+            var context = new ControllerContext { HttpContext = httpContext.Object };
 
             controller.ControllerContext = context;
 
@@ -320,9 +316,10 @@ namespace BikeTracker.Tests.Controllers
             var data = res.Data as IEnumerable<LocationViewModel>;
             Assert.IsNotNull(data);
 
-            foreach (var d in data)
+            var locationViewModels = data as IList<LocationViewModel> ?? data.ToList();
+            foreach (var d in locationViewModels)
             {
-                var original = Locations.FirstOrDefault(l => l.Id == d.Id);
+                var original = Locations.First(l => l.Id == d.Id);
                 Assert.AreEqual(original.Callsign, d.Callsign);
                 Assert.AreEqual(original.ReadingTime, d.ReadingTime);
                 Assert.AreEqual(original.Latitude, d.Latitude);
@@ -330,7 +327,7 @@ namespace BikeTracker.Tests.Controllers
                 Assert.AreEqual(original.Type, d.Type);
             }
 
-            Assert.AreEqual(Locations.Count(), data.Count());
+            Assert.AreEqual(Locations.Count(), locationViewModels.Count());
 
             logService.Verify(l => l.LogMapInUse(TestUsername));
         }
@@ -391,7 +388,16 @@ namespace BikeTracker.Tests.Controllers
                 .Returns(Task.FromResult<object>(null));
             result.Setup(l => l.ClearLandmark(It.Is<int>(i => i == TestId)))
                 .Returns(Task.FromResult<object>(null));
-
+            result.Setup(l => l.RegisterBadLocation(TestIMEI, FailureReason.BadDateOrTime, It.IsAny<DateTimeOffset>()))
+                .Returns(Task.FromResult<object>(null));
+            result.Setup(l => l.RegisterBadLocation(string.Empty, FailureReason.NoIMEI, It.IsAny<DateTimeOffset>()))
+                .Returns(Task.FromResult<object>(null));
+            result.Setup(l => l.RegisterBadLocation(null, FailureReason.NoIMEI, It.IsAny<DateTimeOffset>()))
+                .Returns(Task.FromResult<object>(null));
+            result.Setup(l => l.RegisterBadLocation(TestIMEI, FailureReason.NoDateOrTime, It.IsAny<DateTimeOffset>()))
+                .Returns(Task.FromResult<object>(null));
+            result.Setup(l => l.RegisterBadLocation(TestIMEI, FailureReason.NoLocation, It.IsAny<DateTimeOffset>()))
+                .Returns(Task.FromResult<object>(null));
             return result;
         }
 

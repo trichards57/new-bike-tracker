@@ -39,8 +39,7 @@ namespace BikeTracker.Services
 
             var applicationMessage = message as ApplicationMessage;
 
-            var body = new Body();
-            body.Text = new Content(message.Body);
+            var body = new Body { Text = new Content(message.Body) };
             if (applicationMessage != null)
                 body.Html = new Content(applicationMessage.HtmlBody);
 

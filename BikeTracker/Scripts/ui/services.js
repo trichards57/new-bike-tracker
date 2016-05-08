@@ -3,15 +3,15 @@
 */
 /*global angular */
 
-var appServices = angular.module('appServices', ['ngResource']);
+var appServices = angular.module("appServices", ["ngResource"]);
 
-appServices.factory('IMEI', ['$resource', function ($resource) {
+appServices.factory("IMEI", ["$resource", function ($resource) {
     "use strict";
-    return $resource('/odata/IMEI(:imeiId)', {}, {
+    return $resource("/odata/IMEI(:imeiId)", {}, {
         query: {
-            method: 'GET',
+            method: "GET",
             params: {
-                imeiId: ''
+                imeiId: ""
             },
             isArray: true,
             transformResponse: function (data) {
@@ -20,18 +20,18 @@ appServices.factory('IMEI', ['$resource', function ($resource) {
             }
         },
         update: {
-            method: 'PUT'
+            method: "PUT"
         }
     });
 }]);
 
-appServices.factory('User', ['$resource', function ($resource) {
+appServices.factory("User", ["$resource", function ($resource) {
     "use strict";
-    return $resource('/odata/User(:userId)', {}, {
+    return $resource("/odata/User(:userId)", {}, {
         query: {
-            method: 'GET',
+            method: "GET",
             params: {
-                userId: ''
+                userId: ""
             },
             isArray: true,
             transformResponse: function (data) {
@@ -40,11 +40,11 @@ appServices.factory('User', ['$resource', function ($resource) {
             }
         },
         save: {
-            method: 'POST',
-            url: '/odata/User/API.Register'
+            method: "POST",
+            url: "/odata/User/API.Register"
         },
         update: {
-            method: 'PUT'
+            method: "PUT"
         }
     });
 }]);

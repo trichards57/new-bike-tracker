@@ -8,7 +8,7 @@
     <form role="form" name="editForm" novalidate>
         <div class="form-group">
             <label for="editEmail" class="control-label">Email:</label>
-            <input name="editEmail" type="email" class="form-control" required ng-model="email" />
+            <input id="editEmail" name="editEmail" type="email" class="form-control" required ng-model="email" />
             <div ng-show="editForm.$submitted || editForm.editName.$dirty">
                 <span class="text-danger" ng-show="editForm.editEmail.$error.required">You need to give a valid email address.</span>
             </div>

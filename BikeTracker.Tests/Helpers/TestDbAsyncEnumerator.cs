@@ -16,15 +16,9 @@ namespace BikeTracker.Tests.Helpers
             _inner = inner;
         }
 
-        public T Current
-        {
-            get { return _inner.Current; }
-        }
+        public T Current => _inner.Current;
 
-        object IDbAsyncEnumerator.Current
-        {
-            get { return Current; }
-        }
+        object IDbAsyncEnumerator.Current => Current;
 
         public void Dispose()
         {

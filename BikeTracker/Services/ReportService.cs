@@ -18,7 +18,7 @@ namespace BikeTracker.Services
         /// <summary>
         /// The data context used to store the data.
         /// </summary>
-        private ILocationContext dataContext;
+        private readonly ILocationContext _dataContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReportService"/> class.
@@ -26,7 +26,7 @@ namespace BikeTracker.Services
         /// <param name="context">The data context to store to.</param>
         public ReportService(ILocationContext context)
         {
-            dataContext = context;
+            _dataContext = context;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace BikeTracker.Services
         /// </returns>
         public async Task<IEnumerable<string>> GetAllCallsigns()
         {
-            return await dataContext.LocationRecords.Select(l => l.Callsign).Distinct().ToListAsync();
+            return await _dataContext.LocationRecords.Select(l => l.Callsign).Distinct().ToListAsync();
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(callsign))
                 throw new ArgumentException("{0} cannot be null or whitespace", nameof(callsign));
 
-            var callsignRecords = dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.ReadingTime >= startTime && l.ReadingTime <= endTime);
+            var callsignRecords = _dataContext.LocationRecords.Where(l => l.Callsign == callsign && l.ReadingTime >= startTime && l.ReadingTime <= endTime);
             return await callsignRecords.ToListAsync();
         }
 
@@ -67,7 +67,7 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(callsign))
                 throw new ArgumentException("parameter cannot be null", nameof(callsign));
 
-            var daysRecords = await dataContext.LocationRecords
+            var daysRecords = await _dataContext.LocationRecords
                 .Where(l => DbFunctions.TruncateTime(l.ReadingTime) == date.Date && l.Callsign == callsign).ToListAsync();
 
             var result = Enumerable.Range(0, 24).Select(h => new CheckInRateViewModel
@@ -79,24 +79,24 @@ namespace BikeTracker.Services
             return result;
         }
 
-        public async Task<IEnumerable<SuccessRateViewModel>> GetSuccessRatesByHour(string callsign, DateTimeOffset date)
+        public Task<IEnumerable<SuccessRateViewModel>> GetSuccessRatesByHour(string callsign, DateTimeOffset date)
         {
             if (callsign == null)
                 throw new ArgumentNullException(nameof(callsign));
             if (string.IsNullOrWhiteSpace(callsign))
                 throw new ArgumentException("parameter cannot be null", nameof(callsign));
 
-            var daysRecords = dataContext.LocationRecords.Where(l => l.Callsign == callsign);
-            var failRecords = dataContext.FailedRecords.Where(l => l.Callsign == callsign);
+            var daysRecords = _dataContext.LocationRecords.Where(l => l.Callsign == callsign);
+            var failRecords = _dataContext.FailedRecords.Where(l => l.Callsign == callsign);
 
-            var result = Enumerable.Range(0, 24).Select(h => new { Start = date.Date.AddHours(h), End = date.Date.AddHours(h+1) }).Select(h => new SuccessRateViewModel
+            var result = Enumerable.Range(0, 24).Select(h => new { Start = date.Date.AddHours(h), End = date.Date.AddHours(h + 1) }).Select(h => new SuccessRateViewModel
             {
                 Time = h.Start,
                 SuccessCount = daysRecords.Count(l => l.ReadingTime >= h.Start && l.ReadingTime < h.End),
                 FailureCount = failRecords.Count(l => l.ReceivedTime >= h.Start && l.ReceivedTime < h.End)
             });
 
-            return result;
+            return Task.FromResult(result);
         }
     }
 }

@@ -16,12 +16,12 @@ namespace BikeTracker.Services
     /// <seealso cref="BikeTracker.Services.ILogService" />
     public class LogService : ILogService
     {
+        public const int MapUseTimeout = 30;
+
         /// <summary>
         /// The data context used to store the data
         /// </summary>
-        private ILoggingContext dataContext;
-
-        public const int MapUseTimeout = 30;
+        private readonly ILoggingContext _dataContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogService"/> class.
@@ -29,7 +29,69 @@ namespace BikeTracker.Services
         /// <param name="context">The data context to store to.</param>
         public LogService(ILoggingContext context)
         {
-            dataContext = context;
+            _dataContext = context;
+        }
+
+        public Task<IEnumerable<LogEntry>> GetLogEntries(int? pageSize = null, int? page = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null)
+        {
+            if (pageSize == null && page != null)
+                throw new ArgumentNullException(nameof(pageSize));
+
+            if (endDate < startDate)
+                throw new ArgumentException("End Date must not be before Start Date", nameof(endDate));
+
+            IEnumerable<LogEntry> result = _dataContext.LogEntries.Include(le => le.Properties).OrderBy(l => l.Date);
+
+            if (startDate != null)
+                result = result.Where(le => le.Date >= startDate.Value);
+
+            if (endDate != null)
+                result = result.Where(le => le.Date <= endDate.Value);
+
+            if (pageSize != null)
+                result = result.Skip((page ?? 0) * pageSize.Value).Take(pageSize.Value);
+
+            return Task.FromResult(result);
+        }
+
+        /// <summary>
+        /// Logs when an IMEI is deleted from the system.
+        /// </summary>
+        /// <param name="registeringUser">The registering user.</param>
+        /// <param name="imei">The IMEI that was deleted.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Raised if the <paramref name="registeringUser"/> or <paramref name="imei"/> are null.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// Raised if the <paramref name="registeringUser"/> or <paramref name="imei"/> are empty or whitespace.
+        /// </exception>
+        public async Task LogIMEIDeleted(string registeringUser, string imei)
+        {
+            if (registeringUser == null)
+                throw new ArgumentNullException(nameof(registeringUser));
+            if (string.IsNullOrWhiteSpace(registeringUser))
+                throw new ArgumentException("{0} cannot be empty", nameof(registeringUser));
+            if (imei == null)
+                throw new ArgumentNullException(nameof(imei));
+            if (string.IsNullOrWhiteSpace(imei))
+                throw new ArgumentException("{0} cannot be empty", nameof(imei));
+
+            var logEntry = new LogEntry
+            {
+                Date = DateTimeOffset.Now,
+                SourceUser = registeringUser,
+                Type = LogEventType.IMEIDeleted
+            };
+            var logProperty = new LogEntryProperty
+            {
+                PropertyType = LogPropertyType.IMEI,
+                PropertyValue = imei
+            };
+            logEntry.Properties.Add(logProperty);
+
+            _dataContext.LogEntries.Add(logEntry);
+            await _dataContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -69,8 +131,52 @@ namespace BikeTracker.Services
             logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.Callsign, PropertyValue = callsign });
             logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.VehicleType, PropertyValue = type.ToString() });
 
-            dataContext.LogEntries.Add(logEntry);
-            await dataContext.SaveChangesAsync();
+            _dataContext.LogEntries.Add(logEntry);
+            await _dataContext.SaveChangesAsync();
+        }
+
+        public async Task LogMapInUse(string user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+            if (string.IsNullOrWhiteSpace(user))
+                throw new ArgumentException("{0} cannot be empty", nameof(user));
+
+            var logEntry = await _dataContext.LogEntries.OrderByDescending(l => l.Date).FirstOrDefaultAsync(l => l.SourceUser == user && l.Type == LogEventType.MapInUse);
+
+            if (logEntry != null)
+            {
+                var prop = logEntry.Properties.First(lp => lp.PropertyType == LogPropertyType.StartDate);
+
+                var date = DateTimeOffset.ParseExact(prop.PropertyValue, "O", CultureInfo.InvariantCulture);
+
+                if (date > DateTimeOffset.Now.AddMinutes(-MapUseTimeout))
+                {
+                    logEntry.Date = DateTimeOffset.Now;
+                }
+                else
+                    logEntry = null;
+            }
+
+            if (logEntry == null)
+            {
+                logEntry = new LogEntry
+                {
+                    Date = DateTimeOffset.Now,
+                    SourceUser = user,
+                    Type = LogEventType.MapInUse
+                };
+                var logProperty = new LogEntryProperty
+                {
+                    PropertyType = LogPropertyType.StartDate,
+                    PropertyValue = DateTimeOffset.Now.ToString("O")
+                };
+                logEntry.Properties.Add(logProperty);
+
+                _dataContext.LogEntries.Add(logEntry);
+            }
+
+            await _dataContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -112,8 +218,8 @@ namespace BikeTracker.Services
             };
             logEntry.Properties.Add(logProperty);
 
-            dataContext.LogEntries.Add(logEntry);
-            await dataContext.SaveChangesAsync();
+            _dataContext.LogEntries.Add(logEntry);
+            await _dataContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -155,8 +261,8 @@ namespace BikeTracker.Services
             };
             logEntry.Properties.Add(logProperty);
 
-            dataContext.LogEntries.Add(logEntry);
-            await dataContext.SaveChangesAsync();
+            _dataContext.LogEntries.Add(logEntry);
+            await _dataContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -179,14 +285,15 @@ namespace BikeTracker.Services
                 Type = LogEventType.UserLogIn
             };
 
-            dataContext.LogEntries.Add(logEntry);
-            await dataContext.SaveChangesAsync();
+            _dataContext.LogEntries.Add(logEntry);
+            await _dataContext.SaveChangesAsync();
         }
 
         /// <summary>
         /// Logs the a user's details are updated.
         /// </summary>
         /// <param name="updatingUser">The updating user.</param>
+        /// <param name="updatedUser">The user being updated</param>
         /// <param name="changedProperties">The changed properties.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">
@@ -210,7 +317,9 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(updatedUser))
                 throw new ArgumentException("parameter cannot be empty", nameof(updatedUser));
 
-            if (!changedProperties.Any())
+            var properties = changedProperties as IList<string> ?? changedProperties.ToList();
+
+            if (!properties.Any())
                 throw new ArgumentException("parameter cannot be empty", nameof(changedProperties));
 
             var logEntry = new LogEntry
@@ -219,7 +328,7 @@ namespace BikeTracker.Services
                 SourceUser = updatingUser,
                 Type = LogEventType.UserUpdated
             };
-            var logProperties = changedProperties.Select(c => new LogEntryProperty
+            var logProperties = properties.Select(c => new LogEntryProperty
             {
                 PropertyType = LogPropertyType.PropertyChange,
                 PropertyValue = c
@@ -230,114 +339,8 @@ namespace BikeTracker.Services
 
             logEntry.Properties.Add(new LogEntryProperty { PropertyType = LogPropertyType.Username, PropertyValue = updatedUser });
 
-            dataContext.LogEntries.Add(logEntry);
-            await dataContext.SaveChangesAsync();
-        }
-
-        /// <summary>
-        /// Logs when an IMEI is deleted from the system.
-        /// </summary>
-        /// <param name="registeringUser">The registering user.</param>
-        /// <param name="imei">The IMEI that was deleted.</param>
-        /// <returns></returns>
-        /// <exception cref="System.ArgumentNullException">
-        /// Raised if the <paramref name="registeringUser"/> or <paramref name="imei"/> are null.
-        /// </exception>
-        /// <exception cref="System.ArgumentException">
-        /// Raised if the <paramref name="registeringUser"/> or <paramref name="imei"/> are empty or whitespace.
-        /// </exception>
-        public async Task LogIMEIDeleted(string registeringUser, string imei)
-        {
-            if (registeringUser == null)
-                throw new ArgumentNullException(nameof(registeringUser));
-            if (string.IsNullOrWhiteSpace(registeringUser))
-                throw new ArgumentException("{0} cannot be empty", nameof(registeringUser));
-            if (imei == null)
-                throw new ArgumentNullException(nameof(imei));
-            if (string.IsNullOrWhiteSpace(imei))
-                throw new ArgumentException("{0} cannot be empty", nameof(imei));
-
-            var logEntry = new LogEntry
-            {
-                Date = DateTimeOffset.Now,
-                SourceUser = registeringUser,
-                Type = LogEventType.IMEIDeleted
-            };
-            var logProperty = new LogEntryProperty
-            {
-                PropertyType = LogPropertyType.IMEI,
-                PropertyValue = imei
-            };
-            logEntry.Properties.Add(logProperty);
-
-            dataContext.LogEntries.Add(logEntry);
-            await dataContext.SaveChangesAsync();
-        }
-
-        public async Task LogMapInUse(string user)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-            if (string.IsNullOrWhiteSpace(user))
-                throw new ArgumentException("{0} cannot be empty", nameof(user));
-
-            var logEntry = await dataContext.LogEntries.OrderByDescending(l => l.Date).FirstOrDefaultAsync(l => l.SourceUser == user && l.Type == LogEventType.MapInUse);
-
-            if (logEntry != null)
-            {
-                var prop = logEntry.Properties.First(lp => lp.PropertyType == LogPropertyType.StartDate);
-
-                var date = DateTimeOffset.ParseExact(prop.PropertyValue, "O", CultureInfo.InvariantCulture);
-
-                if (date > DateTimeOffset.Now.AddMinutes(-MapUseTimeout))
-                {
-                    logEntry.Date = DateTimeOffset.Now;
-                }
-                else
-                    logEntry = null;
-            }
-
-            if (logEntry == null)
-            {
-                logEntry = new LogEntry
-                {
-                    Date = DateTimeOffset.Now,
-                    SourceUser = user,
-                    Type = LogEventType.MapInUse
-                };
-                var logProperty = new LogEntryProperty
-                {
-                    PropertyType = LogPropertyType.StartDate,
-                    PropertyValue = DateTimeOffset.Now.ToString("O")
-                };
-                logEntry.Properties.Add(logProperty);
-
-                dataContext.LogEntries.Add(logEntry);
-            }
-
-            await dataContext.SaveChangesAsync();
-        }
-
-        public Task<IEnumerable<LogEntry>> GetLogEntries(int? pageSize = null, int? page = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null)
-        {
-            if (pageSize == null && page != null)
-                throw new ArgumentNullException(nameof(pageSize));
-
-            if (endDate < startDate)
-                throw new ArgumentException("End Date must not be before Start Date", nameof(endDate));
-
-            IEnumerable<LogEntry> result = dataContext.LogEntries.Include(le=>le.Properties).OrderBy(l => l.Date);
-
-            if (startDate != null)
-                result = result.Where(le => le.Date >= startDate.Value);
-
-            if (endDate != null)
-                result = result.Where(le => le.Date <= endDate.Value);
-
-            if (pageSize != null)
-                result = result.Skip((page ?? 0) * pageSize.Value).Take(pageSize.Value);
-
-            return Task.FromResult(result);
+            _dataContext.LogEntries.Add(logEntry);
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

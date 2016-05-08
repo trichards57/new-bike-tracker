@@ -1,6 +1,6 @@
 ﻿@using System.ComponentModel.DataAnnotations
 
-@model BikeTracker.Models.VehicleType
+@model BikeTracker.Models.LocationModels.VehicleType
 
 @{
     var field = Model.GetType().GetField(Model.ToString());
@@ -8,13 +8,6 @@
     {
         var display = ((DisplayAttribute[])field.GetCustomAttributes(typeof(DisplayAttribute), false)).FirstOrDefault();
 
-        if (display != null)
-        {
-            @display.Name
-        }
-        else
-        {
-            @Model.ToString()
-        }
+        @(display != null ? display.Name : Model.ToString())
     }
 }
