@@ -273,7 +273,7 @@ namespace BikeTracker.Tests.Controllers.API
                     break;
 
                 case ResultType.Success:
-                    Assert.IsType<NotFoundResult>(res);
+                    Assert.IsType<UpdatedODataResult<IMEIToCallsign>>(res);
                     service.Verify(i => i.RegisterCallsign(imei, callsign, type));
                     logService.Verify(l => l.LogIMEIRegistered(TestUsername, imei, callsign, type ?? VehicleType.Unknown));
                     break;

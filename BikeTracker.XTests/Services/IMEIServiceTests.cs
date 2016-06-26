@@ -381,7 +381,7 @@ namespace BikeTracker.Tests.Services
 
             var res = await service.GetFromIdQueryable(id);
 
-            Assert.IsType<IQueryable<IMEIToCallsign>>(res);
+            Assert.IsAssignableFrom<IQueryable<IMEIToCallsign>>(res);
 
             if (expectedResult == null)
             {
