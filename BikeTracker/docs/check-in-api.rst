@@ -16,7 +16,10 @@ Version 2
 
 Endpoint
 --------
-GET: /Map/CheckIn
+
+::
+ 
+  GET: /Map/CheckIn
 
 Arguments
 ---------
@@ -78,3 +81,9 @@ No IMEI Given
 
 Location Received from [Callsign]
 	Reported if the location has been registered
+
+See Also
+--------
+
+* DateTimeOffset.Parse - Function used to pass version 2 dates - https://msdn.microsoft.com/en-us/library/bb351654.aspx
+* .Net Date and Time Formatting - https://msdn.microsoft.com/en-us/library/8kb3ddd4.aspx

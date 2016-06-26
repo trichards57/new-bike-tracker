@@ -340,7 +340,12 @@
     <Content Include="Content\transport66.png" />
     <Content Include="Content\travel.png" />
     <Content Include="docs\conf.py" />
+    <Content Include="docs\add-landmark-api.rst" />
+    <Content Include="docs\clear-landmark-api.rst" />
+    <Content Include="docs\get-locations-api.rst" />
     <None Include="docs\quick-guide.rst" />
+    <None Include="docs\license.rst" />
+    <None Include="docs\get-landmarks-api.rst" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include=".bowerrc" />

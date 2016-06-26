@@ -19,7 +19,11 @@ Topics
 
    quick-guide
    check-in-api
+   get-locations-api
+   add-landmark-api
+   clear-landmark-api
+   get-landmarks-api
    controllers
    data-model
-
+   license
 
