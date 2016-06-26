@@ -215,3 +215,5 @@ ModelManifest.xml
 /duplicates-report.txt
 /BikeTracker/Properties/PublishProfiles/File.pubxml
 /BikeTracker/duplicates-report.txt
+/BikeTracker/docs/_build
+/BikeTracker/docs/_build_html
