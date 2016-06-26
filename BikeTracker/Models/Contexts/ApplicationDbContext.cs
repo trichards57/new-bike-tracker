@@ -23,7 +23,7 @@ namespace BikeTracker.Models.Contexts
         /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
         /// </summary>
         public ApplicationDbContext()
-            : base(GetRDSConnection() ?? "DefaultConnection")
+            : base(GetEnvironmentConnection() ?? GetRDSConnection() ?? "DefaultConnection")
         {
         }
 
@@ -96,6 +96,17 @@ namespace BikeTracker.Models.Contexts
             modelBuilder.Entity<Landmark>().Property(o => o.Name).IsRequired().HasMaxLength(20);
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        private static string GetEnvironmentConnection()
+        {
+            var appConfig = ConfigurationManager.AppSettings;
+
+            var connString = appConfig["SQLSERVER_CONNECTION_STRING"];
+
+            if (string.IsNullOrEmpty(connString)) return null;
+
+            return connString;
         }
 
         /// <summary>
