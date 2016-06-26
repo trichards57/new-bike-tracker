@@ -3,7 +3,6 @@ using BikeTracker.Models.LocationModels;
 using BikeTracker.Models.LoggingModels;
 using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
-using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Ploeh.AutoFixture;
@@ -546,7 +545,6 @@ namespace BikeTracker.Tests.Services
             return true;
         }
 
-        [AssertionMethod]
         private async Task GetLogEntries(IEnumerable<LogEntry> dataSet, IEnumerable<LogEntry> expectedDataSet = null, int? pageSize = null, int? page = null, DateTimeOffset? startDate = null, DateTimeOffset? endDate = null)
         {
             LogEntries.Clear();
