@@ -3,24 +3,23 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to SJA Tracker's documentation!
-=======================================
+SJA Tracker
+===========
 
-Contents:
+This is the documentation for the SJA Tracker website.  If you are a user of 
+the website, you will probably mainly be interested in the first few topics, 
+particularly the quick guide and the detailed instructions. The rest of the 
+detail is aimed for developers working on the website.
+
+Topics
+------
 
 .. toctree::
    :maxdepth: 1
 
-   api
+   quick-guide
+   check-in-api
    controllers
    data-model
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 

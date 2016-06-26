@@ -340,6 +340,7 @@
     <Content Include="Content\transport66.png" />
     <Content Include="Content\travel.png" />
     <Content Include="docs\conf.py" />
+    <None Include="docs\quick-guide.rst" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include=".bowerrc" />
@@ -555,7 +556,7 @@
     <Content Include="docs\index.rst" />
     <Content Include="docs\make.bat" />
     <Content Include="docs\Makefile" />
-    <Content Include="docs\api.rst" />
+    <Content Include="docs\check-in-api.rst" />
     <None Include="package.json" />
     <Content Include="lib\angular-bootstrap\ui-bootstrap-tpls.js" />
     <Content Include="lib\angular-bootstrap\ui-bootstrap-tpls.min.js" />

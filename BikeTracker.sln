@@ -15,18 +15,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Doxyfile = Doxyfile
 		duplicates-report.txt = duplicates-report.txt
 		duplicates.bat = duplicates.bat
+		LICENSE.md = LICENSE.md
 		OpenCover\OpenCover.UI.config = OpenCover\OpenCover.UI.config
+		README.md = README.md
 		test.bat = test.bat
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeTrackerTestTool", "BikeTrackerTestTool\BikeTrackerTestTool.csproj", "{6F53FF16-DE25-48EC-86E9-DA91F12DFFE4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeTracker.XTests", "BikeTracker.XTests\BikeTracker.XTests.csproj", "{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4B082924-0053-4B77-ACBF-AFDC5A2D77EC}"
-	ProjectSection(SolutionItems) = preProject
-		docs\index.rst = docs\index.rst
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
