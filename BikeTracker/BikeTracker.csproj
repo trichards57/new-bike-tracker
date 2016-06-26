@@ -339,6 +339,13 @@
     <Content Include="Content\tool.png" />
     <Content Include="Content\transport66.png" />
     <Content Include="Content\travel.png" />
+    <Content Include="docs\conf.py" />
+    <Content Include="docs\add-landmark-api.rst" />
+    <Content Include="docs\clear-landmark-api.rst" />
+    <Content Include="docs\get-locations-api.rst" />
+    <None Include="docs\quick-guide.rst" />
+    <None Include="docs\license.rst" />
+    <None Include="docs\get-landmarks-api.rst" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include=".bowerrc" />
@@ -551,6 +558,10 @@
     <Content Include="lib\angular-chart.js\LICENSE" />
     <Content Include="lib\angular-chart.js\package.json" />
     <Content Include="lib\angular-chart.js\README.md" />
+    <Content Include="docs\index.rst" />
+    <Content Include="docs\make.bat" />
+    <Content Include="docs\Makefile" />
+    <Content Include="docs\check-in-api.rst" />
     <None Include="package.json" />
     <Content Include="lib\angular-bootstrap\ui-bootstrap-tpls.js" />
     <Content Include="lib\angular-bootstrap\ui-bootstrap-tpls.min.js" />

@@ -9,7 +9,7 @@ assembly_info:
 branches:
   only:
     - master
-    - dev
+    - new
 before_build:
 - cmd: nuget restore BikeTracker.sln
 build:
