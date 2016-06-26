@@ -12,6 +12,8 @@ branches:
     - new
 before_build:
 - cmd: nuget restore BikeTracker.sln
+after-build:
+- cmd: test
 build:
   project: BikeTracker.sln
   verbosity: minimal
