@@ -11,3 +11,4 @@ cd ..\..\..
 
 .\packages\ReportGenerator.2.4.5.0\tools\ReportGenerator.exe -reports:.\TestResults\TestResults.xml -targetdir:.\TestResults\Report -historydir:.\TestResults\Report\History
 
+.\packages\coveralls.io.1.3.4\tools\coveralls.net.exe --opencover ".\TestResults\TestResults.xml" --full-sources
