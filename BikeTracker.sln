@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9E8951EC-2557-499E-8CAC-CAC29785A7E9}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
 		docs.log = docs.log
 		Doxyfile = Doxyfile
 		duplicates-report.txt = duplicates-report.txt
