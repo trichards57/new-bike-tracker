@@ -12,7 +12,7 @@ branches:
     - new
 before_build:
 - cmd: nuget restore BikeTracker.sln
-test-script:
+test_script:
 - cmd: test
 build:
   project: BikeTracker.sln
