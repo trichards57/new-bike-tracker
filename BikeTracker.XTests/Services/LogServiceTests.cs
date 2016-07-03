@@ -300,6 +300,20 @@ namespace BikeTracker.Tests.Services
         }
 
         [Fact]
+        public async Task LogMapInUseOldDataButNoOldDate()
+        {
+            LogEntries.Clear();
+
+            var startDate = DateTimeOffset.Now.AddMinutes(-(LogService.MapUseTimeout - 1));
+
+            var le = new LogEntry { Date = startDate, SourceUser = TestUsername, Type = LogEventType.MapInUse };
+
+            LogEntries.Add(le);
+
+            await LogMapInUse(TestUsername);
+        }
+
+        [Fact]
         public async Task LogMapInUsePreviousGoodData()
         {
             LogEntries.Clear();
