@@ -721,7 +721,11 @@ namespace BikeTracker.Tests.Services
 
             var service = new LogService(context.Object);
 
-            var changedProperties = changes as IList<string> ?? changes.ToList();
+            IList<string> changedProperties = null;
+
+            if (changes != null)
+                changedProperties = changes as IList<string> ?? changes.ToList();
+
             await service.LogUserUpdated(updatingUser, updatedUser, changedProperties);
 
             if (expectSuccess)
