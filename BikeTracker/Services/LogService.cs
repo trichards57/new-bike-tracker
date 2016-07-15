@@ -146,16 +146,21 @@ namespace BikeTracker.Services
 
             if (logEntry != null)
             {
-                var prop = logEntry.Properties.First(lp => lp.PropertyType == LogPropertyType.StartDate);
+                var prop = logEntry.Properties.FirstOrDefault(lp => lp.PropertyType == LogPropertyType.StartDate);
 
-                var date = DateTimeOffset.ParseExact(prop.PropertyValue, "O", CultureInfo.InvariantCulture);
-
-                if (date > DateTimeOffset.Now.AddMinutes(-MapUseTimeout))
-                {
-                    logEntry.Date = DateTimeOffset.Now;
-                }
-                else
+                if (prop == null)
                     logEntry = null;
+                else
+                {
+                    var date = DateTimeOffset.ParseExact(prop.PropertyValue, "O", CultureInfo.InvariantCulture);
+
+                    if (date > DateTimeOffset.Now.AddMinutes(-MapUseTimeout))
+                    {
+                        logEntry.Date = DateTimeOffset.Now;
+                    }
+                    else
+                        logEntry = null;
+                }
             }
 
             if (logEntry == null)

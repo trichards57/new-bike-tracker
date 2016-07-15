@@ -1,0 +1,30 @@
+version: 1.6.{build}
+skip_tags: true
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+branches:
+  only:
+    - master
+    - new
+before_build:
+- cmd: nuget restore BikeTracker.sln
+test_script:
+- cmd: test
+build:
+  project: BikeTracker.sln
+  verbosity: minimal
+deploy:
+- provider: GitHub
+  on:
+    branch: master
+  auth_token:
+    secure: jB6EhCv7m6D+5LBhRTBrlFlXK3tk8Tk5PLbWJVniY22kMaMIFBQT7DoO43axvFfm
+  draft: false
+  prerelease: true
+environment:
+  COVERALLS_REPO_TOKEN:
+    secure: Vw+qs3QR9AkkoHIIZUqHX2oaD2a6wmb+fhCByIEKmFuQBabbl7H8bra+jkdoa/Tr

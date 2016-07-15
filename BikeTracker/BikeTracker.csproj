@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.2.2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.2.2\build\Microsoft.Net.Compilers.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -51,11 +51,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="AWSSDK.Core, Version=3.1.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
-      <HintPath>..\packages\AWSSDK.Core.3.1.5.1\lib\net45\AWSSDK.Core.dll</HintPath>
+      <HintPath>..\packages\AWSSDK.Core.3.1.7.0\lib\net45\AWSSDK.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="AWSSDK.SimpleEmail, Version=3.1.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
-      <HintPath>..\packages\AWSSDK.SimpleEmail.3.1.3.0\lib\net45\AWSSDK.SimpleEmail.dll</HintPath>
+      <HintPath>..\packages\AWSSDK.SimpleEmail.3.1.4.0\lib\net45\AWSSDK.SimpleEmail.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -339,6 +339,13 @@
     <Content Include="Content\tool.png" />
     <Content Include="Content\transport66.png" />
     <Content Include="Content\travel.png" />
+    <Content Include="docs\conf.py" />
+    <Content Include="docs\add-landmark-api.rst" />
+    <Content Include="docs\clear-landmark-api.rst" />
+    <Content Include="docs\get-locations-api.rst" />
+    <None Include="docs\quick-guide.rst" />
+    <None Include="docs\license.rst" />
+    <None Include="docs\get-landmarks-api.rst" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include=".bowerrc" />
@@ -509,6 +516,7 @@
     <Content Include="lib\Chart.js\src\Chart.Radar.js" />
     <Content Include="lib\jquery.validate\.bower.json" />
     <Content Include="lib\jquery.validate\bower.json" />
+    <Content Include="lib\jquery.validate\build\release.js" />
     <Content Include="lib\jquery.validate\changelog.md" />
     <Content Include="lib\jquery.validate\CONTRIBUTING.md" />
     <Content Include="lib\jquery.validate\package.json" />
@@ -550,6 +558,10 @@
     <Content Include="lib\angular-chart.js\LICENSE" />
     <Content Include="lib\angular-chart.js\package.json" />
     <Content Include="lib\angular-chart.js\README.md" />
+    <Content Include="docs\index.rst" />
+    <Content Include="docs\make.bat" />
+    <Content Include="docs\Makefile" />
+    <Content Include="docs\check-in-api.rst" />
     <None Include="package.json" />
     <Content Include="lib\angular-bootstrap\ui-bootstrap-tpls.js" />
     <Content Include="lib\angular-bootstrap\ui-bootstrap-tpls.min.js" />
@@ -1629,7 +1641,6 @@
     <Content Include="lib\bootstrap\js\tooltip.js" />
     <Content Include="lib\bootstrap\js\transition.js" />
     <Content Include="lib\bootstrap\package.js" />
-    <Content Include="lib\jquery.validate\build\release.js" />
     <Content Include="lib\jquery.validate\dist\additional-methods.js" />
     <Content Include="lib\jquery.validate\dist\additional-methods.min.js" />
     <Content Include="lib\jquery.validate\dist\jquery.validate.js" />
@@ -2177,7 +2188,6 @@
     <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Manage\ChangePassword.cshtml" />
@@ -2235,7 +2245,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\AWSSDK.SimpleEmail.3.1.3.0\analyzers\dotnet\cs\AWSSDK.SimpleEmail.CodeAnalysis.dll" />
+    <Analyzer Include="..\packages\AWSSDK.SimpleEmail.3.1.4.0\analyzers\dotnet\cs\AWSSDK.SimpleEmail.CodeAnalysis.dll" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -2270,11 +2280,11 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.2.1\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.2.2\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.2.2\build\Microsoft.Net.Compilers.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>if not exist "$(WebProjectOutputDir)\bin\Roslyn" md "$(WebProjectOutputDir)\bin\Roslyn"
+start /MIN xcopy /s /y /R "$(OutDir)roslyn\*.*" "$(WebProjectOutputDir)\bin\Roslyn"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

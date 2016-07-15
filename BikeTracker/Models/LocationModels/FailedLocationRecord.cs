@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BikeTracker.Models.LocationModels
 {
+    [ExcludeFromCodeCoverage]
     public class FailedLocationRecord
     {
         /// <summary>
