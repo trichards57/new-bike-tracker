@@ -6,7 +6,7 @@ if not exist "TestResults\Report\History" mkdir TestResults\Report\History
 
 cd BikeTracker.XTests\bin\Debug
 
-..\..\..\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -target:"..\..\..\packages\xunit.runner.console.2.1.0\tools\xunit.console.x86.exe" -targetargs:"BikeTracker.XTests.dll -noshadow" -output:..\..\..\TestResults\TestResults.xml -register:user -excludebyattribute:"*.ExcludeFromCodeCoverage*" -coverbytest:*.XTest.dll -filter:"+[Bike*]* -[Bike.Tests*]* -[Bike.XTests*]*
+..\..\..\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -target:"..\..\..\packages\xunit.runner.console.2.1.0\tools\xunit.console.x86.exe" -targetargs:"BikeTracker.XTests.dll -noshadow -appveyor" -output:..\..\..\TestResults\TestResults.xml -register:user -excludebyattribute:"*.ExcludeFromCodeCoverage*" -coverbytest:*.XTest.dll -filter:"+[Bike*]* -[Bike.Tests*]* -[Bike.XTests*]*
 
 cd ..\..\..
 
