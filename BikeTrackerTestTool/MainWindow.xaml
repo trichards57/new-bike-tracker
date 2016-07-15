@@ -9,40 +9,95 @@
         Title="Bike Tracker Test Tool" Width="250" SizeToContent="Height">
     <Window.Resources>
         <vm:MainViewModel x:Key="MainVM" />
+        <Style TargetType="TextBlock" x:Key="BasicText">
+            <Setter Property="Margin" Value="5,5,5,0" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+        <Style TargetType="TextBlock" x:Key="Header" BasedOn="{StaticResource BasicText}">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style TargetType="TextBlock" x:Key="SubHeader" BasedOn="{StaticResource Header}">
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="Margin" Value="5,5,5,0" />
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="5,5,5,0" />
+            <Setter Property="Height" Value="23" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5,5,5,0" />
+            <Setter Property="Height" Value="23" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5,5,5,0" />
+            <Setter Property="Height" Value="23" />
+        </Style>
     </Window.Resources>
     <Grid DataContext="{StaticResource MainVM}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TextBlock FontSize="16" Grid.ColumnSpan="2" Foreground="#FF003399" Margin="5,5,5,0">Bike Tracker Test Tool</TextBlock>
-        <Label Grid.Row="1" Margin="5,0,0,0" VerticalAlignment="Bottom">Server Location</Label>
-        <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Locations}" SelectedItem="{Binding SelectedLocation}" Margin="0,5,5,0" Height="23" />
-        <Label Grid.Row="2" Margin="5,0,0,0" VerticalAlignment="Bottom">IMEI Number</Label>
-        <TextBox Text="{Binding IMEI}" Grid.Row="2" Grid.Column="1" Height="23" Margin="0,5,5,0"></TextBox>
-        <Label Grid.Row="3" Margin="5,0,0,0" VerticalAlignment="Bottom">Update Rate</Label>
-        <TextBox Text="{Binding UpdateRate}" Grid.Row="3" Grid.Column="1" Margin="0,5,5,0" Height="23"></TextBox>
-        <Label Grid.Row="4" Margin="5,0,0,0" VerticalAlignment="Bottom">Base Latitude</Label>
-        <TextBox Text="{Binding Latitude}" Grid.Row="4" Grid.Column="1" Margin="0,5,5,0" Height="23"></TextBox>
-        <Label Grid.Row="5" Margin="5,0,0,0" VerticalAlignment="Bottom">Base Longitude</Label>
-        <TextBox Text="{Binding Longitude}" Grid.Row="5" Grid.Column="1" Margin="0,5,5,0" Height="23"></TextBox>
-        <Label Grid.Row="6" Margin="5,0,0,0" VerticalAlignment="Bottom">Failure Rate</Label>
-        <TextBox Text="{Binding FailureRate}" Grid.Row="6" Grid.Column="1" Margin="0,5,5,0" Height="23"></TextBox>
-        <Button Grid.Row="7" Grid.ColumnSpan="2" Command="{Binding StartUpdate}" Margin="5,5,5,0" Height="23">Start Update</Button>
-        <Button Grid.Row="8" Grid.ColumnSpan="2" Command="{Binding StopUpdate}" Margin="5,5,5,0" Height="23">Stop Update</Button>
-        <Label Grid.Row="9" Margin="5,0">Server Response</Label>
-        <TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding ResponseString}" Margin="0,5,5,0" />
+        <TextBlock Grid.ColumnSpan="2" Style="{StaticResource Header}">Bike Tracker Test Tool</TextBlock>
+        <TextBlock Grid.Row="1" Style="{StaticResource BasicText}">Server Location</TextBlock>
+        <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Locations}" SelectedItem="{Binding SelectedLocation}" />
+        <TextBlock Grid.Row="2" Style="{StaticResource BasicText}">Update Rate</TextBlock>
+        <TextBox Text="{Binding UpdateRate}" Grid.Row="2" Grid.Column="1" />
+        <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Style="{StaticResource SubHeader}">Clients</TextBlock>
+        <ListBox Grid.Row="4" Grid.ColumnSpan="2" ItemsSource="{Binding Clients}" SelectedItem="{Binding SelectedClient, Mode=TwoWay}" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Grid.Row="5" Grid.ColumnSpan="2" IsEnabled="False">Add Client</Button>
+        <Button Grid.Row="6" Grid.ColumnSpan="2" IsEnabled="False">Remove Client</Button>
+        <GroupBox Grid.Row="7" Header="Client Status" Grid.ColumnSpan="2" DataContext="{Binding SelectedClient}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource BasicText}">IMEI Number</TextBlock>
+                <TextBox Text="{Binding Imei}" Grid.Column="1" Height="23" Margin="0,5,5,0" />
+                <TextBlock Grid.Row="2" Style="{StaticResource BasicText}">Base Latitude</TextBlock>
+                <TextBox Text="{Binding BaseLatitude}" Grid.Row="2" Grid.Column="1" Margin="0,5,5,0" Height="23"></TextBox>
+                <TextBlock Grid.Row="3" Style="{StaticResource BasicText}">Base Longitude</TextBlock>
+                <TextBox Text="{Binding BaseLongitude}" Grid.Row="3" Grid.Column="1" Margin="0,5,5,0" Height="23"></TextBox>
+                <TextBlock Grid.Row="4" Style="{StaticResource BasicText}">Failure Rate</TextBlock>
+                <TextBox Text="{Binding FailureRate}" Grid.Row="4" Grid.Column="1" Margin="0,5,5,0" Height="23"></TextBox>
+                <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding ResponseString}" Style="{StaticResource BasicText}" Margin="5" />
+                <TextBlock Grid.Row="5" Style="{StaticResource BasicText}" Margin="5">Server Response</TextBlock>
+            </Grid>
+        </GroupBox>
+
+        <Button Grid.Row="8" Grid.ColumnSpan="2" Command="{Binding StartUpdate}">Start Update</Button>
+        <Button Grid.Row="9" Grid.ColumnSpan="2" Margin="5" Command="{Binding StopUpdate}">Stop Update</Button>
     </Grid>
 </Window>
