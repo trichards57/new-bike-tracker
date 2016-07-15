@@ -80,6 +80,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Clients\IClient.cs" />
+    <Compile Include="Clients\AndroidClient.cs" />
     <Compile Include="Clients\NokiaClient.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ServerLocation.cs" />

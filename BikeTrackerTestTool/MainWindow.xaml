@@ -61,15 +61,15 @@
         <TextBlock Grid.Row="2" Style="{StaticResource BasicText}">Update Rate</TextBlock>
         <TextBox Text="{Binding UpdateRate}" Grid.Row="2" Grid.Column="1" />
         <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Style="{StaticResource SubHeader}">Clients</TextBlock>
-        <ListBox Grid.Row="4" Grid.ColumnSpan="2" ItemsSource="{Binding Clients}" SelectedItem="{Binding SelectedClient}" >
+        <ListBox Grid.Row="4" Grid.ColumnSpan="2" ItemsSource="{Binding Clients}" SelectedItem="{Binding SelectedClient, Mode=TwoWay}" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button Grid.Row="5" Grid.ColumnSpan="2">Add Client</Button>
-        <Button Grid.Row="6" Grid.ColumnSpan="2">Remove Client</Button>
+        <Button Grid.Row="5" Grid.ColumnSpan="2" IsEnabled="False">Add Client</Button>
+        <Button Grid.Row="6" Grid.ColumnSpan="2" IsEnabled="False">Remove Client</Button>
         <GroupBox Grid.Row="7" Header="Client Status" Grid.ColumnSpan="2" DataContext="{Binding SelectedClient}">
             <Grid>
                 <Grid.RowDefinitions>

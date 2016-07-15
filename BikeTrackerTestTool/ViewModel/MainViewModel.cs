@@ -32,6 +32,7 @@ namespace BikeTrackerTestTool.ViewModel
         private int updateRate;
         private bool updateRunning;
         private Timer updateTimer;
+        private IClient selectedClient;
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -54,7 +55,8 @@ namespace BikeTrackerTestTool.ViewModel
 
             Clients = new ObservableCollection<IClient>
             {
-                new NokiaClient { Imei = "1234", BaseLatitude = 51.532M, BaseLongitude = -2.552M, FailureRate = 0.1 }
+                new NokiaClient { Imei = "1234", BaseLatitude = 51.532M, BaseLongitude = -2.552M, FailureRate = 0.1 },
+                new AndroidClient { Imei = "1235", BaseLatitude = 51.533M, BaseLongitude = -2.553M, FailureRate = 0.1 }
             };
 
             SelectedClient = Clients.First();
@@ -66,7 +68,17 @@ namespace BikeTrackerTestTool.ViewModel
 
         public ObservableCollection<ServerLocation> Locations { get; }
         public ObservableCollection<IClient> Clients { get; }
-        public IClient SelectedClient { get; set; }
+        public IClient SelectedClient
+        {
+            get
+            {
+                return selectedClient;
+            }
+            set
+            {
+                Set(ref selectedClient, value);
+            }
+        }
 
         public string ResponseString
         {
