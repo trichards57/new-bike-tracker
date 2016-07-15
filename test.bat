@@ -2,6 +2,7 @@ rem msbuild BikeTracker.sln /v:m /maxcpucount
 
 if not exist "TestResults" mkdir TestResults
 if not exist "TestResults\Report" mkdir TestResults\Report
+if not exist "TestResults\Report\History" mkdir TestResults\Report\History
 
 cd BikeTracker.XTests\bin\Debug
 
