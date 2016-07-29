@@ -13,7 +13,7 @@ branches:
 before_build:
 - cmd: nuget restore BikeTracker.sln
 test_script:
-- cmd: test
+- ps: .\test.ps1
 build:
   project: BikeTracker.sln
   verbosity: minimal
