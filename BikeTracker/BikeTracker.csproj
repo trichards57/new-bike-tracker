@@ -357,6 +357,7 @@
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <Content Include="Content\site.less" />
+    <Content Include="karma.conf.js" />
     <Content Include="lib\angular-bootstrap\.bower.json" />
     <Content Include="lib\angular-bootstrap\bower.json" />
     <Content Include="lib\angular-chart.js\angular-chart.css">
@@ -374,6 +375,10 @@
     <Content Include="lib\angular-i18n\.bower.json" />
     <Content Include="lib\angular-i18n\bower.json" />
     <Content Include="lib\angular-i18n\README.md" />
+    <Content Include="lib\angular-mocks\angular-mocks.js" />
+    <Content Include="lib\angular-mocks\ngAnimateMock.js" />
+    <Content Include="lib\angular-mocks\ngMock.js" />
+    <Content Include="lib\angular-mocks\ngMockE2E.js" />
     <Content Include="lib\angular-resource\.bower.json" />
     <Content Include="lib\angular-resource\angular-resource.min.js.map" />
     <Content Include="lib\angular-resource\bower.json" />
@@ -562,6 +567,10 @@
     <Content Include="docs\make.bat" />
     <Content Include="docs\Makefile" />
     <Content Include="docs\check-in-api.rst" />
+    <Content Include="lib\angular-mocks\.bower.json" />
+    <Content Include="lib\angular-mocks\bower.json" />
+    <Content Include="lib\angular-mocks\package.json" />
+    <Content Include="lib\angular-mocks\README.md" />
     <None Include="package.json" />
     <Content Include="lib\angular-bootstrap\ui-bootstrap-tpls.js" />
     <Content Include="lib\angular-bootstrap\ui-bootstrap-tpls.min.js" />
@@ -2164,6 +2173,7 @@
     <Content Include="lib\moment\templates\globals.js" />
     <Content Include="lib\moment\templates\locale-header.js" />
     <Content Include="lib\moment\templates\test-header.js" />
+    <Content Include="Scripts\tests\app.test.js" />
     <Content Include="Scripts\ui\app.js" />
     <Content Include="Scripts\Site.js" />
     <Content Include="Scripts\ui\controllers.js" />
