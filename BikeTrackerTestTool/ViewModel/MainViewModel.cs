@@ -28,11 +28,11 @@ namespace BikeTrackerTestTool.ViewModel
     {
         private readonly Random random = new Random();
         private string responseString = "[Nothing Received]";
+        private IClient selectedClient;
         private ServerLocation selectedLocation;
         private int updateRate;
         private bool updateRunning;
         private Timer updateTimer;
-        private IClient selectedClient;
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -50,6 +50,11 @@ namespace BikeTrackerTestTool.ViewModel
                 {
                     Name = "Production",
                     Path = new Uri("http://sjatracker.elasticbeanstalk.com")
+                },
+                new ServerLocation
+                {
+                    Name = "App Harbour Production",
+                    Path = new Uri("http://sjatracker.apphb.com")
                 }
             };
 
@@ -66,19 +71,8 @@ namespace BikeTrackerTestTool.ViewModel
             StopUpdate = new RelayCommand(ExecuteStopUpdate, CanExecuteStopUpdate);
         }
 
-        public ObservableCollection<ServerLocation> Locations { get; }
         public ObservableCollection<IClient> Clients { get; }
-        public IClient SelectedClient
-        {
-            get
-            {
-                return selectedClient;
-            }
-            set
-            {
-                Set(ref selectedClient, value);
-            }
-        }
+        public ObservableCollection<ServerLocation> Locations { get; }
 
         public string ResponseString
         {
@@ -89,6 +83,18 @@ namespace BikeTrackerTestTool.ViewModel
             set
             {
                 Set(ref responseString, value);
+            }
+        }
+
+        public IClient SelectedClient
+        {
+            get
+            {
+                return selectedClient;
+            }
+            set
+            {
+                Set(ref selectedClient, value);
             }
         }
 
