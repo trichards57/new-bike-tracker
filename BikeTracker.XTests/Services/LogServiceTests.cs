@@ -300,6 +300,20 @@ namespace BikeTracker.Tests.Services
         }
 
         [Fact]
+        public async Task LogMapInUseOldDataButNoOldDate()
+        {
+            LogEntries.Clear();
+
+            var startDate = DateTimeOffset.Now.AddMinutes(-(LogService.MapUseTimeout - 1));
+
+            var le = new LogEntry { Date = startDate, SourceUser = TestUsername, Type = LogEventType.MapInUse };
+
+            LogEntries.Add(le);
+
+            await LogMapInUse(TestUsername);
+        }
+
+        [Fact]
         public async Task LogMapInUsePreviousGoodData()
         {
             LogEntries.Clear();
@@ -707,7 +721,11 @@ namespace BikeTracker.Tests.Services
 
             var service = new LogService(context.Object);
 
-            var changedProperties = changes as IList<string> ?? changes.ToList();
+            IList<string> changedProperties = null;
+
+            if (changes != null)
+                changedProperties = changes as IList<string> ?? changes.ToList();
+
             await service.LogUserUpdated(updatingUser, updatedUser, changedProperties);
 
             if (expectSuccess)
