@@ -24,7 +24,11 @@ deploy:
   auth_token:
     secure: jB6EhCv7m6D+5LBhRTBrlFlXK3tk8Tk5PLbWJVniY22kMaMIFBQT7DoO43axvFfm
   draft: false
-  prerelease: true
+  prerelease: false
+after_deploy:
+- ps: deploy.ps1
 environment:
   COVERALLS_REPO_TOKEN:
     secure: Vw+qs3QR9AkkoHIIZUqHX2oaD2a6wmb+fhCByIEKmFuQBabbl7H8bra+jkdoa/Tr
+  Production_Build_Path:
+    secure: YWpSkUKKRmU10IaqzStD0v9ioYz9eQ4QZeDNme54/h3iaCjGcXlmIgmgk8oGGfP7kKgdUJIhEiJ6AtoTqSggQ5JHM0yIcCCCSxi+Qt2VZ1byohifJCuR2lpXwYnN7nxfW3fp0ptrZEzi754kyKFaVU9NQk4Fohc6u2U+U+VM67g=
