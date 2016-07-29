@@ -7,10 +7,10 @@ New-Item -ItemType Directory -Force -Path $PSScriptRoot\TestResults\Report\Histo
 
 & "$PSScriptRoot\tools\OpenCover\tools\OpenCover.Console.exe" -target:`"$PSScriptRoot\tools\xunit.runner.console\tools\xunit.console.x86.exe`" -targetargs:"`"`"$PSScriptRoot\BikeTracker.XTests\bin\Debug\BikeTracker.XTests.dll`"`" -noshadow -appveyor" -output:$PSScriptRoot\TestResults\TestResults.xml -register:user -excludebyattribute:`"*.ExcludeFromCodeCoverage*`" -coverbytest:*.XTest.dll -filter:`"+[Bike*]* -[Bike.Tests*]* -[Bike.XTests*]*`"
 
+Set-Location -Path $PSScriptRoot\BikeTracker
+
 npm install
 npm install -g karma-cli
-
-Set-Location -Path $PSScriptRoot\BikeTracker
 
 karma start --single-run
 
