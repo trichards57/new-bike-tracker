@@ -219,3 +219,5 @@ ModelManifest.xml
 /BikeTracker/docs/_build_html
 Thumbs.db
 
+/BikeTracker/Scripts/tests/results
+/tools
