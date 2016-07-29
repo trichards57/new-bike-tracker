@@ -16,12 +16,12 @@ module.exports = function (config) {
           'lib/angular/angular.js',
           'lib/angular-mocks/angular-mocks.js',
           'lib/angular-resource/angular-resource.js',
-          'Scripts/**/*.js'
+          'Scripts/ui/*.js',
+          'Scripts/tests/*.js'
         ],
 
         // list of files to exclude
         exclude: [
-            'Scripts/Site.js'
         ],
 
         // preprocess matching files before serving them to the browser
@@ -33,10 +33,10 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress', 'html', 'junit', 'coverage', 'coveralls'],
+        reporters: ['progress', 'html', 'junit', 'coverage'],
 
         htmlReporter: {
-            outputFile: 'Scripts/tests/results.html'
+            outputFile: 'Scripts/tests/results/results.html'
         },
 
         junitReporter: {
@@ -44,10 +44,9 @@ module.exports = function (config) {
         },
 
         coverageReporter: {
-            dir: 'coverage/',
+            dir: 'Scripts/tests/results/coverage/',
             reporters: [
-                { type: 'html', subdir: 'report-html' },
-                { type: 'lcov', subdir: 'report-lcov' }
+                { type: 'html', subdir: 'report-html' }
             ]
         },
 

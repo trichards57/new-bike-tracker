@@ -2173,7 +2173,8 @@
     <Content Include="lib\moment\templates\globals.js" />
     <Content Include="lib\moment\templates\locale-header.js" />
     <Content Include="lib\moment\templates\test-header.js" />
-    <Content Include="Scripts\tests\app.test.js" />
+    <Content Include="Scripts\tests\controllers.ErrorFormCtrl.test.js" />
+    <Content Include="Scripts\tests\controllers.DeleteFormCtrl.test.js" />
     <Content Include="Scripts\ui\app.js" />
     <Content Include="Scripts\Site.js" />
     <Content Include="Scripts\ui\controllers.js" />
