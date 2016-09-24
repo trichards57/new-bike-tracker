@@ -1,6 +1,7 @@
-﻿@{
-    var version = typeof(Startup).Assembly.GetName().Version;
-    var versionString = $"{version.Major}.{version.Minor}.{version.Build}";
+﻿@using System.Web.Configuration
+
+@{
+    var version = WebConfigurationManager.AppSettings["appharbor.commit_id"];
 }
 
 <!DOCTYPE html>
@@ -41,7 +42,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>SJA Tracker - Version @versionString - Copyright &copy; @DateTime.Now.Year - Tony Richards, @Html.ActionLink("Image Credits", "Policies", "Home")</p>
+            <p>SJA Tracker - Version @version - Copyright &copy; @DateTime.Now.Year - Tony Richards, @Html.ActionLink("Image Credits", "Policies", "Home")</p>
         </footer>
     </div>
 
