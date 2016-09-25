@@ -112,8 +112,9 @@ namespace BikeTracker
         {
             var token = await GenerateEmailConfirmationTokenAsync(id);
             var callbackUrl = url.Action("ConfirmEmail", "Account", new { userId = id, code = token }, "http");
+            var homeUrl = url.Action("Index", "Home", null, "http");
 
-            var html = "<html><body><p>Hi,</p><p>An account has been created for you on the <a href='http://sjatracker.elasticbeanstalk.com/'>SJA Tracker website</a>.</p>";
+            var html = $"<html><body><p>Hi,</p><p>An account has been created for you on the <a href='{homeUrl}'>SJA Tracker website</a>.</p>";
             html += $"<p>Please click <a href='{callbackUrl}'>this link</a> to confirm your email address before logging in.</p>";
             if (!string.IsNullOrEmpty(temporaryPassword))
             {
@@ -123,7 +124,7 @@ namespace BikeTracker
             }
             html += "<p>Please let me know if you have any problems.</p><p>Kind regards,</p><p>Tony Richards</p>";
 
-            var text = "Hi,\n\nAn account has been created for you on http://sjatracker.elasticbeanstalk.com (the SJA Tracker website).\n\n";
+            var text = $"Hi,\n\nAn account has been created for you on {homeUrl} (the SJA Tracker website).\n\n";
             text += $"Please go to {callbackUrl} to confirm your email address before logging in.\n\n";
             if (!string.IsNullOrEmpty(temporaryPassword))
             {
@@ -158,12 +159,13 @@ namespace BikeTracker
         {
             var token = await GeneratePasswordResetTokenAsync(id);
             var callbackUrl = url.Action("ResetPassword", "Account", new { userId = id, code = token }, "http");
+            var homeUrl = url.Action("Index", "Home", null, "http");
 
-            var html = "<html><body><p>Hi,</p><p>You've asked to reset your password on the <a href='http://sjatracker.elasticbeanstalk.com/'>SJA Tracker website</a>.</p>";
+            var html = $"<html><body><p>Hi,</p><p>You've asked to reset your password on the <a href='{homeUrl}'>SJA Tracker website</a>.</p>";
             html += $"<p>Please click <a href='{callbackUrl}'>this link</a> to complete the reset.</p>";
             html += "<p>Please let me know if you have any problems.</p><p>Kind regards,</p><p>Tony Richards</p>";
 
-            var text = "Hi,\n\nYou've asked to reset your password on http://sjatracker.elasticbeanstalk.com (the SJA Tracker website).\n\n";
+            var text = $"Hi,\n\nYou've asked to reset your password on {homeUrl} (the SJA Tracker website).\n\n";
             text += $"Please go to {callbackUrl} to complete the reset.\n\n";
             text += "Please let me know if you have any problems.\n\nKind regards,\n\nTony Richards";
 
