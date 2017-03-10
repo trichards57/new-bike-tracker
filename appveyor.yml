@@ -1,4 +1,4 @@
-version: 1.6.{build}
+version: 1.7.{build}
 init:
   - git config --global core.autocrlf true
 install:
