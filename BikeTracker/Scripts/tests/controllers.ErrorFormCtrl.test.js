@@ -16,7 +16,7 @@
 
         deleteController = $controller('ErrorFormCtrl', {
             $scope: scope,
-            $modalInstance: modelInstance,
+            $uibModalInstance: modelInstance,
             title: testTitle,
             message: testMessage
         });

@@ -16,7 +16,7 @@
         testName = "TestName1";
         deleteController = $controller('DeleteFormCtrl', {
             $scope: scope,
-            $modalInstance: modelInstance,
+            $uibModalInstance: modelInstance,
             name: testName
         });
     }));

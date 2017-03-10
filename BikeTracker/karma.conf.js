@@ -12,12 +12,12 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-          'lib/jquery/dist/jquery.js',
-          'lib/angular/angular.js',
-          'lib/angular-mocks/angular-mocks.js',
-          'lib/angular-resource/angular-resource.js',
-          'Scripts/ui/*.js',
-          'Scripts/tests/*.js'
+            'lib/jquery/dist/jquery.js',
+            'lib/angular/angular.js',
+            'node_modules/angular-mocks/angular-mocks.js',
+            'lib/angular-resource/angular-resource.js',
+            'Scripts/ui/*.js',
+            'Scripts/tests/*.js'
         ],
 
         // list of files to exclude
