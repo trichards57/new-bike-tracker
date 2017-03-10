@@ -63,7 +63,6 @@ namespace BikeTracker.Controllers
                     await locationService.RegisterBadLocation(imei, FailureReason.BadDateOrTime, DateTimeOffset.Now);
                     return Content("Bad Date or Time Given");
                 }
-
             }
             else if (version == 2)
             {
@@ -73,7 +72,7 @@ namespace BikeTracker.Controllers
                     return Content("No Date or Time Given");
                 }
 
-                var result = DateTimeOffset.TryParse(time, out readingTime);
+                var result = DateTimeOffset.TryParse(time.Split(' ').First(), out readingTime);
 
                 if (!result)
                 {

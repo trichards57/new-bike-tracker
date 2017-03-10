@@ -67,13 +67,18 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(callsign))
                 throw new ArgumentException("parameter cannot be null", nameof(callsign));
 
-            var daysRecords = await _dataContext.LocationRecords
-                .Where(l => DbFunctions.TruncateTime(l.ReadingTime) == date.Date && l.Callsign == callsign).ToListAsync();
+            var startDate = date.Date;
+            var endDate = startDate.AddDays(1);
+
+            var daysRecords = _dataContext.LocationRecords
+                .Where(l => l.ReadingTime >= startDate && l.ReadingTime < endDate && l.Callsign.Equals(callsign));
+
+            var daysList = await daysRecords.ToListAsync();
 
             var result = Enumerable.Range(0, 24).Select(h => new CheckInRateViewModel
             {
                 Time = date.Date.AddHours(h),
-                Count = daysRecords.Count(l => l.ReadingTime.Hour == h)
+                Count = daysList.Count(l => l.ReadingTime.Hour == h)
             });
 
             return result;

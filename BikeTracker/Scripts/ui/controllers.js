@@ -21,7 +21,7 @@
 
 var appControllers = angular.module("appControllers", ["appServices"]);
 
-appControllers.controller("DeleteFormCtrl", ["$scope", "$modalInstance", "name", function ($scope, $modalInstance, name) {
+appControllers.controller("DeleteFormCtrl", ["$scope", "$uibModalInstance", "name", function ($scope, $modalInstance, name) {
     "use strict";
     $scope.name = name;
 
@@ -34,7 +34,7 @@ appControllers.controller("DeleteFormCtrl", ["$scope", "$modalInstance", "name",
     };
 }]);
 
-appControllers.controller("ErrorFormCtrl", ["$scope", "$modalInstance", "title", "message", function ($scope, $modalInstance, title, message) {
+appControllers.controller("ErrorFormCtrl", ["$scope", "$uibModalInstance", "title", "message", function ($scope, $modalInstance, title, message) {
     "use strict";
     $scope.title = title;
     $scope.message = message;
@@ -44,7 +44,7 @@ appControllers.controller("ErrorFormCtrl", ["$scope", "$modalInstance", "title",
     };
 }]);
 
-appControllers.controller("LocationReportCtrl", ["$scope", "$window", "$modal", "$http", function ($scope, $window, $modal, $http) {
+appControllers.controller("LocationReportCtrl", ["$scope", "$window", "$uibModal", "$http", function ($scope, $window, $modal, $http) {
     "use strict";
 
     $scope.initialize = function () {
@@ -104,7 +104,8 @@ appControllers.controller("LocationReportCtrl", ["$scope", "$window", "$modal", 
         mapTypeId: Microsoft.Maps.MapTypeId.road,
         zoom: 14
     };
-    var map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), mapSettings);
+    var map = new Microsoft.Maps.Map("#mapDiv", mapSettings);
+    $("#mapDiv").removeAttr("style");
 
     $scope.downloadDates = function () {
         var d = moment($scope.selectedDate).format("YYYYMMDD");
@@ -116,12 +117,13 @@ appControllers.controller("LocationReportCtrl", ["$scope", "$window", "$modal", 
         map.entities.clear();
 
         var d = moment($scope.selectedDate).format("YYYYMMDD");
+        var svgTemplate = '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="25"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">{htmlContent}</div></foreignObject></svg>';
 
         $http.get("/api/Report/CallsignLocations?callsign=" + $scope.selectedCallsign + "&startDate=" + d + "&endDate=" + d).then(function (response) {
             var reports = response.data;
 
             reports.forEach(function (dat) {
-                var content = "<div class='callsign-flag text-success bg-success'>";
+                var content = "<div style='font-size: 12px; font-weight: bold; border: solid 2px; display: inline; white-space: nowrap; color: #3c763d; background-color: #dff0d8; font-family: Arial,Helvetica,sans-serif;'>";
                 var reportD = moment(dat.ReadingTime);
                 content += reportD.format("HH:mm");
                 content += "</div>";
@@ -129,7 +131,7 @@ appControllers.controller("LocationReportCtrl", ["$scope", "$window", "$modal", 
                 var options = {
                     width: null,
                     height: null,
-                    htmlContent: content,
+                    icon: svgTemplate.replace('{htmlContent}', content),
                     anchor: new Microsoft.Maps.Point(22.5, 10)
                 };
 
@@ -174,7 +176,7 @@ appControllers.controller("ControlPanelCtrl", ["$scope", "$window", function ($s
     $scope.initialize();
 }]);
 
-appControllers.controller("EditUserCtrl", ["$scope", "$modalInstance", "$window", "createMode", "email", "role", function ($scope, $modalInstance, $window, createMode, email, role) {
+appControllers.controller("EditUserCtrl", ["$scope", "$uibModalInstance", "$window", "createMode", "email", "role", function ($scope, $modalInstance, $window, createMode, email, role) {
     "use strict";
 
     $scope.initialize = function () {
@@ -213,7 +215,7 @@ appControllers.controller("EditUserCtrl", ["$scope", "$modalInstance", "$window"
     $scope.initialize();
 }]);
 
-appControllers.controller("AdminCtrl", ["$scope", "User", "$modal", "$window", function ($scope, User, $modal, $window) {
+appControllers.controller("AdminCtrl", ["$scope", "User", "$uibModal", "$window", function ($scope, User, $modal, $window) {
     "use strict";
 
     $scope.initialize = function () {
@@ -386,7 +388,7 @@ appControllers.controller("AdminCtrl", ["$scope", "User", "$modal", "$window", f
     $scope.refresh();
 }]);
 
-appControllers.controller("EditIMEICtrl", ["$scope", "$modalInstance", "$window", "createMode", "imei", "callsign", "type", function ($scope, $modalInstance, $window, createMode, imei, callsign, type) {
+appControllers.controller("EditIMEICtrl", ["$scope", "$uibModalInstance", "$window", "createMode", "imei", "callsign", "type", function ($scope, $modalInstance, $window, createMode, imei, callsign, type) {
     "use strict";
 
     $scope.initialize = function () {
@@ -429,7 +431,7 @@ appControllers.controller("EditIMEICtrl", ["$scope", "$modalInstance", "$window"
     $scope.initialize();
 }]);
 
-appControllers.controller("IMEIListCtrl", ["$scope", "IMEI", "$modal", "$window", function ($scope, IMEI, $modal, $window) {
+appControllers.controller("IMEIListCtrl", ["$scope", "IMEI", "$uibModal", "$window", function ($scope, IMEI, $modal, $window) {
     "use strict";
 
     $scope.initialize = function () {
@@ -613,7 +615,7 @@ appControllers.controller("IMEIListCtrl", ["$scope", "IMEI", "$modal", "$window"
     $scope.refresh();
 }]);
 
-appControllers.controller("LogListCtrl", ["$scope", "$modal", "$window", "$http", function ($scope, $modal, $window, $http) {
+appControllers.controller("LogListCtrl", ["$scope", "$uibModal", "$window", "$http", function ($scope, $modal, $window, $http) {
     "use strict";
 
     $scope.initialize = function () {
@@ -691,7 +693,7 @@ appControllers.controller("LogListCtrl", ["$scope", "$modal", "$window", "$http"
     $scope.refresh();
 }]);
 
-appControllers.controller("CheckInRateCtrl", ["$scope", "$modal", "$window", "$http", function ($scope, $modal, $window, $http) {
+appControllers.controller("CheckInRateCtrl", ["$scope", "$uibModal", "$window", "$http", function ($scope, $modal, $window, $http) {
     "use strict";
 
     $scope.initialize = function () {
@@ -762,7 +764,7 @@ appControllers.controller("CheckInRateCtrl", ["$scope", "$modal", "$window", "$h
     $scope.refresh();
 }]);
 
-appControllers.controller("SuccessRateCtrl", ["$scope", "$modal", "$window", "$http", function ($scope, $modal, $window, $http) {
+appControllers.controller("SuccessRateCtrl", ["$scope", "$uibModal", "$window", "$http", function ($scope, $modal, $window, $http) {
     "use strict";
 
     $scope.initialize = function () {

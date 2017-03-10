@@ -6,32 +6,30 @@ namespace BikeTracker
     [ExcludeFromCodeCoverage]
     public static class BundleConfig
     {
-        private const string AngularBootstrapCDN = "//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap.min.js";
-        private const string AngularBootstrapTemplatesCDN = "//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.min.js";
-        private const string AngularCDN = "//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular.min.js";
-        private const string AngularResourceCDN = "//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular-resource.min.js";
-        private const string AngularRouteCDN = "//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular-route.min.js";
-        private const string BootstrapCDN = "//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
-        private const string JQueryCDN = "//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js";
+        private const string AngularBootstrapTemplatesCDN = "https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js";
+        private const string AngularCDN = "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.3/angular.min.js";
+        private const string AngularResourceCDN = "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.3/angular-resource.min.js";
+        private const string AngularRouteCDN = "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.3/angular-route.min.js";
+        private const string BootstrapCDN = "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js";
+        private const string JQueryCDN = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js";
 
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.UseCdn = true;
 
-            var angularBundle = new ScriptBundle("~/bundles/angular", AngularCDN).Include("~/lib/angular/angular.js");
+            var angularBundle = new ScriptBundle("~/bundles/angular", AngularCDN).Include("~/lib/angular/angular.min.js");
             angularBundle.CdnFallbackExpression = "window.angular";
             bundles.Add(angularBundle);
 
             var i18nBundle = new ScriptBundle("~/bundles/angular-i18n").Include("~/lib/angular-i18n/angular-locale_en-gb.js");
             bundles.Add(i18nBundle);
 
-            bundles.RegisterAngularModule("angular-route", "ngRoute", AngularRouteCDN, "~/lib/angular-route/angular-route.js");
-            bundles.RegisterAngularModule("angular-resource", "ngResource", AngularResourceCDN, "~/lib/angular-resource/angular-resource.js");
-            bundles.RegisterAngularModule("angular-bootstrap", "ui.bootstrap", AngularBootstrapCDN, "~/lib/angular-bootstrap/ui-bootstrap.js");
-            bundles.RegisterAngularModule("angular-bootstrap-templates", "ui.bootstrap.tpls", AngularBootstrapTemplatesCDN, "~/lib/angular-bootstrap/ui-bootstrap-tpls.js");
+            bundles.RegisterAngularModule("angular-route", "ngRoute", AngularRouteCDN, "~/lib/angular-route/angular-route.min.js");
+            bundles.RegisterAngularModule("angular-resource", "ngResource", AngularResourceCDN, "~/lib/angular-resource/angular-resource.min.js");
+            bundles.RegisterAngularModule("angular-bootstrap-templates", "ui.bootstrap", AngularBootstrapTemplatesCDN, "~/lib/angular-ui-bootstrap/ui-bootstrap-tpls.js");
 
-            bundles.Add(new ScriptBundle("~/bundles/angular-chart").Include("~/lib/Chart.js/Chart.js")
-                .Include("~/lib/angular-chart.js/dist/angular-chart.js"));
+            bundles.Add(new ScriptBundle("~/bundles/angular-chart").Include("~/lib/chart.js/Chart.min.js")
+                .Include("~/lib/angular-chart.js/angular-chart.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/site-core")
                 .Include("~/Scripts/ui/app.js")
@@ -39,17 +37,16 @@ namespace BikeTracker
                 .Include("~/Scripts/ui/services.js"));
 
             var jqueryBundle = new ScriptBundle("~/bundles/jquery", JQueryCDN)
-                .Include("~/lib/jquery/dist/jquery.js");
+                .Include("~/lib/jquery/jquery.min.js");
             jqueryBundle.CdnFallbackExpression = "window.jQuery";
             bundles.Add(jqueryBundle);
 
             var bootstrapBundle = new ScriptBundle("~/bundles/bootstrap", BootstrapCDN)
-                .Include("~/lib/bootstrap/dist/js/bootstrap.js");
+                .Include("~/lib/bootstrap/js/bootstrap.min.js");
             bootstrapBundle.CdnFallbackExpression = "$.fn.modal";
             bundles.Add(bootstrapBundle);
 
-            var styleBundle = new StyleBundle("~/bundles/css").Include("~/Content/theme.css")
-                .Include("~/lib/angular-chart.js/angular-chart.css");
+            var styleBundle = new StyleBundle("~/bundles/css").Include("~/Content/theme.css");
             bundles.Add(styleBundle);
         }
 

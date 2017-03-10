@@ -9,7 +9,7 @@
     <form role="form" name="editForm" novalidate>
         <div class="form-group">
             <label for="editName" class="control-label">IMEI:</label>
-            <input id="editName" name="editName" type="tel" pattern="[0-9]*" class="form-control" required ng-model="imei" />
+            <input id="editName" name="editName" type="text" class="form-control" required ng-model="imei" />
             <div ng-show="editForm.$submitted || editForm.editName.$dirty">
                 <span class="text-danger" ng-show="editForm.editName.$error.required">You need to give a valid IMEI.</span>
             </div>

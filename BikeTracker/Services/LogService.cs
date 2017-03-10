@@ -1,6 +1,8 @@
 ﻿using BikeTracker.Models.Contexts;
 using BikeTracker.Models.LocationModels;
 using BikeTracker.Models.LoggingModels;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -17,6 +19,8 @@ namespace BikeTracker.Services
     public class LogService : ILogService
     {
         public const int MapUseTimeout = 30;
+
+        private readonly TelemetryClient _client = new TelemetryClient();
 
         /// <summary>
         /// The data context used to store the data
@@ -77,6 +81,15 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(imei))
                 throw new ArgumentException("{0} cannot be empty", nameof(imei));
 
+            var telemetry = new EventTelemetry(nameof(LogEventType.IMEIDeleted))
+            {
+                Timestamp = DateTimeOffset.Now
+            };
+            telemetry.Properties["SourceUser"] = registeringUser;
+            telemetry.Properties["IMEI"] = imei;
+
+            _client.TrackEvent(telemetry);
+
             var logEntry = new LogEntry
             {
                 Date = DateTimeOffset.Now,
@@ -120,6 +133,17 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(callsign))
                 throw new ArgumentException("{0} cannot be null or whitespace", nameof(callsign));
 
+            var telemetry = new EventTelemetry(nameof(LogEventType.IMEIRegistered))
+            {
+                Timestamp = DateTimeOffset.Now
+            };
+            telemetry.Properties["SourceUser"] = registeringUser;
+            telemetry.Properties["IMEI"] = imei;
+            telemetry.Properties["Callsign"] = callsign;
+            telemetry.Properties["VehicleType"] = type.ToString();
+
+            _client.TrackEvent(telemetry);
+
             var logEntry = new LogEntry
             {
                 Date = DateTimeOffset.Now,
@@ -141,6 +165,14 @@ namespace BikeTracker.Services
                 throw new ArgumentNullException(nameof(user));
             if (string.IsNullOrWhiteSpace(user))
                 throw new ArgumentException("{0} cannot be empty", nameof(user));
+
+            var telemetry = new EventTelemetry(nameof(LogEventType.MapInUse))
+            {
+                Timestamp = DateTimeOffset.Now
+            };
+            telemetry.Properties["SourceUser"] = user;
+
+            _client.TrackEvent(telemetry);
 
             var logEntry = await _dataContext.LogEntries.OrderByDescending(l => l.Date).FirstOrDefaultAsync(l => l.SourceUser == user && l.Type == LogEventType.MapInUse);
 
@@ -210,6 +242,15 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(newUser))
                 throw new ArgumentException("parameter cannot be empty", nameof(newUser));
 
+            var telemetry = new EventTelemetry(nameof(LogEventType.UserCreated))
+            {
+                Timestamp = DateTimeOffset.Now
+            };
+            telemetry.Properties["SourceUser"] = creatingUser;
+            telemetry.Properties["Username"] = newUser;
+
+            _client.TrackEvent(telemetry);
+
             var logEntry = new LogEntry
             {
                 Date = DateTimeOffset.Now,
@@ -253,6 +294,15 @@ namespace BikeTracker.Services
             if (string.IsNullOrWhiteSpace(deletedUser))
                 throw new ArgumentException("parameter cannot be empty", nameof(deletedUser));
 
+            var telemetry = new EventTelemetry(nameof(LogEventType.UserDeleted))
+            {
+                Timestamp = DateTimeOffset.Now
+            };
+            telemetry.Properties["SourceUser"] = deletingUser;
+            telemetry.Properties["Username"] = deletedUser;
+
+            _client.TrackEvent(telemetry);
+
             var logEntry = new LogEntry
             {
                 Date = DateTimeOffset.Now,
@@ -282,6 +332,14 @@ namespace BikeTracker.Services
                 throw new ArgumentNullException(nameof(username));
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("parameter cannot be empty", nameof(username));
+
+            var telemetry = new EventTelemetry(nameof(LogEventType.UserLogIn))
+            {
+                Timestamp = DateTimeOffset.Now
+            };
+            telemetry.Properties["SourceUser"] = username;
+
+            _client.TrackEvent(telemetry);
 
             var logEntry = new LogEntry
             {
@@ -326,6 +384,16 @@ namespace BikeTracker.Services
 
             if (!properties.Any())
                 throw new ArgumentException("parameter cannot be empty", nameof(changedProperties));
+
+            var telemetry = new EventTelemetry(nameof(LogEventType.UserUpdated))
+            {
+                Timestamp = DateTimeOffset.Now
+            };
+            telemetry.Properties["SourceUser"] = updatingUser;
+            telemetry.Properties["UpdatedProperties"] = string.Join(", ", changedProperties);
+            telemetry.Properties["Username"] = updatedUser;
+
+            _client.TrackEvent(telemetry);
 
             var logEntry = new LogEntry
             {

@@ -44,7 +44,7 @@ namespace BikeTrackerTestTool.ViewModel
                 new ServerLocation
                 {
                      Name = "Local",
-                     Path = new Uri("http://localhost:6088")
+                     Path = new Uri("https://localhost:44373")
                 },
                 new ServerLocation
                 {
@@ -54,13 +54,13 @@ namespace BikeTrackerTestTool.ViewModel
                 new ServerLocation
                 {
                     Name = "App Harbour Production",
-                    Path = new Uri("http://sjatracker.apphb.com")
+                    Path = new Uri("https://sjatracker.apphb.com")
                 }
             };
 
             Clients = new ObservableCollection<IClient>
             {
-                new NokiaClient { Imei = "1234", BaseLatitude = 51.532M, BaseLongitude = -2.552M, FailureRate = 0.1 },
+                //new NokiaClient { Imei = "1234", BaseLatitude = 51.532M, BaseLongitude = -2.552M, FailureRate = 0.1 },
                 new AndroidClient { Imei = "1235", BaseLatitude = 51.533M, BaseLongitude = -2.553M, FailureRate = 0.1 }
             };
 
@@ -76,38 +76,20 @@ namespace BikeTrackerTestTool.ViewModel
 
         public string ResponseString
         {
-            get
-            {
-                return responseString;
-            }
-            set
-            {
-                Set(ref responseString, value);
-            }
+            get => responseString;
+            set => Set(ref responseString, value);
         }
 
         public IClient SelectedClient
         {
-            get
-            {
-                return selectedClient;
-            }
-            set
-            {
-                Set(ref selectedClient, value);
-            }
+            get => selectedClient;
+            set => Set(ref selectedClient, value);
         }
 
         public ServerLocation SelectedLocation
         {
-            get
-            {
-                return selectedLocation;
-            }
-            set
-            {
-                Set(ref selectedLocation, value);
-            }
+            get => selectedLocation;
+            set => Set(ref selectedLocation, value);
         }
 
         public RelayCommand StartUpdate { get; }
@@ -116,26 +98,14 @@ namespace BikeTrackerTestTool.ViewModel
 
         public int UpdateRate
         {
-            get
-            {
-                return updateRate;
-            }
-            set
-            {
-                Set(ref updateRate, value);
-            }
+            get => updateRate;
+            set => Set(ref updateRate, value);
         }
 
         public bool UpdateRunning
         {
-            get
-            {
-                return updateRunning;
-            }
-            set
-            {
-                updateRunning = value;
-            }
+            get => updateRunning;
+            set => updateRunning = value;
         }
 
         private bool CanExecuteStartUpdate()
@@ -171,7 +141,7 @@ namespace BikeTrackerTestTool.ViewModel
         {
             var res = Clients.Select(c => c.SendUpdate(SelectedLocation.Path));
 
-            await Task.WhenAll(res);
+            await Task.WhenAll(res.Where(t => t != null));
         }
     }
 }

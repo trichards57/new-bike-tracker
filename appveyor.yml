@@ -1,5 +1,8 @@
-version: 1.6.{build}
-skip_tags: true
+version: 1.7.{build}
+init:
+  - git config --global core.autocrlf true
+install:
+  - ps: Install-Product node $env:nodejs_version
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
@@ -11,12 +14,30 @@ branches:
     - master
     - /new.*/
 before_build:
-- cmd: nuget restore BikeTracker.sln
-test_script:
-- cmd: test
+  - cmd: nuget restore BikeTracker.sln
+  - cmd: npm --version
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\BikeTracker && npm install && cd %APPVEYOR_BUILD_FOLDER%
 build:
   project: BikeTracker.sln
   verbosity: minimal
+skip_tags: true
+before_test:
+  - cmd: mkdir %APPVEYOR_BUILD_FOLDER%\reports\coverage\history
+  - cmd: cd %APPVEYOR_BUILD_FOLDER% && nuget install OpenCover -ExcludeVersion -OutputDirectory tools
+  - cmd: cd %APPVEYOR_BUILD_FOLDER% && nuget install xunit.runner.console -ExcludeVersion -OutputDirectory tools
+  - cmd: copy xunit.console.x86.exe.config tools\xunit.runner.console\tools\xunit.console.x86.exe.config /Y
+test_script:
+  - cmd: cd %APPVEYOR_BUILD_FOLDER% && set APPVEYOR_API_URL= && tools\OpenCover\tools\OpenCover.Console.exe -target:"tools\xunit.runner.console\tools\xunit.console.x86.exe" -targetargs:"BikeTracker.Tests\bin\Debug\BikeTracker.Tests.dll -noShadow -xml test-results.xml" -register:user -output:"reports\coverage\coverage.xml" -skipautoprops -filter:"+[BikeTracker*]* -[BikeTracker*]BikeTracker.Migrations* -[BikeTracker.Tests*]*"  -excludebyattribute:*.ExcludeFromCodeCoverage* -mergebyhash -returntargetcode -coverbytest:*.Test.dll
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\BikeTracker && node_modules\.bin\karma.cmd start --single-run && cd %APPVEYOR_BUILD_FOLDER%
+after_test:
+  - ps: .\upload-results.ps1
+  - cmd: tools\coveralls.io\tools\coveralls.net.exe --autodetect reports\coverage\coverage.xml reports\karma-results\xml\cobertura-coverage.xml
+environment:
+  COVERALLS_REPO_TOKEN:
+    secure: Vw+qs3QR9AkkoHIIZUqHX2oaD2a6wmb+fhCByIEKmFuQBabbl7H8bra+jkdoa/Tr
+  Production_Build_Path:
+    secure: YWpSkUKKRmU10IaqzStD0v9ioYz9eQ4QZeDNme54/h3iaCjGcXlmIgmgk8oGGfP7kKgdUJIhEiJ6AtoTqSggQ5JHM0yIcCCCSxi+Qt2VZ1byohifJCuR2lpXwYnN7nxfW3fp0ptrZEzi754kyKFaVU9NQk4Fohc6u2U+U+VM67g=]
+  nodejs_version: "6"
 deploy:
 - provider: GitHub
   on:
@@ -27,8 +48,3 @@ deploy:
   prerelease: false
 after_deploy:
 - ps: .\deploy.ps1
-environment:
-  COVERALLS_REPO_TOKEN:
-    secure: Vw+qs3QR9AkkoHIIZUqHX2oaD2a6wmb+fhCByIEKmFuQBabbl7H8bra+jkdoa/Tr
-  Production_Build_Path:
-    secure: YWpSkUKKRmU10IaqzStD0v9ioYz9eQ4QZeDNme54/h3iaCjGcXlmIgmgk8oGGfP7kKgdUJIhEiJ6AtoTqSggQ5JHM0yIcCCCSxi+Qt2VZ1byohifJCuR2lpXwYnN7nxfW3fp0ptrZEzi754kyKFaVU9NQk4Fohc6u2U+U+VM67g=
