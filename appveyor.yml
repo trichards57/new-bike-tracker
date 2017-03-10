@@ -30,7 +30,7 @@ test_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\BikeTracker && node_modules\.bin\karma.cmd start --single-run && cd %APPVEYOR_BUILD_FOLDER%
 after_test:
   - ps: .\upload-results.ps1
-  - cmd: tools\coveralls.io\tools\coveralls.net.exe --autodetect reports\coverage\coverage.xml reports\karma-typescript-results\cobertura\coverage.xml
+  - cmd: tools\coveralls.io\tools\coveralls.net.exe --autodetect reports\coverage\coverage.xml reports\karma-results\xml\cobertura-coverage.xml
 environment:
   COVERALLS_REPO_TOKEN:
     secure: Vw+qs3QR9AkkoHIIZUqHX2oaD2a6wmb+fhCByIEKmFuQBabbl7H8bra+jkdoa/Tr

@@ -36,17 +36,18 @@ module.exports = function (config) {
         reporters: ['progress', 'html', 'junit', 'coverage'],
 
         htmlReporter: {
-            outputFile: 'Scripts/tests/results/results.html'
+            outputFile: '../reports/karma-results/results.html'
         },
 
         junitReporter: {
-            outputDir: 'Scripts/tests/results'
+            outputDir: '../reports/karma-results/junit', // results will be saved as $outputDir/$browserName.xml
+            useBrowserName: true, // add browser name to report and classes names
         },
 
         coverageReporter: {
-            dir: 'Scripts/tests/results/coverage/',
+            dir: '../reports/karma-results/',
             reporters: [
-                { type: 'html', subdir: 'report-html' }
+                { type: 'cobertura', subdir: 'xml' }
             ]
         },
 
