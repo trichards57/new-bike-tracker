@@ -99,9 +99,17 @@ namespace BikeTrackerTestTool.Clients
             }
             catch (WebException e)
             {
-                var stream = new StreamReader(e.Response.GetResponseStream());
-                ResponseString = await stream.ReadToEndAsync();
-                return ResponseString;
+                if (e.Response != null)
+                {
+                    var stream = new StreamReader(e.Response.GetResponseStream());
+                    ResponseString = await stream.ReadToEndAsync();
+                    return ResponseString;
+                }
+                else
+                {
+                    ResponseString = e.Message;
+                    return e.Message;
+                }
             }
         }
     }

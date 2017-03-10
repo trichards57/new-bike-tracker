@@ -3,7 +3,7 @@
     var versionString = $"{version.Major}.{version.Minor}.{version.Build}";
 }
 
-<div id="mapDiv"></div>
+<div id="mapDiv" style="position: fixed"></div>
 <div class="map-footer pull-right">
     <div class="container">
         <div class="row">
@@ -23,7 +23,7 @@
         </div>
         <div class="form-group small-bottom-margin">
             <div class="input-group">
-                <input type="text" class="form-control" is-open="showDate" datepicker-options="dateOptions" datepicker-popup="shortDate" ng-model="selectedDate" />
+                <input type="text" class="form-control" is-open="showDate" uib-datepicker-options="dateOptions" uib-datepicker-popup="shortDate" ng-model="selectedDate" />
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>

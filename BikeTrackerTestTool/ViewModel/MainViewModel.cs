@@ -44,7 +44,7 @@ namespace BikeTrackerTestTool.ViewModel
                 new ServerLocation
                 {
                      Name = "Local",
-                     Path = new Uri("http://localhost:6088")
+                     Path = new Uri("https://localhost:44373")
                 },
                 new ServerLocation
                 {
@@ -54,13 +54,13 @@ namespace BikeTrackerTestTool.ViewModel
                 new ServerLocation
                 {
                     Name = "App Harbour Production",
-                    Path = new Uri("http://sjatracker.apphb.com")
+                    Path = new Uri("https://sjatracker.apphb.com")
                 }
             };
 
             Clients = new ObservableCollection<IClient>
             {
-                new NokiaClient { Imei = "1234", BaseLatitude = 51.532M, BaseLongitude = -2.552M, FailureRate = 0.1 },
+                //new NokiaClient { Imei = "1234", BaseLatitude = 51.532M, BaseLongitude = -2.552M, FailureRate = 0.1 },
                 new AndroidClient { Imei = "1235", BaseLatitude = 51.533M, BaseLongitude = -2.553M, FailureRate = 0.1 }
             };
 
@@ -141,7 +141,7 @@ namespace BikeTrackerTestTool.ViewModel
         {
             var res = Clients.Select(c => c.SendUpdate(SelectedLocation.Path));
 
-            await Task.WhenAll(res);
+            await Task.WhenAll(res.Where(t => t != null));
         }
     }
 }
