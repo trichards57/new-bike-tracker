@@ -16,56 +16,27 @@ namespace BikeTrackerTestTool.Clients
         private string imei;
         private string responseString = "[No Response Received]";
 
-        public string Name
-        {
-            get
-            {
-                return $"Android Client : {imei}";
-            }
-        }
-
         public decimal BaseLatitude
         {
-            get
-            {
-                return baseLatitude;
-            }
-            set
-            {
-                Set(ref baseLatitude, value);
-            }
+            get => baseLatitude;
+            set => Set(ref baseLatitude, value);
         }
 
         public decimal BaseLongitude
         {
-            get
-            {
-                return baseLongitude;
-            }
-            set
-            {
-                Set(ref baseLongitude, value);
-            }
+            get => baseLongitude;
+            set => Set(ref baseLongitude, value);
         }
 
         public double FailureRate
         {
-            get
-            {
-                return failureRate;
-            }
-            set
-            {
-                Set(ref failureRate, value);
-            }
+            get => failureRate;
+            set => Set(ref failureRate, value);
         }
 
         public string Imei
         {
-            get
-            {
-                return imei;
-            }
+            get => imei;
             set
             {
                 Set(ref imei, value);
@@ -73,17 +44,13 @@ namespace BikeTrackerTestTool.Clients
             }
         }
 
+        public string Name => $"Android Client : {imei}";
+
         public string ResponseString
         {
-            get
-            {
-                return responseString;
-            }
+            get => responseString;
 
-            private set
-            {
-                Set(ref responseString, value);
-            }
+            private set => Set(ref responseString, value);
         }
 
         public async Task<string> SendUpdate(Uri path)
@@ -132,9 +99,17 @@ namespace BikeTrackerTestTool.Clients
             }
             catch (WebException e)
             {
-                var stream = new StreamReader(e.Response.GetResponseStream());
-                ResponseString = await stream.ReadToEndAsync();
-                return ResponseString;
+                if (e.Response != null)
+                {
+                    var stream = new StreamReader(e.Response.GetResponseStream());
+                    ResponseString = await stream.ReadToEndAsync();
+                    return ResponseString;
+                }
+                else
+                {
+                    ResponseString = e.Message;
+                    return e.Message;
+                }
             }
         }
     }

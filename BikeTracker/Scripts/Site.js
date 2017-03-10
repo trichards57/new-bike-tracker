@@ -22,6 +22,7 @@ $(document).ready(function () {
                 $("#callsign-box>option:eq(0)").prop("selected", true);
             }
         });
+        e.preventDefault();
     });
 
     $("#delete-landmark").click(function () {
@@ -39,6 +40,7 @@ $(document).ready(function () {
                 });
             }
         });
+        e.preventDefault();
     });
 
     $("#hide-unknown").change(function (e) {
@@ -50,6 +52,7 @@ $(document).ready(function () {
     $("#refresh-button").click(function (e) {
         clearTimeout(refreshTimeout);
         refresh();
+        e.preventDefault();
     });
 
     $("#landmarkSave").click(function (e) {
@@ -98,9 +101,19 @@ $(document).ready(function () {
         }
     });
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(centreLocation);
-    }
+    $("#add-landmarks-button").click(function (e) {
+        BeginPlaceLandmark();
+        $("#add-landmarks-button").addClass("hide");
+        $("#finish-landmarks-button").removeClass("hide");
+        e.preventDefault();
+    });
+
+    $("#finish-landmarks-button").click(function (e) {
+        EndPlaceLandmark();
+        $("#add-landmarks-button").removeClass("hide");
+        $("#finish-landmarks-button").addClass("hide");
+        e.preventDefault();
+    });
 });
 
 function centreLocation(position) {
@@ -110,6 +123,8 @@ function centreLocation(position) {
         center: new Microsoft.Maps.Location(position.coords.latitude, position.coords.longitude)
     });
 }
+
+var svgTemplate = '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="25"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">{htmlContent}</div></foreignObject></svg>';
 
 function refresh() {
     "use strict";
@@ -136,14 +151,14 @@ function refresh() {
             if (hideUnknown && dat.Callsign.indexOf("?") > -1)
                 continue;
 
-            var color = "text-success bg-success";
+            var color = "color: #3c763d; background-color: #dff0d8;";
 
             if (timeSinceReading >= 40)
-                color = "text-danger bg-danger";
+                color = "color: #a94442; background-color: #f2dede;";
             else if (timeSinceReading >= 20)
-                color = "text-warning bg-warning";
+                color = "color: #8a6d3b; background-color: #f7ecb5;";
 
-            var content = "<div class='callsign-flag " + color + "' data-type='callsign' data-id='" + dat.Id + "'>";
+            var content = "<div style='font-size: 12px; font-weight: bold; border: solid 2px; display: inline; white-space: nowrap; " + color + " font-family: Arial,Helvetica,sans-serif;'>";
 
             switch (dat.Type) {
                 case 1: // Bike
@@ -169,7 +184,7 @@ function refresh() {
                 content += "WR???";
 
             content += "</div>";
-            var options = { width: null, height: null, htmlContent: content, anchor: new Microsoft.Maps.Point(22.5, 10) };
+            var options = { width: null, height: null, icon: svgTemplate.replace('{htmlContent}', content), anchor: new Microsoft.Maps.Point(22.5, 10) };
             var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(dat.Latitude, dat.Longitude), options);
 
             map.entities.push(pin);
@@ -186,8 +201,10 @@ function refresh() {
             for (var i = 0; i < data.length; i++) {
                 var dat = data[i];
 
-                var content = "<div class='callsign-flag text-info bg-info data-type='landmark' data-id='" + dat.Id + "'>" + dat.Name + "</div>"
-                var options = { width: null, height: null, htmlContent: content, anchor: new Microsoft.Maps.Point(22.5, 10) };
+                var color = "color: #31708f; background-color: #d9edf7;";
+
+                var content = "<div style='font-size: 12px; font-weight: bold; border: solid 2px; display: inline; white-space: nowrap; " + color + " font-family: Arial,Helvetica,sans-serif;'>" + dat.Name + "</div>"
+                var options = { width: null, height: null, icon: svgTemplate.replace('{htmlContent}', content), anchor: new Microsoft.Maps.Point(22.5, 10) };
                 var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(dat.Latitude, dat.Longitude), options);
 
                 map.entities.push(pin);
@@ -212,7 +229,7 @@ function refresh() {
 }
 
 function ShowAddLandmark(e) {
-    if (e.targetType == "map" && e.isPrimary) {
+    if (e.targetType == "map") {
         $("#landmarkName").val("");
         $("#landmarkSave").prop("disabled", true).addClass("disabled");
         $("#landmarkModal").modal("show");
@@ -221,23 +238,34 @@ function ShowAddLandmark(e) {
         var loc = e.target.tryPixelToLocation(point);
         $("#landmarkLatitude").val(loc.latitude)
         $("#landmarkLongitude").val(loc.longitude);
-        e.handled = true;
     }
 };
 
 function GetMap() {
     $.ajaxSetup({ cache: false });
-    map = new Microsoft.Maps.Map(document.getElementById("mapDiv"),
+    map = new Microsoft.Maps.Map("#mapDiv",
                        {
                            credentials: "ApfWme6djEwhx5JqGqyzMf8PrYvSmspgz_nsCamSsEab7AK46NNwhEGd840O1QH3",
                            center: new Microsoft.Maps.Location(51.45, -2.5833),
                            mapTypeId: Microsoft.Maps.MapTypeId.road,
                            zoom: 14
                        });
+    $("#mapDiv").removeAttr("style");
 
-    Microsoft.Maps.Events.addHandler(map, "dblclick", ShowAddLandmark);
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(centreLocation);
+    }
 
     refresh();
 };
 
-GetMap();
+var handler = {};
+
+function BeginPlaceLandmark() {
+    handler = Microsoft.Maps.Events.addHandler(map, "click", ShowAddLandmark);
+}
+
+function EndPlaceLandmark() {
+    Microsoft.Maps.Events.removeHandler(handler);
+}
