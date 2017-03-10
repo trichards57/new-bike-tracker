@@ -76,38 +76,20 @@ namespace BikeTrackerTestTool.ViewModel
 
         public string ResponseString
         {
-            get
-            {
-                return responseString;
-            }
-            set
-            {
-                Set(ref responseString, value);
-            }
+            get => responseString;
+            set => Set(ref responseString, value);
         }
 
         public IClient SelectedClient
         {
-            get
-            {
-                return selectedClient;
-            }
-            set
-            {
-                Set(ref selectedClient, value);
-            }
+            get => selectedClient;
+            set => Set(ref selectedClient, value);
         }
 
         public ServerLocation SelectedLocation
         {
-            get
-            {
-                return selectedLocation;
-            }
-            set
-            {
-                Set(ref selectedLocation, value);
-            }
+            get => selectedLocation;
+            set => Set(ref selectedLocation, value);
         }
 
         public RelayCommand StartUpdate { get; }
@@ -116,26 +98,14 @@ namespace BikeTrackerTestTool.ViewModel
 
         public int UpdateRate
         {
-            get
-            {
-                return updateRate;
-            }
-            set
-            {
-                Set(ref updateRate, value);
-            }
+            get => updateRate;
+            set => Set(ref updateRate, value);
         }
 
         public bool UpdateRunning
         {
-            get
-            {
-                return updateRunning;
-            }
-            set
-            {
-                updateRunning = value;
-            }
+            get => updateRunning;
+            set => updateRunning = value;
         }
 
         private bool CanExecuteStartUpdate()

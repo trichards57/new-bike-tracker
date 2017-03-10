@@ -3,6 +3,7 @@ using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Models.IdentityModels;
 using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
+using BikeTracker.XTests.Helpers;
 using Microsoft.AspNet.Identity;
 using Moq;
 using Ploeh.AutoFixture;
@@ -272,7 +273,7 @@ namespace BikeTracker.Tests.Controllers.API
             userManager.SetupGet(u => u.Users).Returns(userSet.Object);
             userManager.Setup(u => u.GetRolesAsync(It.IsAny<string>())).ReturnsAsync(TestRoleResult.ToList());
             userManager.Setup(u => u.FindByIdAsync(TestUser.Id)).ReturnsAsync(TestUser);
-            userManager.Setup(u => u.FindByIdAsync(BadUserId)).ReturnsAsync(null);
+            userManager.Setup(u => u.FindByIdAsync(BadUserId)).ReturnsNullTask();
             userManager.Setup(u => u.FindByEmailAsync(TestGoodEmail)).ReturnsAsync(TestUser);
 
             userManager.Setup(u => u.SetEmailAsync(TestUser.Id, TestGoodEmail)).ReturnsAsync(IdentityResult.Success);

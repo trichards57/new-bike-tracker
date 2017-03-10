@@ -2,6 +2,7 @@
 using BikeTracker.Models.LocationModels;
 using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
+using BikeTracker.XTests.Helpers;
 using Moq;
 using Ploeh.AutoFixture;
 using System.Collections.Generic;
@@ -156,13 +157,13 @@ namespace BikeTracker.Tests.Controllers.API
 
             service.Setup(i => i.GetAllAsync()).ReturnsAsync(TestCallsigns);
             service.Setup(i => i.GetFromIdQueryable(TestId)).ReturnsAsync((new List<IMEIToCallsign> { TestCallsign }).AsQueryable());
-            service.Setup(i => i.GetFromId(BadId)).ReturnsAsync(null);
+            service.Setup(i => i.GetFromId(BadId)).ReturnsNullTask();
             service.Setup(i => i.GetFromId(TestId)).ReturnsAsync(TestCallsign);
             service.Setup(i => i.GetFromIMEI(TestCallsign.IMEI)).ReturnsAsync(TestCallsign);
-            service.Setup(i => i.RegisterCallsign(TestCallsign.IMEI, TestCallsign.CallSign, TestCallsign.Type)).Returns(Task.FromResult<object>(null));
-            service.Setup(i => i.RegisterCallsign(TestCallsign.IMEI, TestCallsign.CallSign, VehicleType.Unknown)).Returns(Task.FromResult<object>(null));
-            service.Setup(i => i.DeleteIMEIById(TestId)).Returns(Task.FromResult<object>(null));
-            service.Setup(i => i.DeleteIMEIById(BadId)).Returns(Task.FromResult<object>(null));
+            service.Setup(i => i.RegisterCallsign(TestCallsign.IMEI, TestCallsign.CallSign, TestCallsign.Type)).ReturnsEmptyTask();
+            service.Setup(i => i.RegisterCallsign(TestCallsign.IMEI, TestCallsign.CallSign, VehicleType.Unknown)).ReturnsEmptyTask();
+            service.Setup(i => i.DeleteIMEIById(TestId)).ReturnsEmptyTask();
+            service.Setup(i => i.DeleteIMEIById(BadId)).ReturnsEmptyTask();
 
             return service;
         }
@@ -171,8 +172,8 @@ namespace BikeTracker.Tests.Controllers.API
         {
             var service = new Mock<ILogService>(MockBehavior.Strict);
 
-            service.Setup(l => l.LogIMEIRegistered(TestUsername, TestCallsign.IMEI, TestCallsign.CallSign, TestCallsign.Type)).Returns(Task.FromResult<object>(null));
-            service.Setup(l => l.LogIMEIDeleted(TestUsername, TestCallsign.IMEI)).Returns(Task.FromResult<object>(null));
+            service.Setup(l => l.LogIMEIRegistered(TestUsername, TestCallsign.IMEI, TestCallsign.CallSign, TestCallsign.Type)).ReturnsEmptyTask();
+            service.Setup(l => l.LogIMEIDeleted(TestUsername, TestCallsign.IMEI)).ReturnsEmptyTask();
 
             return service;
         }

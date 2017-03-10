@@ -1,6 +1,7 @@
 ﻿using BikeTracker.Controllers;
 using BikeTracker.Models.IdentityModels;
 using BikeTracker.Models.LocationModels;
+using BikeTracker.XTests.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -195,7 +196,7 @@ namespace BikeTracker.Tests.Helpers
         {
             var userManager = new Mock<IUserManager>(MockBehavior.Strict);
             userManager.Setup(m => m.FindAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(null);
+                .ReturnsNullTask();
             userManager.Setup(m =>
                 m.FindAsync(It.Is<string>(s => s == ConfirmedGoodUsername),
                             It.Is<string>(s => s == ConfirmedGoodPassword)))
@@ -233,7 +234,7 @@ namespace BikeTracker.Tests.Helpers
                                 .ReturnsAsync(UnconfirmedGoodUser);
             userManager.Setup(m =>
                 m.FindByNameAsync(It.Is<string>(s => s == BadUsername)))
-                                .ReturnsAsync(null);
+                                .ReturnsNullTask();
 
             userManager.Setup(m =>
                 m.FindByIdAsync(It.Is<string>(s => s == ConfirmedGoodId)))

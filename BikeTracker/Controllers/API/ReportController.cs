@@ -29,16 +29,14 @@ namespace BikeTracker.Controllers.API
 
             if (!string.IsNullOrWhiteSpace(startDate))
             {
-                DateTimeOffset d;
-                var success = DateTimeOffset.TryParseExact(startDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+                var success = DateTimeOffset.TryParseExact(startDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d);
 
                 if (success)
                     start = d.Date;
             }
             if (!string.IsNullOrWhiteSpace(endDate))
             {
-                DateTimeOffset d;
-                var success = DateTimeOffset.TryParseExact(endDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+                var success = DateTimeOffset.TryParseExact(endDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d);
 
                 if (success)
                     stop = d.Date.AddSeconds(86399);
@@ -65,8 +63,7 @@ namespace BikeTracker.Controllers.API
 
             if (!string.IsNullOrWhiteSpace(date))
             {
-                DateTimeOffset d;
-                var success = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+                var success = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d);
 
                 if (success)
                     start = d.Date;
@@ -99,9 +96,8 @@ namespace BikeTracker.Controllers.API
         public async Task<IHttpActionResult> LogEntries(string date)
         {
             var day = DateTimeOffset.Now;
-            DateTimeOffset d;
 
-            var res = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+            var res = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d);
 
             if (res)
                 day = d;
@@ -123,8 +119,7 @@ namespace BikeTracker.Controllers.API
 
             if (!string.IsNullOrWhiteSpace(date))
             {
-                DateTimeOffset d;
-                var success = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+                var success = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d);
 
                 if (success)
                     start = d.Date;
@@ -139,8 +134,7 @@ namespace BikeTracker.Controllers.API
         {
             if (string.IsNullOrWhiteSpace(date)) return defaultDate;
 
-            DateTimeOffset d;
-            var success = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d);
+            var success = DateTimeOffset.TryParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d);
 
             return success ? d : defaultDate;
         }
