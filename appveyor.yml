@@ -25,8 +25,9 @@ before_test:
   - cmd: mkdir %APPVEYOR_BUILD_FOLDER%\reports\coverage\history
   - cmd: cd %APPVEYOR_BUILD_FOLDER% && nuget install OpenCover -ExcludeVersion -OutputDirectory tools
   - cmd: cd %APPVEYOR_BUILD_FOLDER% && nuget install xunit.runner.console -ExcludeVersion -OutputDirectory tools
+  - cmd: copy xunit.console.x86.exe.config tools\xunit.runner.console\tools\xunit.console.x86.exe.config /Y
 test_script:
-  - cmd: cd %APPVEYOR_BUILD_FOLDER% && set APPVEYOR_API_URL= && tools\OpenCover\tools\OpenCover.Console.exe -target:"tools\xunit.runner.console\tools\xunit.console.x86.exe" -targetargs:"BikeTracker.XTests\bin\Debug\BikeTracker.XTests.dll -noShadow -xml test-results.xml" -register:user -output:"reports\coverage\coverage.xml" -skipautoprops -filter:"+[BikeTracker*]* -[BikeTracker*]BikeTracker.Migrations* -[BikeTracker.XTests*]*"  -excludebyattribute:*.ExcludeFromCodeCoverage* -mergebyhash -returntargetcode -coverbytest:*.XTest.dll
+  - cmd: cd %APPVEYOR_BUILD_FOLDER% && set APPVEYOR_API_URL= && tools\OpenCover\tools\OpenCover.Console.exe -target:"tools\xunit.runner.console\tools\xunit.console.x86.exe" -targetargs:"BikeTracker.Tests\bin\Debug\BikeTracker.Tests.dll -noShadow -xml test-results.xml" -register:user -output:"reports\coverage\coverage.xml" -skipautoprops -filter:"+[BikeTracker*]* -[BikeTracker*]BikeTracker.Migrations* -[BikeTracker.Tests*]*"  -excludebyattribute:*.ExcludeFromCodeCoverage* -mergebyhash -returntargetcode -coverbytest:*.Test.dll
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\BikeTracker && node_modules\.bin\karma.cmd start --single-run && cd %APPVEYOR_BUILD_FOLDER%
 after_test:
   - ps: .\upload-results.ps1
