@@ -1,264 +1,264 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<assemblies timestamp="03/10/2017 17:48:11">
-  <assembly name="BikeTracker.Tests.dll" environment="32-bit .NET (unknown version) [collection-per-class, parallel (4 threads)]" test-framework="xUnit.net 2.2.0.3545" run-date="2017-03-10" run-time="17:48:08" total="224" passed="224" failed="0" skipped="0" time="3.399" errors="0">
+<assemblies timestamp="03/10/2017 22:48:23">
+  <assembly name="BikeTracker.Tests.dll" environment="32-bit .NET (unknown version) [collection-per-class, parallel (4 threads)]" test-framework="xUnit.net 2.2.0.3545" run-date="2017-03-10" run-time="22:48:19" total="224" passed="224" failed="0" skipped="0" time="3.752" errors="0">
     <errors />
-    <collection total="2" passed="2" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.DialogControllerTests" time="0.057">
-      <test name="BikeTracker.Tests.Controllers.DialogControllerTests.ErrorForm" type="BikeTracker.Tests.Controllers.DialogControllerTests" method="ErrorForm" time="0.0556313" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.DialogControllerTests.DeleteForm" type="BikeTracker.Tests.Controllers.DialogControllerTests" method="DeleteForm" time="0.0015724" result="Pass" />
+    <collection total="2" passed="2" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.AdminControllerTests" time="0.079">
+      <test name="BikeTracker.Tests.Controllers.AdminControllerTests.Home" type="BikeTracker.Tests.Controllers.AdminControllerTests" method="Home" time="0.0781893" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AdminControllerTests.EditForm" type="BikeTracker.Tests.Controllers.AdminControllerTests" method="EditForm" time="0.0012748" result="Pass" />
     </collection>
-    <collection total="2" passed="2" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.IMEIControllerTests" time="0.057">
-      <test name="BikeTracker.Tests.Controllers.IMEIControllerTests.EditForm" type="BikeTracker.Tests.Controllers.IMEIControllerTests" method="EditForm" time="0.0557049" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.IMEIControllerTests.Home" type="BikeTracker.Tests.Controllers.IMEIControllerTests" method="Home" time="0.0012373" result="Pass" />
+    <collection total="7" passed="7" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.API.ReportControllerTests" time="1.101">
+      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetDaysLogEntriesNullDate" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetDaysLogEntriesNullDate" time="0.8981401" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetCallsigns" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetCallsigns" time="0.0385813" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetCallsignLocationsGoodDate" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetCallsignLocationsGoodDate" time="0.064229" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetCallsignLocationsDefaultDates" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetCallsignLocationsDefaultDates" time="0.02358" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetCallsignLocationsBadEndDate" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetCallsignLocationsBadEndDate" time="0.0299878" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetCallsignLocationsBadStartDate" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetCallsignLocationsBadStartDate" time="0.0239141" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetDaysLogEntries" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetDaysLogEntries" time="0.0227817" result="Pass" />
     </collection>
-    <collection total="4" passed="4" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Services.ReportServiceTests" time="0.963">
-      <test name="BikeTracker.Tests.Services.ReportServiceTests.GetCallsignRecordEmptyCallsign" type="BikeTracker.Tests.Services.ReportServiceTests" method="GetCallsignRecordEmptyCallsign" time="0.7594096" result="Pass" />
-      <test name="BikeTracker.Tests.Services.ReportServiceTests.GetAllCallsigns" type="BikeTracker.Tests.Services.ReportServiceTests" method="GetAllCallsigns" time="0.1820859" result="Pass" />
-      <test name="BikeTracker.Tests.Services.ReportServiceTests.GetCallsignRecordGoodData" type="BikeTracker.Tests.Services.ReportServiceTests" method="GetCallsignRecordGoodData" time="0.0134251" result="Pass" />
-      <test name="BikeTracker.Tests.Services.ReportServiceTests.GetCallsignRecordNullCallsign" type="BikeTracker.Tests.Services.ReportServiceTests" method="GetCallsignRecordNullCallsign" time="0.0078165" result="Pass" />
+    <collection total="15" passed="15" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Services.LocationServiceTests" time="1.307">
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLocationGoodData" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLocationGoodData" time="0.9037689" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.ExpireLocationNullCallsign" type="BikeTracker.Tests.Services.LocationServiceTests" method="ExpireLocationNullCallsign" time="0.0341551" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.GetLocations" type="BikeTracker.Tests.Services.LocationServiceTests" method="GetLocations" time="0.0880866" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.ClearLandmarkGoodData" type="BikeTracker.Tests.Services.LocationServiceTests" method="ClearLandmarkGoodData" time="0.0936969" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.ClearLandmarkBadId" type="BikeTracker.Tests.Services.LocationServiceTests" method="ClearLandmarkBadId" time="0.0124812" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.GetLandmarks" type="BikeTracker.Tests.Services.LocationServiceTests" method="GetLandmarks" time="0.0156559" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLocationEmptyIMEI" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLocationEmptyIMEI" time="0.016678" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLandmarkNullExpiry" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLandmarkNullExpiry" time="0.0254514" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLocationNullIMEI" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLocationNullIMEI" time="0.0140386" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLandmarkNullName" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLandmarkNullName" time="0.0138184" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLandmarkEmptyName" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLandmarkEmptyName" time="0.0112898" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.ExpireLocationEmptyCallsign" type="BikeTracker.Tests.Services.LocationServiceTests" method="ExpireLocationEmptyCallsign" time="0.0114716" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.ExpireLocationGoodCallsign" type="BikeTracker.Tests.Services.LocationServiceTests" method="ExpireLocationGoodCallsign" time="0.0156277" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLocationUnknownIMEI" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLocationUnknownIMEI" time="0.0388521" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLandmarkGoodData" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLandmarkGoodData" time="0.0116524" result="Pass" />
     </collection>
-    <collection total="38" passed="38" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.AccountControllerTests" time="2.654">
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailEmptyToken" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailEmptyToken" time="0.6507412" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginNoUsername" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginNoUsername" time="0.1950145" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ResetPasswordBadUser" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ResetPasswordBadUser" time="0.1246379" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailNoBoth" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailNoBoth" time="0.0361788" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.LogOff" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="LogOff" time="0.0701435" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ResetPasswordBadCode" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ResetPasswordBadCode" time="0.0586216" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ResetPasswordMismatchPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ResetPasswordMismatchPassword" time="0.0544159" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailNoToken" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailNoToken" time="0.0336741" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailGoodData" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailGoodData" time="0.0443375" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.StartForgotPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="StartForgotPassword" time="0.0349519" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ContinueForgotPasswordGoodEmail" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ContinueForgotPasswordGoodEmail" time="0.067268" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginValidModelRemoteUrlRemembered" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginValidModelRemoteUrlRemembered" time="0.0614306" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailEmptyBoth" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailEmptyBoth" time="0.0330937" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.StartLoginEmptyReturnUrl" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="StartLoginEmptyReturnUrl" time="0.2509402" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ContinueForgotPasswordUncomfirmedEmail" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ContinueForgotPasswordUncomfirmedEmail" time="0.0360655" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ContinueForgotPasswordBadEmail" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ContinueForgotPasswordBadEmail" time="0.0408751" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmationForResetPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmationForResetPassword" time="0.0386171" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ResetPasswordGoodData" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ResetPasswordGoodData" time="0.052254" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginValidModelNoUrlConfirmedEmailNotRemembered" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginValidModelNoUrlConfirmedEmailNotRemembered" time="0.0530805" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginNoPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginNoPassword" time="0.0297366" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginNoDetails" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginNoDetails" time="0.0261631" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.MidResetPasswordGoodCode" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="MidResetPasswordGoodCode" time="0.0372053" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginValidModelLocalUrlRemembered" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginValidModelLocalUrlRemembered" time="0.0480082" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailBadToken" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailBadToken" time="0.0316335" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginBadUsername" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginBadUsername" time="0.0403854" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginValidModelNoUrlUnconfirmedEmailRemembered" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginValidModelNoUrlUnconfirmedEmailRemembered" time="0.0496402" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ContinueForgotPasswordNoEmail" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ContinueForgotPasswordNoEmail" time="0.0305333" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.StartLoginLocalReturnUrl" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="StartLoginLocalReturnUrl" time="0.0786622" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailBadUser" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailBadUser" time="0.0314997" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginValidModelNoUrlConfirmedEmailRemembered" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginValidModelNoUrlConfirmedEmailRemembered" time="0.047651" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailEmptyUser" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailEmptyUser" time="0.0318725" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginBadPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginBadPassword" time="0.0342514" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ResetPasswordBadPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ResetPasswordBadPassword" time="0.0364968" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmForgotPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmForgotPassword" time="0.0310047" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginBadBoth" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginBadBoth" time="0.0345388" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.MidResetPasswordEmptyCode" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="MidResetPasswordEmptyCode" time="0.0308085" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.MidResetPasswordNoCode" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="MidResetPasswordNoCode" time="0.0303138" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailNoUser" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailNoUser" time="0.03754" result="Pass" />
+    <collection total="15" passed="15" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.API.IMEIControllerTests" time="1.686">
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.DeleteCallsignBadId" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="DeleteCallsignBadId" time="0.9349602" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PutIMEIToCallsignNoIMEI" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PutIMEIToCallsignNoIMEI" time="0.2358059" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PutIMEIToCallsignBadCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PutIMEIToCallsignBadCallsign" time="0.0336044" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.GetAllIMEIs" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="GetAllIMEIs" time="0.0535848" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignNoIMEI" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignNoIMEI" time="0.0763909" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignGoodData" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignGoodData" time="0.0460716" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignEmptyIMEI" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignEmptyIMEI" time="0.0274287" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.GetIMEIToCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="GetIMEIToCallsign" time="0.0355605" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.DeleteCallsignGoodData" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="DeleteCallsignGoodData" time="0.029892" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignBadCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignBadCallsign" time="0.032388" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PutIMEIToCallsignGoodData" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PutIMEIToCallsignGoodData" time="0.0526415" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PutIMEIToCallsignNoCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PutIMEIToCallsignNoCallsign" time="0.0350901" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignNoCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignNoCallsign" time="0.0333413" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignEmptyCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignEmptyCallsign" time="0.0282046" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PutIMEIToCallsignBadId" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PutIMEIToCallsignBadId" time="0.0312456" result="Pass" />
     </collection>
-    <collection total="15" passed="15" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Services.LocationServiceTests" time="1.220">
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLocationGoodData" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLocationGoodData" time="0.8683126" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.ExpireLocationNullCallsign" type="BikeTracker.Tests.Services.LocationServiceTests" method="ExpireLocationNullCallsign" time="0.0196639" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.GetLocations" type="BikeTracker.Tests.Services.LocationServiceTests" method="GetLocations" time="0.0696898" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.ClearLandmarkGoodData" type="BikeTracker.Tests.Services.LocationServiceTests" method="ClearLandmarkGoodData" time="0.0752107" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.ClearLandmarkBadId" type="BikeTracker.Tests.Services.LocationServiceTests" method="ClearLandmarkBadId" time="0.0119231" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.GetLandmarks" type="BikeTracker.Tests.Services.LocationServiceTests" method="GetLandmarks" time="0.0184684" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLocationEmptyIMEI" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLocationEmptyIMEI" time="0.0173279" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLandmarkNullExpiry" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLandmarkNullExpiry" time="0.0214667" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLocationNullIMEI" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLocationNullIMEI" time="0.0194655" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLandmarkNullName" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLandmarkNullName" time="0.0107906" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLandmarkEmptyName" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLandmarkEmptyName" time="0.0103208" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.ExpireLocationEmptyCallsign" type="BikeTracker.Tests.Services.LocationServiceTests" method="ExpireLocationEmptyCallsign" time="0.0104223" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.ExpireLocationGoodCallsign" type="BikeTracker.Tests.Services.LocationServiceTests" method="ExpireLocationGoodCallsign" time="0.0111618" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLocationUnknownIMEI" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLocationUnknownIMEI" time="0.0441206" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LocationServiceTests.RegisterLandmarkGoodData" type="BikeTracker.Tests.Services.LocationServiceTests" method="RegisterLandmarkGoodData" time="0.0121449" result="Pass" />
+    <collection total="47" passed="47" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Services.LogServiceTests" time="2.159">
+      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesBadDates" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesBadDates" time="1.1031502" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesNullPage" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesNullPage" time="0.1581176" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesNullPageSizeWithPage" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesNullPageSizeWithPage" time="0.0107503" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateEmptyUpdatedUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateEmptyUpdatedUser" time="0.0180616" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredEmptyCallsign" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredEmptyCallsign" time="0.0159935" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserLoggedInNullName" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserLoggedInNullName" time="0.0148331" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateNullChanges" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateNullChanges" time="0.0120325" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesBeforeDate" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesBeforeDate" time="0.0844318" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesAfterDate" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesAfterDate" time="0.0850905" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIDeletedEmptyIMEI" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIDeletedEmptyIMEI" time="0.0152875" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUseOldDataButNoOldDate" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUseOldDataButNoOldDate" time="0.212338" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserCreatedEmptySourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserCreatedEmptySourceUser" time="0.0145256" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserCreatedNoSourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserCreatedNoSourceUser" time="0.0093432" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredNoCallsign" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredNoCallsign" time="0.0062793" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserLoggedInGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserLoggedInGoodData" time="0.0109113" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserDeletedGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserDeletedGoodData" time="0.0166619" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesThirdPage" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesThirdPage" time="0.0204281" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredEmptyUsername" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredEmptyUsername" time="0.0092309" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUseUpdateGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUseUpdateGoodData" time="0.0097423" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserCreatedGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserCreatedGoodData" time="0.0124028" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserCreatedEmptyNewUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserCreatedEmptyNewUser" time="0.0052549" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserDeletedNoDeletedUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserDeletedNoDeletedUser" time="0.0056869" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredNoIMEI" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredNoIMEI" time="0.0091544" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateGoodData" time="0.0139279" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredEmptyIMEI" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredEmptyIMEI" time="0.0060322" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUseNewGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUseNewGoodData" time="0.0183439" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIDeletedNoUsername" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIDeletedNoUsername" time="0.0080508" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIDeletedGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIDeletedGoodData" time="0.0073845" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesBetweenDates" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesBetweenDates" time="0.0877916" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUseEmptyName" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUseEmptyName" time="0.007237" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateNoSourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateNoSourceUser" time="0.0062533" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserDeletedEmptySourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserDeletedEmptySourceUser" time="0.0092009" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateEmptySourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateEmptySourceUser" time="0.0060438" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateNullUpdatedUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateNullUpdatedUser" time="0.0059461" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUsePreviousGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUsePreviousGoodData" time="0.009255" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIDeletedNoIMEI" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIDeletedNoIMEI" time="0.009636" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredNoUsername" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredNoUsername" time="0.006811" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesFirstPage" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesFirstPage" time="0.0181221" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateEmptyChanges" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateEmptyChanges" time="0.0090587" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserLoggedInEmptyName" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserLoggedInEmptyName" time="0.0114495" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserCreatedNoNewUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserCreatedNoNewUser" time="0.0072441" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIDeletedEmptyUsername" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIDeletedEmptyUsername" time="0.0067366" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesDefaultData" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesDefaultData" time="0.0107042" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserDeletedEmptyDeletedUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserDeletedEmptyDeletedUser" time="0.0067612" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredGoodData" time="0.0089484" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUseNullName" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUseNullName" time="0.0103481" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserDeletedNoSourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserDeletedNoSourceUser" time="0.0075292" result="Pass" />
     </collection>
-    <collection total="47" passed="47" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Services.LogServiceTests" time="0.995">
-      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesBadDates" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesBadDates" time="0.1546533" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesNullPage" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesNullPage" time="0.0886687" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesNullPageSizeWithPage" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesNullPageSizeWithPage" time="0.0087669" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateEmptyUpdatedUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateEmptyUpdatedUser" time="0.0191916" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredEmptyCallsign" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredEmptyCallsign" time="0.0130638" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserLoggedInNullName" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserLoggedInNullName" time="0.0126542" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateNullChanges" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateNullChanges" time="0.0055964" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesBeforeDate" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesBeforeDate" time="0.1061842" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesAfterDate" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesAfterDate" time="0.0939214" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIDeletedEmptyIMEI" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIDeletedEmptyIMEI" time="0.0146805" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUseOldDataButNoOldDate" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUseOldDataButNoOldDate" time="0.0740175" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserCreatedEmptySourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserCreatedEmptySourceUser" time="0.0142124" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserCreatedNoSourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserCreatedNoSourceUser" time="0.0063864" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredNoCallsign" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredNoCallsign" time="0.0066741" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserLoggedInGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserLoggedInGoodData" time="0.0113375" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserDeletedGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserDeletedGoodData" time="0.0157608" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesThirdPage" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesThirdPage" time="0.0207675" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredEmptyUsername" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredEmptyUsername" time="0.0075736" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUseUpdateGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUseUpdateGoodData" time="0.0131739" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserCreatedGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserCreatedGoodData" time="0.0073839" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserCreatedEmptyNewUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserCreatedEmptyNewUser" time="0.0083698" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserDeletedNoDeletedUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserDeletedNoDeletedUser" time="0.0064898" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredNoIMEI" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredNoIMEI" time="0.0069029" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateGoodData" time="0.016117" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredEmptyIMEI" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredEmptyIMEI" time="0.0069855" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUseNewGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUseNewGoodData" time="0.0110482" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIDeletedNoUsername" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIDeletedNoUsername" time="0.0065074" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIDeletedGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIDeletedGoodData" time="0.0105131" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesBetweenDates" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesBetweenDates" time="0.0866264" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUseEmptyName" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUseEmptyName" time="0.0065868" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateNoSourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateNoSourceUser" time="0.0062878" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserDeletedEmptySourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserDeletedEmptySourceUser" time="0.0091589" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateEmptySourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateEmptySourceUser" time="0.0051" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateNullUpdatedUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateNullUpdatedUser" time="0.0081007" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUsePreviousGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUsePreviousGoodData" time="0.0081004" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIDeletedNoIMEI" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIDeletedNoIMEI" time="0.0076834" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredNoUsername" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredNoUsername" time="0.0058251" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesFirstPage" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesFirstPage" time="0.0198121" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserUpdateEmptyChanges" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserUpdateEmptyChanges" time="0.0082636" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserLoggedInEmptyName" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserLoggedInEmptyName" time="0.0063967" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserCreatedNoNewUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserCreatedNoNewUser" time="0.0056104" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIDeletedEmptyUsername" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIDeletedEmptyUsername" time="0.0092841" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.GetLogEntriesDefaultData" type="BikeTracker.Tests.Services.LogServiceTests" method="GetLogEntriesDefaultData" time="0.0086956" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserDeletedEmptyDeletedUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserDeletedEmptyDeletedUser" time="0.0067592" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogIMEIRegisteredGoodData" type="BikeTracker.Tests.Services.LogServiceTests" method="LogIMEIRegisteredGoodData" time="0.0075592" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogMapInUseNullName" type="BikeTracker.Tests.Services.LogServiceTests" method="LogMapInUseNullName" time="0.00599" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogServiceTests.LogUserDeletedNoSourceUser" type="BikeTracker.Tests.Services.LogServiceTests" method="LogUserDeletedNoSourceUser" time="0.0059465" result="Pass" />
+    <collection total="2" passed="2" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.IMEIControllerTests" time="0.003">
+      <test name="BikeTracker.Tests.Controllers.IMEIControllerTests.EditForm" type="BikeTracker.Tests.Controllers.IMEIControllerTests" method="EditForm" time="0.0018328" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.IMEIControllerTests.Home" type="BikeTracker.Tests.Controllers.IMEIControllerTests" method="Home" time="0.0008965" result="Pass" />
     </collection>
-    <collection total="9" passed="9" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.ManageControllerTests" time="1.463">
-      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.Index" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="Index" time="1.0833825" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.ChangePasswordGoodData" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="ChangePasswordGoodData" time="0.079027" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.IndexPasswordSuccess" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="IndexPasswordSuccess" time="0.0370629" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.ChangePasswordWrongPassword" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="ChangePasswordWrongPassword" time="0.0467103" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.IndexError" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="IndexError" time="0.0352904" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.ChangePasswordNewPasswordMismatch" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="ChangePasswordNewPasswordMismatch" time="0.0406738" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.ChangePasswordBadNewPassword" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="ChangePasswordBadNewPassword" time="0.0543148" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.ChangePasswordGoodDataWithDependencyResolver" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="ChangePasswordGoodDataWithDependencyResolver" time="0.0489161" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.StartChangePassword" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="StartChangePassword" time="0.0374281" result="Pass" />
+    <collection total="12" passed="12" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Services.LogFormatterTests" time="0.076">
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserUpdatedPassword" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserUpdatedPassword" time="0.0091685" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserUpdatedEmailAndPassword" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserUpdatedEmailAndPassword" time="0.0012412" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserDeleted" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserDeleted" time="0.0013368" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserUpdatedRole" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserUpdatedRole" time="0.0024879" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserCreated" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserCreated" time="0.002076" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatIMEIRegistered" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatIMEIRegistered" time="0.0070402" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUnknownEvent" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUnknownEvent" time="0.0008476" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserUpdatedEmail" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserUpdatedEmail" time="0.0011487" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserUpdatedEmailRoleAndPassword" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserUpdatedEmailRoleAndPassword" time="0.0015998" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatMapInUse" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatMapInUse" time="0.0454443" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatIMEIDeleted" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatIMEIDeleted" time="0.0022117" result="Pass" />
+      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserLogIn" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserLogIn" time="0.001029" result="Pass" />
     </collection>
-    <collection total="28" passed="28" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Services.IMEIServiceTests" time="0.723">
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIdBadId" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIdBadId" time="0.130996" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateNullIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateNullIMEI" time="0.0260255" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateEmptyCallsign" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateEmptyCallsign" time="0.0297" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEIByIdGoodIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEIByIdGoodIMEI" time="0.0432011" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIdGoodId" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIdGoodId" time="0.0231173" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEIBadIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEIBadIMEI" time="0.0228658" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateEmptyIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateEmptyIMEI" time="0.0228105" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIMEIBadIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIMEIBadIMEI" time="0.031029" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIMEINoIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIMEINoIMEI" time="0.0205256" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetAll" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetAll" time="0.0185858" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateNullCallsign" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateNullCallsign" time="0.0180613" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEINoIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEINoIMEI" time="0.0181029" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIdQueryableBadId" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIdQueryableBadId" time="0.0235819" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEIEmptyIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEIEmptyIMEI" time="0.0182597" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignSameCallsign" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignSameCallsign" time="0.018996" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIMEIGoodIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIMEIGoodIMEI" time="0.0211915" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIdQueryableGoodId" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIdQueryableGoodId" time="0.0224252" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateEmptyCallsign" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateEmptyCallsign" time="0.0197976" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEIByIdBadIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEIByIdBadIMEI" time="0.0197999" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateEmptyIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateEmptyIMEI" time="0.0229452" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateNullVehicle" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateNullVehicle" time="0.0202188" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEIGoodIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEIGoodIMEI" time="0.0181816" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIMEIEmptyIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIMEIEmptyIMEI" time="0.0169394" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateGoodData" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateGoodData" time="0.0185762" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateNoType" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateNoType" time="0.017862" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateNullIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateNullIMEI" time="0.0170828" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateNullCallsign" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateNullCallsign" time="0.0200393" result="Pass" />
-      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateGoodData" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateGoodData" time="0.0225742" result="Pass" />
+    <collection total="15" passed="15" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.MapControllerTests" time="0.559">
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.AddLandmarkEmptyName" type="BikeTracker.Tests.Controllers.MapControllerTests" method="AddLandmarkEmptyName" time="0.0582338" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInNoDate" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInNoDate" time="0.0295317" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInNoLongitude" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInNoLongitude" time="0.020973" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInNoIMEI" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInNoIMEI" time="0.0225465" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInNoTime" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInNoTime" time="0.0265516" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInNoLatitude" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInNoLatitude" time="0.0253839" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.RemoveLandmark" type="BikeTracker.Tests.Controllers.MapControllerTests" method="RemoveLandmark" time="0.0312428" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.GetLocations" type="BikeTracker.Tests.Controllers.MapControllerTests" method="GetLocations" time="0.1538888" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInEmptyIMEI" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInEmptyIMEI" time="0.0278044" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInBadDate" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInBadDate" time="0.0245218" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.GetLandmarks" type="BikeTracker.Tests.Controllers.MapControllerTests" method="GetLandmarks" time="0.0324252" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.AddLandmarkGoodData" type="BikeTracker.Tests.Controllers.MapControllerTests" method="AddLandmarkGoodData" time="0.0369612" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.Index" type="BikeTracker.Tests.Controllers.MapControllerTests" method="Index" time="0.0217288" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.AddLandmarkNoName" type="BikeTracker.Tests.Controllers.MapControllerTests" method="AddLandmarkNoName" time="0.018964" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInGoodData" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInGoodData" time="0.0277612" result="Pass" />
     </collection>
-    <collection total="15" passed="15" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.MapControllerTests" time="0.439">
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.AddLandmarkEmptyName" type="BikeTracker.Tests.Controllers.MapControllerTests" method="AddLandmarkEmptyName" time="0.0623074" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInNoDate" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInNoDate" time="0.0312898" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInNoLongitude" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInNoLongitude" time="0.0201679" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInNoIMEI" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInNoIMEI" time="0.0293631" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInNoTime" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInNoTime" time="0.0202726" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInNoLatitude" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInNoLatitude" time="0.0239138" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.RemoveLandmark" type="BikeTracker.Tests.Controllers.MapControllerTests" method="RemoveLandmark" time="0.0291669" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.GetLocations" type="BikeTracker.Tests.Controllers.MapControllerTests" method="GetLocations" time="0.049286" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInEmptyIMEI" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInEmptyIMEI" time="0.0213215" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInBadDate" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInBadDate" time="0.0220406" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.GetLandmarks" type="BikeTracker.Tests.Controllers.MapControllerTests" method="GetLandmarks" time="0.0293759" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.AddLandmarkGoodData" type="BikeTracker.Tests.Controllers.MapControllerTests" method="AddLandmarkGoodData" time="0.027965" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.Index" type="BikeTracker.Tests.Controllers.MapControllerTests" method="Index" time="0.0215403" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.AddLandmarkNoName" type="BikeTracker.Tests.Controllers.MapControllerTests" method="AddLandmarkNoName" time="0.0170143" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.MapControllerTests.CheckInGoodData" type="BikeTracker.Tests.Controllers.MapControllerTests" method="CheckInGoodData" time="0.0340254" result="Pass" />
-    </collection>
-    <collection total="12" passed="12" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Services.LogFormatterTests" time="0.052">
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserUpdatedPassword" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserUpdatedPassword" time="0.0088498" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserUpdatedEmailAndPassword" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserUpdatedEmailAndPassword" time="0.0009676" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserDeleted" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserDeleted" time="0.0012411" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserUpdatedRole" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserUpdatedRole" time="0.0008105" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserCreated" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserCreated" time="0.0011804" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatIMEIRegistered" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatIMEIRegistered" time="0.0030254" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUnknownEvent" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUnknownEvent" time="0.0005852" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserUpdatedEmail" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserUpdatedEmail" time="0.0008489" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserUpdatedEmailRoleAndPassword" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserUpdatedEmailRoleAndPassword" time="0.0012901" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatMapInUse" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatMapInUse" time="0.0315241" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatIMEIDeleted" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatIMEIDeleted" time="0.0013564" result="Pass" />
-      <test name="BikeTracker.Tests.Services.LogFormatterTests.FormatUserLogIn" type="BikeTracker.Tests.Services.LogFormatterTests" method="FormatUserLogIn" time="0.000549" result="Pass" />
-    </collection>
-    <collection total="2" passed="2" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.ControlPanelControllerTests" time="0.003">
-      <test name="BikeTracker.Tests.Controllers.ControlPanelControllerTests.Index" type="BikeTracker.Tests.Controllers.ControlPanelControllerTests" method="Index" time="0.0021704" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ControlPanelControllerTests.Home" type="BikeTracker.Tests.Controllers.ControlPanelControllerTests" method="Home" time="0.0010306" result="Pass" />
-    </collection>
-    <collection total="4" passed="4" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.ReportControllerTests" time="0.008">
-      <test name="BikeTracker.Tests.Controllers.ReportControllerTests.Rates" type="BikeTracker.Tests.Controllers.ReportControllerTests" method="Rates" time="0.0054491" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ReportControllerTests.UserActivity" type="BikeTracker.Tests.Controllers.ReportControllerTests" method="UserActivity" time="0.0010613" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ReportControllerTests.Home" type="BikeTracker.Tests.Controllers.ReportControllerTests" method="Home" time="0.0007308" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.ReportControllerTests.Locations" type="BikeTracker.Tests.Controllers.ReportControllerTests" method="Locations" time="0.0008812" result="Pass" />
-    </collection>
-    <collection total="7" passed="7" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.API.ReportControllerTests" time="0.290">
-      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetDaysLogEntriesNullDate" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetDaysLogEntriesNullDate" time="0.1260524" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetCallsigns" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetCallsigns" time="0.0243663" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetCallsignLocationsGoodDate" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetCallsignLocationsGoodDate" time="0.0352396" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetCallsignLocationsDefaultDates" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetCallsignLocationsDefaultDates" time="0.0241368" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetCallsignLocationsBadEndDate" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetCallsignLocationsBadEndDate" time="0.0320901" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetCallsignLocationsBadStartDate" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetCallsignLocationsBadStartDate" time="0.0234242" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.ReportControllerTests.GetDaysLogEntries" type="BikeTracker.Tests.Controllers.API.ReportControllerTests" method="GetDaysLogEntries" time="0.0244882" result="Pass" />
-    </collection>
-    <collection total="15" passed="15" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.API.IMEIControllerTests" time="0.777">
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.DeleteCallsignBadId" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="DeleteCallsignBadId" time="0.2136597" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PutIMEIToCallsignNoIMEI" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PutIMEIToCallsignNoIMEI" time="0.1734171" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PutIMEIToCallsignBadCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PutIMEIToCallsignBadCallsign" time="0.0251042" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.GetAllIMEIs" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="GetAllIMEIs" time="0.0329788" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignNoIMEI" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignNoIMEI" time="0.0354524" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignGoodData" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignGoodData" time="0.0337375" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignEmptyIMEI" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignEmptyIMEI" time="0.0265836" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.GetIMEIToCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="GetIMEIToCallsign" time="0.0305526" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.DeleteCallsignGoodData" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="DeleteCallsignGoodData" time="0.0259129" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignBadCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignBadCallsign" time="0.0271432" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PutIMEIToCallsignGoodData" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PutIMEIToCallsignGoodData" time="0.036603" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PutIMEIToCallsignNoCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PutIMEIToCallsignNoCallsign" time="0.0284962" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignNoCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignNoCallsign" time="0.0268172" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PostIMEIToCallsignEmptyCallsign" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PostIMEIToCallsignEmptyCallsign" time="0.0344585" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.IMEIControllerTests.PutIMEIToCallsignBadId" type="BikeTracker.Tests.Controllers.API.IMEIControllerTests" method="PutIMEIToCallsignBadId" time="0.0263176" result="Pass" />
-    </collection>
-    <collection total="2" passed="2" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.AdminControllerTests" time="0.004">
-      <test name="BikeTracker.Tests.Controllers.AdminControllerTests.Home" type="BikeTracker.Tests.Controllers.AdminControllerTests" method="Home" time="0.003051" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.AdminControllerTests.EditForm" type="BikeTracker.Tests.Controllers.AdminControllerTests" method="EditForm" time="0.0011983" result="Pass" />
+    <collection total="28" passed="28" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Services.IMEIServiceTests" time="0.730">
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIdBadId" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIdBadId" time="0.1109061" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateNullIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateNullIMEI" time="0.0290546" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateEmptyCallsign" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateEmptyCallsign" time="0.0290786" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEIByIdGoodIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEIByIdGoodIMEI" time="0.0364665" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIdGoodId" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIdGoodId" time="0.0180319" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEIBadIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEIBadIMEI" time="0.0263579" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateEmptyIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateEmptyIMEI" time="0.0276828" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIMEIBadIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIMEIBadIMEI" time="0.035893" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIMEINoIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIMEINoIMEI" time="0.0205736" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetAll" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetAll" time="0.0254556" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateNullCallsign" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateNullCallsign" time="0.0193874" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEINoIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEINoIMEI" time="0.0178555" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIdQueryableBadId" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIdQueryableBadId" time="0.0242629" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEIEmptyIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEIEmptyIMEI" time="0.0199782" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignSameCallsign" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignSameCallsign" time="0.0213202" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIMEIGoodIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIMEIGoodIMEI" time="0.0187733" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIdQueryableGoodId" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIdQueryableGoodId" time="0.021421" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateEmptyCallsign" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateEmptyCallsign" time="0.0194684" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEIByIdBadIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEIByIdBadIMEI" time="0.0206018" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateEmptyIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateEmptyIMEI" time="0.0170498" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateNullVehicle" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateNullVehicle" time="0.0221311" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.DeleteIMEIGoodIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="DeleteIMEIGoodIMEI" time="0.0178536" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.GetFromIMEIEmptyIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="GetFromIMEIEmptyIMEI" time="0.0252655" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateGoodData" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateGoodData" time="0.0208101" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateNoType" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateNoType" time="0.0238364" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignUpdateNullIMEI" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignUpdateNullIMEI" time="0.0186235" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateNullCallsign" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateNullCallsign" time="0.0202091" result="Pass" />
+      <test name="BikeTracker.Tests.Services.IMEIServiceTests.RegisterCallsignCreateGoodData" type="BikeTracker.Tests.Services.IMEIServiceTests" method="RegisterCallsignCreateGoodData" time="0.0215247" result="Pass" />
     </collection>
     <collection total="3" passed="3" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.HomeControllerTest" time="0.005">
-      <test name="BikeTracker.Tests.Controllers.HomeControllerTest.Index" type="BikeTracker.Tests.Controllers.HomeControllerTest" method="Index" time="0.0028766" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.HomeControllerTest.Policies" type="BikeTracker.Tests.Controllers.HomeControllerTest" method="Policies" time="0.0009686" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.HomeControllerTest.Contact" type="BikeTracker.Tests.Controllers.HomeControllerTest" method="Contact" time="0.0010197" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.HomeControllerTest.Index" type="BikeTracker.Tests.Controllers.HomeControllerTest" method="Index" time="0.001694" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.HomeControllerTest.Policies" type="BikeTracker.Tests.Controllers.HomeControllerTest" method="Policies" time="0.0019132" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.HomeControllerTest.Contact" type="BikeTracker.Tests.Controllers.HomeControllerTest" method="Contact" time="0.0009234" result="Pass" />
     </collection>
-    <collection total="19" passed="19" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.API.UserControllerTests" time="1.165">
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterGoodData" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterGoodData" time="0.3526321" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserNoChanges" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserNoChanges" time="0.070812" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserGoodRoleOnly" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserGoodRoleOnly" time="0.0711253" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.DeleteGoodUser" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="DeleteGoodUser" time="0.0512085" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.GetUser" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="GetUser" time="0.0586418" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterDuplicateEmail" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterDuplicateEmail" time="0.0503525" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterEmptyEmail" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterEmptyEmail" time="0.0455378" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.GetSingleUserGoodId" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="GetSingleUserGoodId" time="0.057517" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterNullRole" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterNullRole" time="0.0450568" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserGoodData" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserGoodData" time="0.0378079" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.DeleteBadUser" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="DeleteBadUser" time="0.0340011" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserGoodEmailOnly" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserGoodEmailOnly" time="0.0388072" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserBadEmail" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserBadEmail" time="0.0331906" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterBadRole" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterBadRole" time="0.0419202" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserBadUser" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserBadUser" time="0.0332664" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterEmptyRole" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterEmptyRole" time="0.0364956" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterNullEmail" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterNullEmail" time="0.0363202" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterBadEmail" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterBadEmail" time="0.0346133" result="Pass" />
-      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.GetSingleUserBadId" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="GetSingleUserBadId" time="0.0361458" result="Pass" />
+    <collection total="2" passed="2" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.ControlPanelControllerTests" time="0.008">
+      <test name="BikeTracker.Tests.Controllers.ControlPanelControllerTests.Index" type="BikeTracker.Tests.Controllers.ControlPanelControllerTests" method="Index" time="0.0070594" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ControlPanelControllerTests.Home" type="BikeTracker.Tests.Controllers.ControlPanelControllerTests" method="Home" time="0.0010351" result="Pass" />
+    </collection>
+    <collection total="38" passed="38" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.AccountControllerTests" time="1.715">
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailEmptyToken" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailEmptyToken" time="0.1457951" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginNoUsername" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginNoUsername" time="0.1374811" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ResetPasswordBadUser" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ResetPasswordBadUser" time="0.1068613" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailNoBoth" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailNoBoth" time="0.0301727" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.LogOff" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="LogOff" time="0.0715282" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ResetPasswordBadCode" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ResetPasswordBadCode" time="0.039508" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ResetPasswordMismatchPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ResetPasswordMismatchPassword" time="0.0339538" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailNoToken" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailNoToken" time="0.0296827" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailGoodData" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailGoodData" time="0.0309003" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.StartForgotPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="StartForgotPassword" time="0.0384949" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ContinueForgotPasswordGoodEmail" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ContinueForgotPasswordGoodEmail" time="0.0372767" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginValidModelRemoteUrlRemembered" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginValidModelRemoteUrlRemembered" time="0.0458491" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailEmptyBoth" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailEmptyBoth" time="0.0345086" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.StartLoginEmptyReturnUrl" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="StartLoginEmptyReturnUrl" time="0.1896242" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ContinueForgotPasswordUncomfirmedEmail" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ContinueForgotPasswordUncomfirmedEmail" time="0.0285496" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ContinueForgotPasswordBadEmail" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ContinueForgotPasswordBadEmail" time="0.027613" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmationForResetPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmationForResetPassword" time="0.0310831" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ResetPasswordGoodData" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ResetPasswordGoodData" time="0.0340424" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginValidModelNoUrlConfirmedEmailNotRemembered" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginValidModelNoUrlConfirmedEmailNotRemembered" time="0.0501378" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginNoPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginNoPassword" time="0.0292322" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginNoDetails" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginNoDetails" time="0.034628" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.MidResetPasswordGoodCode" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="MidResetPasswordGoodCode" time="0.0261097" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginValidModelLocalUrlRemembered" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginValidModelLocalUrlRemembered" time="0.0370546" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailBadToken" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailBadToken" time="0.027607" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginBadUsername" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginBadUsername" time="0.0418088" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginValidModelNoUrlUnconfirmedEmailRemembered" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginValidModelNoUrlUnconfirmedEmailRemembered" time="0.0309042" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ContinueForgotPasswordNoEmail" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ContinueForgotPasswordNoEmail" time="0.0322857" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.StartLoginLocalReturnUrl" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="StartLoginLocalReturnUrl" time="0.0659941" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailBadUser" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailBadUser" time="0.0261749" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginValidModelNoUrlConfirmedEmailRemembered" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginValidModelNoUrlConfirmedEmailRemembered" time="0.0288569" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailEmptyUser" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailEmptyUser" time="0.0215663" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginBadPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginBadPassword" time="0.0255666" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ResetPasswordBadPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ResetPasswordBadPassword" time="0.0271618" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmForgotPassword" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmForgotPassword" time="0.0258815" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.SubmitLoginBadBoth" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="SubmitLoginBadBoth" time="0.0265464" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.MidResetPasswordEmptyCode" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="MidResetPasswordEmptyCode" time="0.0209186" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.MidResetPasswordNoCode" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="MidResetPasswordNoCode" time="0.021348" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.AccountControllerTests.ConfirmEmailNoUser" type="BikeTracker.Tests.Controllers.AccountControllerTests" method="ConfirmEmailNoUser" time="0.0219061" result="Pass" />
+    </collection>
+    <collection total="2" passed="2" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.DialogControllerTests" time="0.004">
+      <test name="BikeTracker.Tests.Controllers.DialogControllerTests.ErrorForm" type="BikeTracker.Tests.Controllers.DialogControllerTests" method="ErrorForm" time="0.0025833" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.DialogControllerTests.DeleteForm" type="BikeTracker.Tests.Controllers.DialogControllerTests" method="DeleteForm" time="0.0014482" result="Pass" />
+    </collection>
+    <collection total="4" passed="4" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.ReportControllerTests" time="0.006">
+      <test name="BikeTracker.Tests.Controllers.ReportControllerTests.Rates" type="BikeTracker.Tests.Controllers.ReportControllerTests" method="Rates" time="0.0024793" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ReportControllerTests.UserActivity" type="BikeTracker.Tests.Controllers.ReportControllerTests" method="UserActivity" time="0.0013605" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ReportControllerTests.Home" type="BikeTracker.Tests.Controllers.ReportControllerTests" method="Home" time="0.0011871" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ReportControllerTests.Locations" type="BikeTracker.Tests.Controllers.ReportControllerTests" method="Locations" time="0.0013711" result="Pass" />
+    </collection>
+    <collection total="4" passed="4" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Services.ReportServiceTests" time="0.069">
+      <test name="BikeTracker.Tests.Services.ReportServiceTests.GetCallsignRecordEmptyCallsign" type="BikeTracker.Tests.Services.ReportServiceTests" method="GetCallsignRecordEmptyCallsign" time="0.0146569" result="Pass" />
+      <test name="BikeTracker.Tests.Services.ReportServiceTests.GetAllCallsigns" type="BikeTracker.Tests.Services.ReportServiceTests" method="GetAllCallsigns" time="0.0375506" result="Pass" />
+      <test name="BikeTracker.Tests.Services.ReportServiceTests.GetCallsignRecordGoodData" type="BikeTracker.Tests.Services.ReportServiceTests" method="GetCallsignRecordGoodData" time="0.0104009" result="Pass" />
+      <test name="BikeTracker.Tests.Services.ReportServiceTests.GetCallsignRecordNullCallsign" type="BikeTracker.Tests.Services.ReportServiceTests" method="GetCallsignRecordNullCallsign" time="0.0062731" result="Pass" />
+    </collection>
+    <collection total="9" passed="9" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.ManageControllerTests" time="0.764">
+      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.Index" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="Index" time="0.4697444" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.ChangePasswordGoodData" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="ChangePasswordGoodData" time="0.0587941" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.IndexPasswordSuccess" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="IndexPasswordSuccess" time="0.0282508" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.ChangePasswordWrongPassword" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="ChangePasswordWrongPassword" time="0.0344143" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.IndexError" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="IndexError" time="0.0378712" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.ChangePasswordNewPasswordMismatch" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="ChangePasswordNewPasswordMismatch" time="0.0320233" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.ChangePasswordBadNewPassword" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="ChangePasswordBadNewPassword" time="0.0336271" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.ChangePasswordGoodDataWithDependencyResolver" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="ChangePasswordGoodDataWithDependencyResolver" time="0.0416751" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.ManageControllerTests.StartChangePassword" type="BikeTracker.Tests.Controllers.ManageControllerTests" method="StartChangePassword" time="0.0275045" result="Pass" />
+    </collection>
+    <collection total="19" passed="19" failed="0" skipped="0" name="Test collection for BikeTracker.Tests.Controllers.API.UserControllerTests" time="1.106">
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterGoodData" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterGoodData" time="0.2478014" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserNoChanges" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserNoChanges" time="0.0726597" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserGoodRoleOnly" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserGoodRoleOnly" time="0.0498453" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.DeleteGoodUser" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="DeleteGoodUser" time="0.0553429" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.GetUser" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="GetUser" time="0.052975" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterDuplicateEmail" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterDuplicateEmail" time="0.0428031" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterEmptyEmail" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterEmptyEmail" time="0.0409224" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.GetSingleUserGoodId" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="GetSingleUserGoodId" time="0.0499266" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterNullRole" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterNullRole" time="0.0434853" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserGoodData" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserGoodData" time="0.0521298" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.DeleteBadUser" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="DeleteBadUser" time="0.0565205" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserGoodEmailOnly" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserGoodEmailOnly" time="0.0461678" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserBadEmail" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserBadEmail" time="0.0424482" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterBadRole" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterBadRole" time="0.0422191" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.PutUserBadUser" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="PutUserBadUser" time="0.0439157" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterEmptyRole" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterEmptyRole" time="0.0460175" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterNullEmail" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterNullEmail" time="0.0394053" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.RegisterBadEmail" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="RegisterBadEmail" time="0.0425208" result="Pass" />
+      <test name="BikeTracker.Tests.Controllers.API.UserControllerTests.GetSingleUserBadId" type="BikeTracker.Tests.Controllers.API.UserControllerTests" method="GetSingleUserBadId" time="0.0391893" result="Pass" />
     </collection>
   </assembly>
 </assemblies>
