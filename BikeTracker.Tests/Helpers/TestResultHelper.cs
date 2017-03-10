@@ -2,7 +2,7 @@
 using Moq.Language.Flow;
 using System.Threading.Tasks;
 
-namespace BikeTracker.XTests.Helpers
+namespace BikeTracker.Tests.Helpers
 {
     internal static class TaskResultHelper
     {

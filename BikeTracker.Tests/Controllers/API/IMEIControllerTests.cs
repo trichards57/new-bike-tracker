@@ -2,7 +2,6 @@
 using BikeTracker.Models.LocationModels;
 using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
-using BikeTracker.XTests.Helpers;
 using Moq;
 using Ploeh.AutoFixture;
 using System.Collections.Generic;

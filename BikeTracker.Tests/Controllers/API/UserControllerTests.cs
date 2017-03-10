@@ -3,7 +3,6 @@ using BikeTracker.Models.AccountViewModels;
 using BikeTracker.Models.IdentityModels;
 using BikeTracker.Services;
 using BikeTracker.Tests.Helpers;
-using BikeTracker.XTests.Helpers;
 using Microsoft.AspNet.Identity;
 using Moq;
 using Ploeh.AutoFixture;

@@ -1,7 +1,6 @@
 ﻿using BikeTracker.Controllers;
 using BikeTracker.Models.IdentityModels;
 using BikeTracker.Models.LocationModels;
-using BikeTracker.XTests.Helpers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
