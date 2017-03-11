@@ -10,7 +10,8 @@
 app.config(["$routeProvider", function ($routeProvider: angular.route.IRouteProvider) {
     $routeProvider.when("/", {
         templateUrl: "/ControlPanel/Home",
-        controller: "ControlPanelCtrl"
+        controller: "ControlPanelCtrl",
+        controllerAs: "vm"
     }).when("/IMEIs", {
         templateUrl: "/IMEI/Home",
         controller: "IMEIListCtrl"
@@ -19,13 +20,15 @@ app.config(["$routeProvider", function ($routeProvider: angular.route.IRouteProv
         controller: "AdminCtrl"
     }).when("/Reports", {
         templateUrl: "/Report/Home",
-        controller: "ReportCtrl"
+        controller: "ReportCtrl",
+        controllerAs: "vm"
     }).when("/Reports/UserActivity", {
         templateUrl: "/Report/UserActivity",
         controller: "LogListCtrl"
     }).when("/Reports/Locations", {
         templateUrl: "/Report/Locations",
-        controller: "LocationReportCtrl"
+        controller: "LocationReportCtrl",
+        controllerAs: "vm"
     }).when("/Reports/Rates", {
         templateUrl: "/Report/Rates",
         controller: "CheckInRateCtrl"

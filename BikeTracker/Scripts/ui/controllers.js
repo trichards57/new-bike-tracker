@@ -21,45 +21,6 @@
 
 var appControllers = angular.module("appControllers", ["appServices"]);
 
-appControllers.controller("EditUserCtrl", ["$scope", "$uibModalInstance", "$window", "createMode", "email", "role", function ($scope, $modalInstance, $window, createMode, email, role) {
-    "use strict";
-
-    $scope.initialize = function () {
-        $scope.previousTitle = $window.document.title;
-
-        if (createMode) {
-            $window.document.title = "New User - SJA Tracker";
-        } else {
-            $window.document.title = "Edit User - SJA Tracker";
-        }
-
-        $scope.$on("$destroy", function () {
-            $window.document.title = $scope.previousTitle;
-        });
-    };
-
-    $scope.createMode = createMode;
-    $scope.email = createMode
-        ? ""
-        : email;
-    $scope.role = createMode
-        ? "Normal"
-        : role;
-
-    $scope.ok = function () {
-        $modalInstance.close({
-            email: $scope.email,
-            role: $scope.role
-        });
-    };
-
-    $scope.cancel = function () {
-        $modalInstance.dismiss("cancel");
-    };
-
-    $scope.initialize();
-}]);
-
 appControllers.controller("AdminCtrl", ["$scope", "User", "$uibModal", "$window", function ($scope, User, $modal, $window) {
     "use strict";
 
@@ -83,7 +44,7 @@ appControllers.controller("AdminCtrl", ["$scope", "User", "$uibModal", "$window"
         $modal.open({
             animation: true,
             templateUrl: "/Dialog/ErrorForm",
-            controller: "ErrorFormCtrl",
+            controller: "ErrorFormCtrl as vm",
             resolve: {
                 title: function () {
                     return title;
@@ -114,7 +75,7 @@ appControllers.controller("AdminCtrl", ["$scope", "User", "$uibModal", "$window"
         var modalInstance = $modal.open({
             animation: true,
             templateUrl: "/Admin/EditForm",
-            controller: "EditUserCtrl",
+            controller: "EditUserCtrl as vm",
             resolve: {
                 createMode: function () {
                     return false;
@@ -149,7 +110,7 @@ appControllers.controller("AdminCtrl", ["$scope", "User", "$uibModal", "$window"
         var modalInstance = $modal.open({
             animation: true,
             templateUrl: "/Admin/EditForm",
-            controller: "EditUserCtrl",
+            controller: "EditUserCtrl as vm",
             resolve: {
                 createMode: function () {
                     return true;
@@ -210,7 +171,7 @@ appControllers.controller("AdminCtrl", ["$scope", "User", "$uibModal", "$window"
         var modalInstance = $modal.open({
             animation: true,
             templateUrl: "/Dialog/DeleteForm",
-            controller: "DeleteFormCtrl",
+            controller: "DeleteFormCtrl as vm",
             resolve: {
                 name: function () {
                     return user.UserName;

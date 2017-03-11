@@ -32,6 +32,7 @@ namespace BikeTracker
                 .Include("~/lib/angular-chart.js/angular-chart.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/site-core")
+                .Include("~/js/site.js")
                 .Include("~/Scripts/ui/app.js")
                 .Include("~/Scripts/ui/controllers.js")
                 .Include("~/Scripts/ui/services.js"));

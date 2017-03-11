@@ -17,21 +17,21 @@
     <h4>Callsigns</h4>
     <form class="form">
         <div class="form-group small-bottom-margin">
-            <select class="form-control" name="callsign-box" id="callsign-box" ng-model="selectedCallsign">
-                <option ng-repeat="cs in callsigns | orderBy" value="{{cs}}">{{cs}}</option>
+            <select class="form-control" name="callsign-box" id="callsign-box" ng-model="vm.selectedCallsign">
+                <option ng-repeat="cs in vm.callsigns | orderBy" value="{{cs}}">{{cs}}</option>
             </select>
         </div>
         <div class="form-group small-bottom-margin">
             <div class="input-group">
-                <input type="text" class="form-control" is-open="showDate" uib-datepicker-options="dateOptions" uib-datepicker-popup="shortDate" ng-model="selectedDate" />
+                <input type="text" class="form-control" is-open="vm.showDate" uib-datepicker-options="vm.dateOptions" uib-datepicker-popup="shortDate" ng-model="vm.selectedDate" />
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    <button type="button" class="btn btn-default" ng-click="vm.openDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>
             </div>
         </div>
         <div class="btn-group-vertical full-width-button">
-            <button class="btn btn-primary full-width-button" ng-click="showDates()">Show Reports</button>
-            <button class="btn btn-default full-width-button" ng-click="downloadDates()">Download Reports</button>
+            <button class="btn btn-primary full-width-button" ng-click="vm.showDates()">Show Reports</button>
+            <button class="btn btn-default full-width-button" ng-click="vm.downloadDates()">Download Reports</button>
         </div>
     </form>
 </div>

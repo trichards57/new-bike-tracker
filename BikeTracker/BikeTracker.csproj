@@ -554,10 +554,12 @@
     <TypeScriptCompile Include="Scripts\ui\app.ts" />
     <TypeScriptCompile Include="Scripts\ui\base\base-controller.ts" />
     <TypeScriptCompile Include="Scripts\ui\base\base-modal-controller.ts" />
+    <TypeScriptCompile Include="Scripts\ui\controllers\edit-user-controller.ts" />
     <TypeScriptCompile Include="Scripts\ui\controllers\error-form-controller.ts" />
     <TypeScriptCompile Include="Scripts\ui\controllers\delete-form-controller.ts" />
     <TypeScriptCompile Include="Scripts\ui\controllers\location-report-controller.ts" />
     <TypeScriptCompile Include="Scripts\ui\controllers\control-panel-controller.ts" />
+    <TypeScriptCompile Include="Scripts\ui\controllers\admin-controller.ts" />
     <TypeScriptCompile Include="Scripts\ui\controllers\reports-controller.ts" />
     <TypeScriptCompile Include="Scripts\ui\directives\compare-to-directive.ts" />
   </ItemGroup>

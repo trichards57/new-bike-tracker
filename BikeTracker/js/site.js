@@ -14,7 +14,8 @@ var app = angular.module("app", [
 app.config(["$routeProvider", function ($routeProvider) {
         $routeProvider.when("/", {
             templateUrl: "/ControlPanel/Home",
-            controller: "ControlPanelCtrl"
+            controller: "ControlPanelCtrl",
+            controllerAs: "vm"
         }).when("/IMEIs", {
             templateUrl: "/IMEI/Home",
             controller: "IMEIListCtrl"
@@ -23,13 +24,15 @@ app.config(["$routeProvider", function ($routeProvider) {
             controller: "AdminCtrl"
         }).when("/Reports", {
             templateUrl: "/Report/Home",
-            controller: "ReportCtrl"
+            controller: "ReportCtrl",
+            controllerAs: "vm"
         }).when("/Reports/UserActivity", {
             templateUrl: "/Report/UserActivity",
             controller: "LogListCtrl"
         }).when("/Reports/Locations", {
             templateUrl: "/Report/Locations",
-            controller: "LocationReportCtrl"
+            controller: "LocationReportCtrl",
+            controllerAs: "vm"
         }).when("/Reports/Rates", {
             templateUrl: "/Report/Rates",
             controller: "CheckInRateCtrl"
@@ -212,4 +215,43 @@ var ControlPanelController = (function (_super) {
 }(BaseController));
 ControlPanelController.$inject = ["$scope", "$window", "$uibModal"];
 angular.module("app").controller("ControlPanelCtrl", ControlPanelController);
+var EditUserController = (function (_super) {
+    __extends(EditUserController, _super);
+    function EditUserController($scope, $uibModalInstance, $window, createMode, email, role) {
+        var _this = this;
+        if (createMode) {
+            _this = _super.call(this, $scope, null, $window, "New User - SJA Tracker") || this;
+            _this.email = "";
+            _this.role = "Normal";
+        }
+        else {
+            _this = _super.call(this, $scope, null, $window, "Edit User - SJA Tracker") || this;
+            _this.email = email;
+            _this.role = role;
+        }
+        _this.$uibModalInstance = $uibModalInstance;
+        return _this;
+    }
+    EditUserController.prototype.ok = function () {
+        this.$uibModalInstance.close({
+            email: this.email,
+            role: this.role
+        });
+    };
+    EditUserController.prototype.cancel = function () {
+        this.$uibModalInstance.dismiss("cancel");
+    };
+    return EditUserController;
+}(BaseController));
+EditUserController.$inject = ["$scope", "$uibModalInstance", "$window", "createMode", "email", "role"];
+angular.module("app").controller("EditUserCtrl", EditUserController);
+var AdminController = (function (_super) {
+    __extends(AdminController, _super);
+    function AdminController($scope, $window, $uibModal, User) {
+        return _super.call(this, $scope, $uibModal, $window, "Reports Control Panel - SJA Tracker") || this;
+    }
+    return AdminController;
+}(BaseController));
+AdminController.$inject = ["$scope", "$window", "$uibModal", "User"];
+//angular.module("app").controller("AdminCtrl", AdminController); 
 //# sourceMappingURL=site.js.map
