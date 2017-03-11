@@ -8,10 +8,7 @@
     "outFile": "js/site.js"
   },
   "include": [
-    "Scripts/ui/base/*.ts",
-    "Scripts/ui/directives/*ts",
-    "Scripts/ui/controllers/*ts",
-    "Scripts/ui/app.ts"
+    "Scripts/ui/**/*.ts"
   ],
   "exclude": [ "lib", "js" ],
   "compileOnSave": true
