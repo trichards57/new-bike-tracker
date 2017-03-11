@@ -550,8 +550,16 @@
     <Analyzer Include="..\packages\AWSSDK.SimpleEmail.3.3.1.5\analyzers\dotnet\cs\AWSSDK.SimpleEmail.CodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Scripts\moment.d.ts" />
     <TypeScriptCompile Include="Scripts\ui\app.ts" />
-    <TypeScriptCompile Include="Scripts\ui\compare-to-directive.ts" />
+    <TypeScriptCompile Include="Scripts\ui\base\base-controller.ts" />
+    <TypeScriptCompile Include="Scripts\ui\base\base-modal-controller.ts" />
+    <TypeScriptCompile Include="Scripts\ui\controllers\error-form-controller.ts" />
+    <TypeScriptCompile Include="Scripts\ui\controllers\delete-form-controller.ts" />
+    <TypeScriptCompile Include="Scripts\ui\controllers\location-report-controller.ts" />
+    <TypeScriptCompile Include="Scripts\ui\controllers\control-panel-controller.ts" />
+    <TypeScriptCompile Include="Scripts\ui\controllers\reports-controller.ts" />
+    <TypeScriptCompile Include="Scripts\ui\directives\compare-to-directive.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

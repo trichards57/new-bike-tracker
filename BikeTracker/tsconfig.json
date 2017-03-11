@@ -7,9 +7,11 @@
     "target": "es5",
     "outFile": "js/site.js"
   },
-  "exclude": [
-    "node_modules",
-    "wwwroot"
+  "include": [
+    "Scripts/ui/base/*.ts",
+    "Scripts/ui/directives/*ts",
+    "Scripts/ui/controllers/*ts",
+    "Scripts/ui/app.ts"
   ],
   "compileOnSave": true
 }
