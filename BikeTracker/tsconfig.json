@@ -5,10 +5,10 @@
     "removeComments": false,
     "sourceMap": true,
     "target": "es5",
-    "outFile": "js/site.js"
+    "outDir": "js"
   },
   "include": [
-    "Scripts/ui/**/*.ts"
+    "Scripts/**/*.ts"
   ],
   "exclude": [ "lib", "js" ],
   "compileOnSave": true

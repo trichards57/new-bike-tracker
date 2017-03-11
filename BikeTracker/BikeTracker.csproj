@@ -400,7 +400,6 @@
     <None Include="docs\get-landmarks-api.rst" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include=".bowerrc" />
     <Content Include="Content\theme.less" />
     <Content Include="Content\variables.less" />
     <None Include="compilerconfig.json" />
@@ -408,8 +407,19 @@
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <Content Include="Content\site.less" />
-    <Content Include="js\site.js" />
-    <Content Include="js\tests.js" />
+    <Content Include="js\tests\controllers\delete-form-controller.test.js" />
+    <Content Include="js\tests\controllers\error-form-controller.test.js" />
+    <Content Include="js\ui\app.js" />
+    <Content Include="js\ui\base\base-controller.js" />
+    <Content Include="js\ui\base\base-modal-controller.js" />
+    <Content Include="js\ui\controllers\admin-controller.js" />
+    <Content Include="js\ui\controllers\control-panel-controller.js" />
+    <Content Include="js\ui\controllers\delete-form-controller.js" />
+    <Content Include="js\ui\controllers\edit-user-controller.js" />
+    <Content Include="js\ui\controllers\error-form-controller.js" />
+    <Content Include="js\ui\controllers\location-report-controller.js" />
+    <Content Include="js\ui\controllers\reports-controller.js" />
+    <Content Include="js\ui\directives\compare-to-directive.js" />
     <Content Include="karma.conf.js" />
     <Content Include="docs\index.rst" />
     <Content Include="docs\make.bat" />
@@ -438,8 +448,19 @@
     <Content Include="lib\angular-resource\angular-resource.min.js.map" />
     <Content Include="lib\jquery\jquery.min.map" />
     <Content Include="lib\jquery\jquery.slim.min.map" />
-    <Content Include="js\site.js.map" />
-    <Content Include="js\tests.js.map" />
+    <Content Include="js\tests\controllers\delete-form-controller.test.js.map" />
+    <Content Include="js\tests\controllers\error-form-controller.test.js.map" />
+    <Content Include="js\ui\app.js.map" />
+    <Content Include="js\ui\base\base-controller.js.map" />
+    <Content Include="js\ui\base\base-modal-controller.js.map" />
+    <Content Include="js\ui\controllers\admin-controller.js.map" />
+    <Content Include="js\ui\controllers\control-panel-controller.js.map" />
+    <Content Include="js\ui\controllers\delete-form-controller.js.map" />
+    <Content Include="js\ui\controllers\edit-user-controller.js.map" />
+    <Content Include="js\ui\controllers\error-form-controller.js.map" />
+    <Content Include="js\ui\controllers\location-report-controller.js.map" />
+    <Content Include="js\ui\controllers\reports-controller.js.map" />
+    <Content Include="js\ui\directives\compare-to-directive.js.map" />
     <None Include="package.json" />
     <Content Include="lib\angular-route\angular-route.js" />
     <Content Include="lib\angular-route\angular-route.min.js" />
@@ -516,7 +537,6 @@
     <None Include="Properties\PublishProfiles\File.pubxml" />
     <Content Include="Service References\Application Insights\ConnectedService.json" />
     <Content Include="tsconfig.json" />
-    <Content Include="Scripts\tests\tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

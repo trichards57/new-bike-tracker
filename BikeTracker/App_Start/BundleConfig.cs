@@ -33,7 +33,10 @@ namespace BikeTracker
 
             bundles.Add(new ScriptBundle("~/bundles/site-core")
                 .Include("~/js/site.js")
-                .Include("~/Scripts/ui/app.js")
+                .Include("~/js/ui/*.js")
+                .Include("~/js/ui/base/*.js")
+                .Include("~/js/ui/controllers/*.js")
+                .Include("~/js/ui/directives/*.js")
                 .Include("~/Scripts/ui/controllers.js")
                 .Include("~/Scripts/ui/services.js"));
 
