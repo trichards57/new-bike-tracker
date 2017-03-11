@@ -1,9 +1,4 @@
-﻿/*jslint
-    browser: true
-*/
-/*global angular */
-
-var app = angular.module("app", [
+﻿let app = angular.module("app", [
     "ngRoute",
     "ngResource",
     "ui.validate",
@@ -12,8 +7,7 @@ var app = angular.module("app", [
     "chart.js"
 ]);
 
-app.config(["$routeProvider", function ($routeProvider) {
-    "use strict";
+app.config(["$routeProvider", function ($routeProvider: angular.route.IRouteProvider) {
     $routeProvider.when("/", {
         templateUrl: "/ControlPanel/Home",
         controller: "ControlPanelCtrl"
@@ -42,24 +36,3 @@ app.config(["$routeProvider", function ($routeProvider) {
         redirectTo: "/"
     });
 }]);
-
-var compareTo = function () {
-    "use strict";
-    return {
-        require: "ngModel",
-        scope: {
-            otherModelValue: "=compareTo"
-        },
-        link: function (scope, element, attributes, ngModel) {
-            ngModel.$validators.compareTo = function (modelValue) {
-                return modelValue === scope.otherModelValue;
-            };
-
-            scope.$watch("otherModelValue", function () {
-                ngModel.$validate();
-            });
-        }
-    };
-};
-
-app.directive("compareTo", compareTo);
