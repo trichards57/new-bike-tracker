@@ -36,7 +36,7 @@ environment:
   COVERALLS_REPO_TOKEN:
     secure: Vw+qs3QR9AkkoHIIZUqHX2oaD2a6wmb+fhCByIEKmFuQBabbl7H8bra+jkdoa/Tr
   Production_Build_Path:
-    secure: YWpSkUKKRmU10IaqzStD0v9ioYz9eQ4QZeDNme54/h3iaCjGcXlmIgmgk8oGGfP7kKgdUJIhEiJ6AtoTqSggQ5JHM0yIcCCCSxi+Qt2VZ1byohifJCuR2lpXwYnN7nxfW3fp0ptrZEzi754kyKFaVU9NQk4Fohc6u2U+U+VM67g=]
+    secure: YWpSkUKKRmU10IaqzStD0v9ioYz9eQ4QZeDNme54/h3iaCjGcXlmIgmgk8oGGfP7kKgdUJIhEiJ6AtoTqSggQ5JHM0yIcCCCSxi+Qt2VZ1byohifJCuR2lpXwYnN7nxfW3fp0ptrZEzi754kyKFaVU9NQk4Fohc6u2U+U+VM67g=
   nodejs_version: "6"
 deploy:
 - provider: GitHub
