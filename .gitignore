@@ -225,3 +225,5 @@ Thumbs.db
 /tools/xunit.runner.console
 /reports
 /test-results.xml
+/BikeTracker/js/tests.js
+/BikeTracker/js/tests.js.map

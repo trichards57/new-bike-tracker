@@ -43,30 +43,57 @@ app.config(["$routeProvider", function ($routeProvider) {
             redirectTo: "/"
         });
     }]);
-var CompareToDirective = (function () {
-    function CompareToDirective() {
-        this.scope = {
-            otherModelValue: "=compareTo"
-        };
+var BaseController = (function () {
+    function BaseController($scope, $uibModal, $window, title) {
+        this.$uibModal = $uibModal;
+        this.previousTitle = $window.document.title;
+        $window.document.title = title;
+        var vm = this;
+        $scope.$on("$destroy", function () {
+            $window.document.title = vm.previousTitle;
+        });
     }
-    CompareToDirective.prototype.link = function (scope, element, attributes, ngModel) {
-        var val = ngModel.$validators;
-        val.compareTo = function (modelValue) {
-            return modelValue === scope.otherModelValue;
-        };
-        scope.$watch("otherModelValue", function () {
-            ngModel.$validate();
+    BaseController.prototype.showError = function (title, message) {
+        this.$uibModal.open({
+            animation: true,
+            templateUrl: "/Dialog/ErrorForm",
+            controller: "ErrorFormCtrl as vm",
+            resolve: {
+                title: function () {
+                    return title;
+                },
+                message: function () {
+                    return message;
+                }
+            }
         });
     };
-    CompareToDirective.Factory = function () {
-        var directive = function () {
-            return new CompareToDirective();
-        };
-        return directive;
-    };
-    return CompareToDirective;
+    ;
+    return BaseController;
 }());
-app.directive("compareTo", CompareToDirective.Factory());
+var BaseModalController = (function () {
+    function BaseModalController() {
+    }
+    return BaseModalController;
+}());
+var AdminController = (function (_super) {
+    __extends(AdminController, _super);
+    function AdminController($scope, $window, $uibModal, User) {
+        return _super.call(this, $scope, $uibModal, $window, "Reports Control Panel - SJA Tracker") || this;
+    }
+    return AdminController;
+}(BaseController));
+AdminController.$inject = ["$scope", "$window", "$uibModal", "User"];
+//angular.module("app").controller("AdminCtrl", AdminController); 
+var ControlPanelController = (function (_super) {
+    __extends(ControlPanelController, _super);
+    function ControlPanelController($scope, $window, $uibModal) {
+        return _super.call(this, $scope, $uibModal, $window, "Administrator Control Panel - SJA Tracker") || this;
+    }
+    return ControlPanelController;
+}(BaseController));
+ControlPanelController.$inject = ["$scope", "$window", "$uibModal"];
+angular.module("app").controller("ControlPanelCtrl", ControlPanelController);
 var DeleteFormController = (function () {
     function DeleteFormController($modalInstance, name) {
         this.$modalInstance = $modalInstance;
@@ -82,6 +109,36 @@ var DeleteFormController = (function () {
 }());
 DeleteFormController.$inject = ["$uibModalInstance", "name"];
 angular.module("app").controller("DeleteFormCtrl", DeleteFormController);
+var EditUserController = (function (_super) {
+    __extends(EditUserController, _super);
+    function EditUserController($scope, $uibModalInstance, $window, createMode, email, role) {
+        var _this = this;
+        if (createMode) {
+            _this = _super.call(this, $scope, null, $window, "New User - SJA Tracker") || this;
+            _this.email = "";
+            _this.role = "Normal";
+        }
+        else {
+            _this = _super.call(this, $scope, null, $window, "Edit User - SJA Tracker") || this;
+            _this.email = email;
+            _this.role = role;
+        }
+        _this.$uibModalInstance = $uibModalInstance;
+        return _this;
+    }
+    EditUserController.prototype.ok = function () {
+        this.$uibModalInstance.close({
+            email: this.email,
+            role: this.role
+        });
+    };
+    EditUserController.prototype.cancel = function () {
+        this.$uibModalInstance.dismiss("cancel");
+    };
+    return EditUserController;
+}(BaseController));
+EditUserController.$inject = ["$scope", "$uibModalInstance", "$window", "createMode", "email", "role"];
+angular.module("app").controller("EditUserCtrl", EditUserController);
 var ErrorFormController = (function () {
     function ErrorFormController($modalInstance, title, message) {
         this.$modalInstance = $modalInstance;
@@ -164,39 +221,6 @@ var LocationReportController = (function (_super) {
 }(BaseController));
 LocationReportController.$inject = ["$scope", "$window", "$uibModal", "$http"];
 angular.module("app").controller("LocationReportCtrl", LocationReportController);
-var BaseModalController = (function () {
-    function BaseModalController() {
-    }
-    return BaseModalController;
-}());
-var BaseController = (function () {
-    function BaseController($scope, $uibModal, $window, title) {
-        this.$uibModal = $uibModal;
-        this.previousTitle = $window.document.title;
-        $window.document.title = title;
-        var vm = this;
-        $scope.$on("$destroy", function () {
-            $window.document.title = vm.previousTitle;
-        });
-    }
-    BaseController.prototype.showError = function (title, message) {
-        this.$uibModal.open({
-            animation: true,
-            templateUrl: "/Dialog/ErrorForm",
-            controller: "ErrorFormCtrl as vm",
-            resolve: {
-                title: function () {
-                    return title;
-                },
-                message: function () {
-                    return message;
-                }
-            }
-        });
-    };
-    ;
-    return BaseController;
-}());
 var ReportsController = (function (_super) {
     __extends(ReportsController, _super);
     function ReportsController($scope, $window, $uibModal) {
@@ -206,52 +230,28 @@ var ReportsController = (function (_super) {
 }(BaseController));
 ReportsController.$inject = ["$scope", "$window", "$uibModal"];
 angular.module("app").controller("ReportCtrl", ReportsController);
-var ControlPanelController = (function (_super) {
-    __extends(ControlPanelController, _super);
-    function ControlPanelController($scope, $window, $uibModal) {
-        return _super.call(this, $scope, $uibModal, $window, "Administrator Control Panel - SJA Tracker") || this;
+var CompareToDirective = (function () {
+    function CompareToDirective() {
+        this.scope = {
+            otherModelValue: "=compareTo"
+        };
     }
-    return ControlPanelController;
-}(BaseController));
-ControlPanelController.$inject = ["$scope", "$window", "$uibModal"];
-angular.module("app").controller("ControlPanelCtrl", ControlPanelController);
-var EditUserController = (function (_super) {
-    __extends(EditUserController, _super);
-    function EditUserController($scope, $uibModalInstance, $window, createMode, email, role) {
-        var _this = this;
-        if (createMode) {
-            _this = _super.call(this, $scope, null, $window, "New User - SJA Tracker") || this;
-            _this.email = "";
-            _this.role = "Normal";
-        }
-        else {
-            _this = _super.call(this, $scope, null, $window, "Edit User - SJA Tracker") || this;
-            _this.email = email;
-            _this.role = role;
-        }
-        _this.$uibModalInstance = $uibModalInstance;
-        return _this;
-    }
-    EditUserController.prototype.ok = function () {
-        this.$uibModalInstance.close({
-            email: this.email,
-            role: this.role
+    CompareToDirective.prototype.link = function (scope, element, attributes, ngModel) {
+        var val = ngModel.$validators;
+        val.compareTo = function (modelValue) {
+            return modelValue === scope.otherModelValue;
+        };
+        scope.$watch("otherModelValue", function () {
+            ngModel.$validate();
         });
     };
-    EditUserController.prototype.cancel = function () {
-        this.$uibModalInstance.dismiss("cancel");
+    CompareToDirective.Factory = function () {
+        var directive = function () {
+            return new CompareToDirective();
+        };
+        return directive;
     };
-    return EditUserController;
-}(BaseController));
-EditUserController.$inject = ["$scope", "$uibModalInstance", "$window", "createMode", "email", "role"];
-angular.module("app").controller("EditUserCtrl", EditUserController);
-var AdminController = (function (_super) {
-    __extends(AdminController, _super);
-    function AdminController($scope, $window, $uibModal, User) {
-        return _super.call(this, $scope, $uibModal, $window, "Reports Control Panel - SJA Tracker") || this;
-    }
-    return AdminController;
-}(BaseController));
-AdminController.$inject = ["$scope", "$window", "$uibModal", "User"];
-//angular.module("app").controller("AdminCtrl", AdminController); 
+    return CompareToDirective;
+}());
+app.directive("compareTo", CompareToDirective.Factory());
 //# sourceMappingURL=site.js.map

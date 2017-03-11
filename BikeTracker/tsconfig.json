@@ -13,5 +13,6 @@
     "Scripts/ui/controllers/*ts",
     "Scripts/ui/app.ts"
   ],
+  "exclude": [ "lib", "js" ],
   "compileOnSave": true
 }

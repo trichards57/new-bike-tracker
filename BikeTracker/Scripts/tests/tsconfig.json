@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es5",
+    "outFile": "../../js/tests.js",
+    "typeRoots": [ "../../node_modules/@types" ]
+  },
+  "include": [
+    "../ui/base/*.ts",
+    "../ui/directives/*ts",
+    "../ui/controllers/*ts",
+    "../ui/app.ts",
+
+    "controllers/*.ts"
+  ],
+  "compileOnSave": true
+}

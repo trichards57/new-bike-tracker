@@ -409,6 +409,7 @@
     </None>
     <Content Include="Content\site.less" />
     <Content Include="js\site.js" />
+    <Content Include="js\tests.js" />
     <Content Include="karma.conf.js" />
     <Content Include="docs\index.rst" />
     <Content Include="docs\make.bat" />
@@ -438,6 +439,7 @@
     <Content Include="lib\jquery\jquery.min.map" />
     <Content Include="lib\jquery\jquery.slim.min.map" />
     <Content Include="js\site.js.map" />
+    <Content Include="js\tests.js.map" />
     <None Include="package.json" />
     <Content Include="lib\angular-route\angular-route.js" />
     <Content Include="lib\angular-route\angular-route.min.js" />
@@ -463,8 +465,8 @@
     <Content Include="lib\jquery\jquery.slim.min.js" />
     <Content Include="lib\moment\moment.js" />
     <Content Include="lib\moment\moment.min.js" />
-    <Content Include="Scripts\tests\controllers.ErrorFormCtrl.test.js" />
-    <Content Include="Scripts\tests\controllers.DeleteFormCtrl.test.js" />
+    <TypeScriptCompile Include="Scripts\tests\controllers\error-form-controller.test.ts" />
+    <TypeScriptCompile Include="Scripts\tests\controllers\delete-form-controller.test.ts" />
     <Content Include="Scripts\Site.js" />
     <Content Include="Scripts\ui\controllers.js" />
     <Content Include="Scripts\ui\services.js" />
@@ -514,6 +516,7 @@
     <None Include="Properties\PublishProfiles\File.pubxml" />
     <Content Include="Service References\Application Insights\ConnectedService.json" />
     <Content Include="tsconfig.json" />
+    <Content Include="Scripts\tests\tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -3,23 +3,25 @@
   "name": "bike-tracker",
   "private": true,
   "devDependencies": {
-    "jasmine-core": "^2.4.1",
-    "karma": "~1.1.2",
-    "karma-chrome-launcher": "~1.0.1",
-    "karma-htmlfile-reporter": "~0.3.4",
-    "karma-jasmine": "~1.0.2",
-    "karma-junit-reporter": "~1.1.0",
-    "karma-coverage": "~1.1.1",
     "angular-mocks": "~1.6.3",
     "copyfiles": "~1.2.0",
+    "jasmine-core": "~2.5.2",
+    "karma": "~1.5.0",
+    "karma-chrome-launcher": "~2.0.0",
+    "karma-coverage": "~1.1.1",
+    "karma-htmlfile-reporter": "~0.3.5",
+    "karma-jasmine": "~1.1.0",
+    "karma-junit-reporter": "~1.2.0",
+    "karma-typescript": "~2.1.7",
     "rimraf": "~2.6.1"
   },
   "dependencies": {
     "@types/angular": "^1.6.9",
+    "@types/angular-mocks": "^1.5.9",
     "@types/angular-resource": "^1.5.8",
     "@types/angular-route": "^1.3.3",
     "@types/angular-ui-bootstrap": "^0.13.40",
-    "@types/bingmaps": "^7.0.21",
+    "@types/jasmine": "^2.5.45",
     "@types/moment": "^2.13.0",
     "angular": "1.6.3",
     "angular-chart.js": "1.1.1",
@@ -33,7 +35,8 @@
     "chart.js": "2.5.0",
     "jquery": "3.1.1",
     "jquery-validation": "1.16.0",
-    "moment": "2.17.1"
+    "moment": "2.17.1",
+    "typescript": "^2.2.1"
   },
   "scripts": {
     "postinstall:angular": "copyfiles -u 1 node_modules/angular/angular*.js* ./lib",

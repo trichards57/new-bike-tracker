@@ -8,16 +8,30 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['jasmine'],
+        frameworks: ['jasmine', 'karma-typescript'],
+
+        browsers: ['Chrome'],
 
         // list of files / patterns to load in the browser
         files: [
-            'lib/jquery/dist/jquery.js',
+            'lib/jquery/jquery.js',
+            'lib/chart.js/Chart.js',
             'lib/angular/angular.js',
             'node_modules/angular-mocks/angular-mocks.js',
             'lib/angular-resource/angular-resource.js',
+            'lib/angular-route/angular-route.js',
+            'lib/angular-ui-validate/validate.js',
+            'lib/angular-ui-bootstrap/ui-bootstrap.js',
+            'lib/angular-chart.js/angular-chart.js',
+
             'Scripts/ui/*.js',
-            'Scripts/tests/*.js'
+
+            'Scripts/ui/app.ts',
+            'Scripts/ui/base/*.ts',
+            'Scripts/ui/controllers/*.ts',
+            'Scripts/ui/directives/*.ts',
+
+            'Scripts/tests/**/*.ts'
         ],
 
         // list of files to exclude
@@ -27,16 +41,17 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'Scripts/ui/*.js': ['coverage']
+            '**/*.ts': ['karma-typescript']
         },
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress', 'html', 'junit', 'coverage'],
+        reporters: ['progress', 'junit', 'html', 'karma-typescript'],
 
         htmlReporter: {
-            outputFile: '../reports/karma-results/results.html'
+            outputDir: '../reports/karma-results/html', // where to put the reports
+            focusOnFailures: true, // reports show failures on start
         },
 
         junitReporter: {
@@ -44,11 +59,24 @@ module.exports = function (config) {
             useBrowserName: true, // add browser name to report and classes names
         },
 
-        coverageReporter: {
-            dir: '../reports/karma-results/',
-            reporters: [
-                { type: 'cobertura', subdir: 'xml' }
-            ]
+        karmaTypescriptConfig: {
+            compilerOptions: {
+                target: "ES5",
+                module: "amd",
+                noImplicitAny: true,
+                noImplicitReturns: true,
+                noFallthroughCasesInSwitch: true,
+                sourceMap: true,
+                suppressImplicitAnyIndexErrors: true
+            },
+            reports: {
+                'html': '../reports/karma-typescript-results',
+                'cobertura': {
+                    'directory': '../reports/karma-typescript-results',
+                    "subdirectory": "cobertura",
+                    'filename': 'coverage.xml'
+                }
+            },
         },
 
         // web server port
@@ -63,10 +91,6 @@ module.exports = function (config) {
 
         // enable / disable watching file and executing tests whenever any file changes
         autoWatch: true,
-
-        // start these browsers
-        // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome'],
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
