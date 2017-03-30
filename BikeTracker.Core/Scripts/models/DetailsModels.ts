@@ -1,12 +1,12 @@
 // Model Generator v0.3.26
 interface ICallsignRecordDetails {
     callsign: string;
-    createdBy: ApplicationUser;
+    createdBy: any;
     createdById: string;
     createdDate: string;
     id: number;
     locationRecords: ILocationRecordDetails[];
-    updatedBy: ApplicationUser;
+    updatedBy: any;
     updatedById: string;
     updatedDate: string;
     vehicleType: VehicleType;
@@ -14,11 +14,10 @@ interface ICallsignRecordDetails {
 
 // Model Generator v0.3.26
 interface ILocationRecordDetails {
-    callsign: CallsignRecord;
+    callsign: ICallsignRecordDetails;
     callsignId: number;
     id: number;
-    latitude: decimal;
-    longitude: decimal;
+    latitude: number;
+    longitude: number;
     readingTime: string;
 }
-
