@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using BikeTracker.Core.Services.Interfaces;
 using System.Threading.Tasks;
 
 namespace BikeTracker.Core.Services

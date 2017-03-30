@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BikeTracker.Core.Models;
+using BikeTracker.Core.Models.LocationModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using BikeTracker.Core.Models;
 
 namespace BikeTracker.Core.Data
 {
@@ -14,6 +11,9 @@ namespace BikeTracker.Core.Data
             : base(options)
         {
         }
+
+        public DbSet<CallsignRecord> CallsignRecords { get; set; }
+        public DbSet<LocationRecord> LocationRecords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

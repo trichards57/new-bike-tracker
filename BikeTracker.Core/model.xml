@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<models modelNamespace="LocationModels" rootNamespace="BikeTracker.Core.Models" viewModelNamespace="LocationViewModels" typescriptFolder="Scripts/models" modelsFolder="Models">
+  <model name="CallsignRecord" summary="true" create="true" detail="true">
+    <property name="Id" type="int" detail="true" summary="true" />
+    <property name="Callsign" type="string" required="true" detail="true" create="true" summary="true" regex="^[A-Z]{2}((0[1-9])|[1-9][0-9]{1,2})$" />
+    <property name="VehicleType" type="VehicleType" required="true" detail="true" create="true" summary="true" email="true" />
+    <property name="CreatedDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="UpdatedDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="CreatedById" type="string" required="true" detail="true" />
+    <property name="CreatedBy" type="ApplicationUser" required="true" detail="true" />
+    <property name="UpdatedById" type="string" required="true" detail="true" />
+    <property name="UpdatedBy" type="ApplicationUser" required="true" detail="true" />
+    <property name="LocationRecords" type="LocationRecord" list="true" detail="true" />
+  </model>
+  <model name="LocationRecord" detail="true">
+    <property name="Id" type="int" detail="true" required="true" />
+    <property name="CallsignId" type="int" detail="true" required="true" />
+    <property name="Callsign" type="CallsignRecord" detail="true" required="true" />
+    <property name="Latitude" type="decimal" detail="true" required="true" />
+    <property name="Longitude" type="decimal" detail="true" required="true" />
+    <property name="ReadingTime" type="DateTimeOffset" detail="true" required="true" />
+  </model>
+  <!--<model name="Landmark" detail="true">
+    <property name="Id" type="int" detail="true" required="true" />
+    <property name="EventId" type="int" detail="true" required="true" />
+    <property name="Name" type="int" detail="true" required="true" />
+    <property name="Latitude" type="decimal" detail="true" required="true" />
+    <property name="Longitude" type="decimal" detail="true" required="true" />
+    <property name="CreatedDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="UpdatedDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="CreatedBy" type="string" required="true" detail="true" />
+    <property name="UpdatedBy" type="string" required="true" detail="true" />
+  </model>
+  <model name="Event" summary="true" create="true" detail="true">
+    <property name="Id" type="int" detail="true" summary="true" />
+    <property name="Name" type="int" detail="true" required="true" />
+    <property name="StartDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="EndDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="CreatedDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="UpdatedDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="CreatedBy" type="string" required="true" detail="true" />
+    <property name="UpdatedBy" type="string" required="true" detail="true" />
+  </model>
+  <model name="Route" detail="true">
+    <property name="Id" type="int" detail="true" />
+    <property name="EventId" type="int" detail="true" summary="true" />
+    <property name="Name" type="int" detail="true" required="true" />
+    <property name="StartDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="EndDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="CreatedDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="UpdatedDate" type="DateTimeOffset" required="true" detail="true" />
+    <property name="CreatedBy" type="string" required="true" detail="true" />
+    <property name="UpdatedBy" type="string" required="true" detail="true" />
+  </model>
+  <model name="RoutePoint" summary="true" create="true" detail="true">
+    <property name="Id" type="int" detail="true" summary="true" />
+    <property name="RouteId" type="int" detail="true" summary="true" />
+    <property name="Number" type="int" detail="true" summary="true" />
+    <property name="Latitude" type="decimal" detail="true" required="true" />
+    <property name="Longitude" type="decimal" detail="true" required="true" />
+  </model>-->
+</models>
