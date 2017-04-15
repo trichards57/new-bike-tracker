@@ -1,0 +1,8 @@
+[ignore]
+src/js/**/*.jsx
+
+[include]
+
+[libs]
+
+[options]

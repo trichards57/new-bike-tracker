@@ -1,0 +1,38 @@
+﻿$sja-light-green: rgb(0,159,77);
+$sja-dark-green: rgb(0,122,83);
+$sja-yellow: rgb(225,224,0);
+$sja-gray: rgb(151,153,155);
+
+.bg-sja-dark-green {
+    background-color: $sja-dark-green;
+}
+
+.navbar-toggler:focus {
+    outline-color: $sja-light-green;
+}
+
+.btn-sja-dark-green {
+    color: white;
+    background-color: $sja-dark-green;
+    border-color: $sja-dark-green;
+
+    &:hover, &:focus {
+        color: white;
+        background-color: $sja-light-green;
+        border-color: $sja-light-green;
+    }
+}
+
+@include media-breakpoint-only(sm) {
+    .card-deck.front-page {
+        .card {
+            &:last-child {
+                margin-left: 0;
+            }
+
+            &:nth-last-child(2) {
+                margin-right: 0;
+            }
+        }
+    }
+}
