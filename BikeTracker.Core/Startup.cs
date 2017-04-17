@@ -1,14 +1,19 @@
 ﻿using BikeTracker.Core.Data;
 using BikeTracker.Core.Models;
+using BikeTracker.Core.Models.LocationModels;
 using BikeTracker.Core.Services;
 using BikeTracker.Core.Services.Interfaces;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using WebsiteHelpers.Interfaces;
 
 namespace BikeTracker.Core
 {
@@ -34,7 +39,8 @@ namespace BikeTracker.Core
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            IAntiforgery antiforgery)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -50,6 +56,18 @@ namespace BikeTracker.Core
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.Use(next => context =>
+            {
+                if (string.Equals(context.Request.Path.Value, "/", StringComparison.OrdinalIgnoreCase))
+                {
+                    // We can send the request token as a JavaScript-readable cookie, and Angular will use it by default.
+                    var tokens = antiforgery.GetAndStoreTokens(context);
+                    context.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken, new CookieOptions() { HttpOnly = false });
+                }
+
+                return next(context);
+            });
+
             app.UseStaticFiles();
 
             app.UseIdentity();
@@ -61,6 +79,7 @@ namespace BikeTracker.Core
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapSpaFallbackRoute("spa-fallback", new { controller = "Home", action = "Index" });
             });
         }
 
@@ -80,6 +99,9 @@ namespace BikeTracker.Core
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.AddTransient<IItemService<CallsignRecord>, CallsignService>();
+            services.AddTransient<IItemService<LocationRecord>, LocationRecordService>();
         }
     }
 }

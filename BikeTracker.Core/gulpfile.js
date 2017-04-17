@@ -26,8 +26,8 @@ const scssSources = [
     './src/sass/theme.scss',
 ]
 
-gulp.task('default', ['build-vendor', 'build-app', 'build-sass', 'lint']);
-gulp.task('release', ['release-vendor', 'release-app', 'release-sass']);
+gulp.task('default', ['build-vendor', 'build-app', 'build-sass', 'build-fonts', 'lint']);
+gulp.task('release', ['release-vendor', 'release-app', 'release-sass', 'build-fonts']);
 
 gulp.task('lint', (cb) => {
     pump([
@@ -53,7 +53,8 @@ gulp.task('build-sass', (cb) => {
         sass({
             includePaths: [
                 './src/sass',
-                './node_modules/bootstrap/scss'
+                './node_modules/bootstrap/scss',
+                './node_modules/font-awesome/scss'
             ],
             sourceMap: true
         }),
@@ -84,6 +85,13 @@ gulp.task('build-app', (cb) => {
     ], cb);
 });
 
+gulp.task('build-fonts', (cb) => {
+    pump([
+        gulp.src('./node_modules/font-awesome/fonts/*'),
+        gulp.dest('./wwwroot/fonts')
+    ], cb);
+});
+
 gulp.task('build-vendor', (cb) => {
     var b = browserify({
         // generate source maps in non-production environment
@@ -92,6 +100,9 @@ gulp.task('build-vendor', (cb) => {
 
     // resolve npm modules
     getNPMPackageIds().forEach(function (id) {
+        if (id === "font-awesome")
+            return;
+
         b.require(nodeResolve.sync(id), { expose: id });
     });
 

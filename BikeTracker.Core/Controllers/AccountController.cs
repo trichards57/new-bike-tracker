@@ -201,18 +201,18 @@ namespace BikeTracker.Core.Controllers
             return View();
         }
 
-        //
-        // GET: /Account/Login
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login(string returnUrl = null)
-        {
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.Authentication.SignOutAsync(_externalCookieScheme);
+        ////
+        //// GET: /Account/Login
+        //[HttpGet]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> Login(string returnUrl = null)
+        //{
+        //    // Clear the existing external cookie to ensure a clean login process
+        //    await HttpContext.Authentication.SignOutAsync(_externalCookieScheme);
 
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
-        }
+        //    ViewData["ReturnUrl"] = returnUrl;
+        //    return View();
+        //}
 
         //
         // POST: /Account/Login
@@ -239,12 +239,12 @@ namespace BikeTracker.Core.Controllers
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning(2, "User account locked out.");
-                    return View("Lockout");
+                    return Redirect("/app/login?error=locked-out");
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model);
+                    return Redirect("/app/login?error=invalid");
                 }
             }
 

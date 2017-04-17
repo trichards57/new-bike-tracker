@@ -10,7 +10,7 @@ export class Home extends React.Component {
                 <Jumbotron>
                     <h1 className="display-3">SJA Tracker</h1>
                     <p className="lead">Welcome to the St Ambulance SWR Central District Tracker</p>
-                    <Link to="/Login" className="btn btn-lg btn-sja-dark-green">Log in »</Link>
+                    <Link to="/app/login" className="btn btn-lg btn-sja-dark-green">Log in »</Link>
                 </Jumbotron>
 
                 <CardDeck className="front-page">

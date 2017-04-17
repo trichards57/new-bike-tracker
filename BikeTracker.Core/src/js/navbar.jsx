@@ -36,7 +36,7 @@ export class MainNav extends React.Component {
                     </Nav>
                     <Nav navbar className="ml-auto">
                         <NavItem>
-                            <Link className="nav-link" to="/Login">Log in</Link>
+                            <Link className="nav-link" to="/app/login">Log in</Link>
                         </NavItem>
                     </Nav>
                 </Collapse>
