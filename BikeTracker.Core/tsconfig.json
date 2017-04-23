@@ -2,12 +2,13 @@
   "compilerOptions": {
     "allowJs": true,
     "target": "es5",
-    "module": "amd",
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "suppressImplicitAnyIndexErrors": true,
-    "outFile": "./wwwroot/js/site.js"
+    "outFile": "./wwwroot/js/site.js",
+    "jsx": "react",
+    "lib": [ "dom", "es5", "scripthost", "es2015.promise" ]
   },
   "compileOnSave": true,
   "include": [ "./Scripts/**/*" ]

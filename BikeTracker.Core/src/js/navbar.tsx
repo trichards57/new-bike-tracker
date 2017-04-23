@@ -1,9 +1,19 @@
-﻿import React from 'react';
+﻿import * as React from 'react';
 import { Navbar, NavbarToggler, NavbarBrand, Collapse, Nav, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
-export class MainNav extends React.Component {
-    constructor(props) {
+interface IMainNavProps {
+    name: string;
+    authenticated: boolean;
+    onLogout?: () => void;
+}
+
+interface IMainNavState {
+    isOpen: boolean;
+}
+
+export class MainNav extends React.Component<IMainNavProps, IMainNavState> {
+    constructor(props: IMainNavProps) {
         super(props);
 
         this.state = {
@@ -18,6 +28,26 @@ export class MainNav extends React.Component {
     }
 
     render() {
+        let loginElement;
+
+        if (this.props.authenticated) {
+            loginElement = [
+                <NavItem key="hello">
+                    <Link className="nav-link" to="/profile">
+                        Hello {this.props.name}
+                    </Link>
+                </NavItem>,
+                <NavItem key="logout">
+                    <NavLink href="/" onClick={() => this.props.onLogout()}>Logout</NavLink>
+                </NavItem>
+            ];
+        }
+        else {
+            loginElement = <NavItem>
+                <Link className="nav-link" to="/app/login">Log in</Link>
+            </NavItem>;
+        }
+
         return (
             <Navbar color="sja-dark-green" inverse toggleable>
                 <NavbarToggler right onClick={() => this.toggle()} />
@@ -35,9 +65,7 @@ export class MainNav extends React.Component {
                         </NavItem>
                     </Nav>
                     <Nav navbar className="ml-auto">
-                        <NavItem>
-                            <Link className="nav-link" to="/app/login">Log in</Link>
-                        </NavItem>
+                        {loginElement}
                     </Nav>
                 </Collapse>
             </Navbar>);

@@ -3,44 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using BikeTracker.Core.Models.AccountViewModels;
+using Microsoft.AspNetCore.Identity;
+using BikeTracker.Core.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BikeTracker.Core.Controllers.Api
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]"), Authorize]
     public class AccountController : Controller
     {
-        // GET: api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public AccountController(UserManager<ApplicationUser> userManager)
         {
-            return new string[] { "value1", "value2" };
+            _userManager = userManager;
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("whoami"), AllowAnonymous]
+        public async Task<IActionResult> WhoAmI()
         {
-            return "value";
-        }
+            var res = new WhoAmIModel
+            {
+                Authenticated = User.Identity.IsAuthenticated
+            };
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
+            if (res.Authenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+                res.RealName = user.RealName;
+                res.Role = await _userManager.GetRolesAsync(user);
+                res.UserName = user.UserName;
+            }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return Ok(res);
         }
     }
 }

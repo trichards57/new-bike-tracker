@@ -1,4 +1,5 @@
 ﻿using BikeTracker.Core.Data;
+using BikeTracker.Core.Middleware;
 using BikeTracker.Core.Models;
 using BikeTracker.Core.Models.LocationModels;
 using BikeTracker.Core.Services;
@@ -7,12 +8,17 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
+using System.Threading.Tasks;
 using WebsiteHelpers.Interfaces;
 
 namespace BikeTracker.Core
@@ -56,23 +62,57 @@ namespace BikeTracker.Core
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.Use(next => context =>
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                if (string.Equals(context.Request.Path.Value, "/", StringComparison.OrdinalIgnoreCase))
-                {
-                    // We can send the request token as a JavaScript-readable cookie, and Angular will use it by default.
-                    var tokens = antiforgery.GetAndStoreTokens(context);
-                    context.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken, new CookieOptions() { HttpOnly = false });
-                }
+                var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                context.Database.Migrate();
 
-                return next(context);
-            });
+                var userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+                var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+                var seederSettings = Configuration.GetSection("DataSeeder").Get<DataSeederSettings>();
+
+                var res = DataSeeder.EnsureSeedUsers(userManager, roleManager, Options.Create(seederSettings));
+                res.Wait();
+            }
 
             app.UseStaticFiles();
 
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
+            var jwtConfig = Configuration.GetSection("JWT");
+            var secretKey = jwtConfig.GetValue<string>("Secret");
+            var issuer = jwtConfig.GetValue<string>("Issuer");
+            var audience = jwtConfig.GetValue<string>("Audience");
+
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+                ValidateIssuer = true,
+                ValidIssuer = issuer,
+                ValidateAudience = true,
+                ValidAudience = audience,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            app.UseJwtBearerAuthentication(new JwtBearerOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                TokenValidationParameters = validationParameters
+            });
+
+            var options = new TokenProviderOptions
+            {
+                Audience = audience,
+                Issuer = issuer,
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
+            };
+
+            app.UseMiddleware<TokenProvider>(Options.Create(options));
 
             app.UseMvc(routes =>
             {
@@ -95,6 +135,10 @@ namespace BikeTracker.Core
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+
+            services.AddOptions();
+
+            services.Configure<DataSeederSettings>(Configuration.GetSection("DataSeeder"));
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();

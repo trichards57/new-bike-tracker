@@ -5,11 +5,8 @@ Click here to learn more. https://go.microsoft.com/fwlink/?LinkId=518007
 
 const _ = require('lodash');
 const autoprefixer = require('gulp-autoprefixer');
-const babel = require('gulp-babel');
 const browserify = require('browserify');
 const cleanCSS = require('gulp-clean-css');
-const eslint = require('gulp-eslint');
-const flow = require('gulp-flowtype');
 const gulp = require('gulp');
 const nodeResolve = require('resolve');
 const pump = require('pump');
@@ -17,9 +14,10 @@ const sass = require('gulp-sass');
 const source = require('vinyl-source-stream');
 const streamify = require('gulp-streamify');
 const uglify = require('gulp-uglify');
+const tsify = require("tsify");
 
 const appSources = [
-    './src/js/app.jsx',
+    './src/js/app.tsx',
 ];
 
 const scssSources = [
@@ -28,24 +26,6 @@ const scssSources = [
 
 gulp.task('default', ['build-vendor', 'build-app', 'build-sass', 'build-fonts', 'lint']);
 gulp.task('release', ['release-vendor', 'release-app', 'release-sass', 'build-fonts']);
-
-gulp.task('lint', (cb) => {
-    pump([
-        gulp.src(['**/*.jsx', '!node_modules/**', '!wwwroot']),
-        eslint(),
-        eslint.format(),
-        eslint.failAfterError()
-    ], cb);
-});
-
-gulp.task('typecheck', (cb) => {
-    pump([
-        gulp.src('./src/js/**/*.jsx'),
-        flow({
-            all: true
-        }),
-    ])
-});
 
 gulp.task('build-sass', (cb) => {
     pump([
@@ -67,9 +47,10 @@ gulp.task('build-sass', (cb) => {
 });
 
 gulp.task('build-app', (cb) => {
-    var b = browserify(appSources, {
+    var b = browserify({
         // generate source maps in non-production environment
         debug: true,
+        entries: appSources
     });
 
     // mark vendor libraries as external
@@ -78,8 +59,7 @@ gulp.task('build-app', (cb) => {
     });
 
     pump([
-        b.transform("babelify", { presets: ["es2015", "react", "flow"] })
-            .bundle(),
+        b.plugin(tsify).bundle(),
         source('app.js'),
         gulp.dest('./wwwroot/js')
     ], cb);
@@ -169,7 +149,7 @@ gulp.task('release-vendor', (cb) => {
 
 gulp.task('watch', function () {
     gulp.watch(['./src/sass/**/*.scss'], ['build-sass']);
-    gulp.watch(['./src/js/**/*.jsx'], ['build-app', 'lint']);
+    gulp.watch(['./src/js/**/*.tsx'], ['build-app']);
 });
 
 function getNPMPackageIds() {
