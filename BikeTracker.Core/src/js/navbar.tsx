@@ -31,16 +31,11 @@ export class MainNav extends React.Component<IMainNavProps, IMainNavState> {
         let loginElement;
 
         if (this.props.authenticated) {
-            loginElement = [
-                <NavItem key="hello">
-                    <Link className="nav-link" to="/profile">
-                        Hello {this.props.name}
-                    </Link>
-                </NavItem>,
-                <NavItem key="logout">
-                    <NavLink href="/" onClick={() => this.props.onLogout()}>Logout</NavLink>
-                </NavItem>
-            ];
+            loginElement = <NavItem key="hello">
+                <Link className="nav-link" to="/profile">
+                    Hello {this.props.name}
+                </Link>
+            </NavItem>;
         }
         else {
             loginElement = <NavItem>

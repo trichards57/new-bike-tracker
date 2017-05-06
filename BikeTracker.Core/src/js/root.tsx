@@ -4,44 +4,22 @@ import { Home } from './home/home';
 import { Login } from './login/login';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import * as Cookies from 'js-cookie';
+import { AppStore } from "./store/app-store";
+import { observer } from "mobx-react";
+import { Alert, Container } from "reactstrap";
 
 interface IRootProps {
+    store: AppStore;
 }
 
-interface IRootState {
-    authenticated: boolean;
-    name?: string;
-}
 
-interface IWhoAmIResult {
-    authenticated: boolean;
-    realName: string;
-    role: string[];
-    userName: string;
-}
 
-export class Root extends React.Component<IRootProps, IRootState> {
+@observer
+export class Root extends React.Component<IRootProps, undefined> {
     constructor(props: IRootProps) {
         super(props);
 
-        this.state = {
-            authenticated: true
-        };
-
-        this.checkAuthentication();
-    }
-
-    async checkAuthentication() {
-        let result = await fetch('/api/account/whoami', {
-            credentials: 'same-origin'
-        });
-
-        let whoAmI = await result.json() as IWhoAmIResult;
-
-        this.setState({
-            authenticated: whoAmI.authenticated,
-            name: whoAmI.realName
-        });
+        this.props.store.user.checkAuthentication(true);
     }
 
     async logOut() {
@@ -59,10 +37,17 @@ export class Root extends React.Component<IRootProps, IRootState> {
     }
 
     render() {
+        let showError = this.props.store.error.length > 0;
+
         return (
             <Router>
                 <div>
-                    <MainNav name={this.state.name} authenticated={this.state.authenticated} onLogout={() => this.logOut()} />
+                    <MainNav name={this.props.store.user.name} authenticated={this.props.store.user.authenticated} onLogout={() => this.logOut()} />
+                    <Container>
+                        <Alert isOpen={showError} color="danger" toggle={() => this.props.store.clearError()}>
+                            {this.props.store.error}
+                        </Alert>
+                    </Container>
                     <Route exact path='/' component={Home} />
                     <Route exact path='/app/login' component={Login} />
                 </div>

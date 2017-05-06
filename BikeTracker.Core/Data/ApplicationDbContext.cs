@@ -14,6 +14,7 @@ namespace BikeTracker.Core.Data
 
         public DbSet<CallsignRecord> CallsignRecords { get; set; }
         public DbSet<LocationRecord> LocationRecords { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

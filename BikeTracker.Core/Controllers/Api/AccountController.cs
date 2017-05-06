@@ -34,9 +34,16 @@ namespace BikeTracker.Core.Controllers.Api
             {
                 var user = await _userManager.GetUserAsync(User);
 
-                res.RealName = user.RealName;
-                res.Role = await _userManager.GetRolesAsync(user);
-                res.UserName = user.UserName;
+                if (user != null)
+                {
+                    res.RealName = user.RealName;
+                    res.Role = await _userManager.GetRolesAsync(user);
+                    res.UserName = user.UserName;
+                }
+                else
+                {
+                    res.Authenticated = false;
+                }
             }
 
             return Ok(res);

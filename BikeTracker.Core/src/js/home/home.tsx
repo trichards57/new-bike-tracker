@@ -2,18 +2,27 @@
 
 import { Jumbotron, Button, Card, CardBlock, CardTitle, CardText, CardDeck } from 'reactstrap';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { AppStore } from "../store/app-store";
+import { inject, observer } from "mobx-react";
 
 interface IHomeProps extends RouteComponentProps<any> {
+    appStore : AppStore
 }
 
+@inject("appStore") @observer
 export class Home extends React.Component<IHomeProps, undefined> {
     render() {
+        let jumpoButton = this.props.appStore.user.authenticated ?
+            <Link to="/app/map" className="btn btn-lg btn-sja-dark-green">Go to Map »</Link> :
+            <Link to="/app/login" className="btn btn-lg btn-sja-dark-green">Log in »</Link>;
+
+
         return (
             <div className="container">
                 <Jumbotron>
                     <h1 className="display-3">SJA Tracker</h1>
                     <p className="lead">Welcome to the St Ambulance SWR Central District Tracker</p>
-                    <Link to="/app/login" className="btn btn-lg btn-sja-dark-green">Log in »</Link>
+                    {jumpoButton}
                 </Jumbotron>
 
                 <CardDeck className="front-page">

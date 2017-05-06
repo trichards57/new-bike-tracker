@@ -7,7 +7,6 @@ using BikeTracker.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +17,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
-using System.Threading.Tasks;
 using WebsiteHelpers.Interfaces;
 
 namespace BikeTracker.Core
@@ -104,6 +102,14 @@ namespace BikeTracker.Core
                 AutomaticChallenge = true,
                 TokenValidationParameters = validationParameters
             });
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                AuthenticationScheme = "Cookie",
+                CookieName = "access_token",
+                TicketDataFormat = new CustomJwtDataFormat(SecurityAlgorithms.HmacSha256, validationParameters)
+            });
 
             var options = new TokenProviderOptions
             {
@@ -146,6 +152,7 @@ namespace BikeTracker.Core
 
             services.AddTransient<IItemService<CallsignRecord>, CallsignService>();
             services.AddTransient<IItemService<LocationRecord>, LocationRecordService>();
+            services.AddTransient<ApplicationUserManager>();
         }
     }
 }

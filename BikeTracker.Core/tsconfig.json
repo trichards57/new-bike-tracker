@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "target": "es5",
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "lib": [ "dom", "es5", "scripthost", "es2015.promise" ],
+    "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "suppressImplicitAnyIndexErrors": true,
     "outFile": "./wwwroot/js/site.js",
-    "jsx": "react",
-    "lib": [ "dom", "es5", "scripthost", "es2015.promise" ]
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es5"
   },
   "compileOnSave": true,
   "include": [ "./Scripts/**/*" ]
