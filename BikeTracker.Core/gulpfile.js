@@ -24,7 +24,7 @@ const scssSources = [
     './src/sass/theme.scss',
 ]
 
-gulp.task('default', ['build-vendor', 'build-app', 'build-sass', 'build-fonts', 'lint']);
+gulp.task('default', ['build-vendor', 'build-app', 'build-sass', 'build-fonts']);
 gulp.task('release', ['release-vendor', 'release-app', 'release-sass', 'build-fonts']);
 
 gulp.task('build-sass', (cb) => {

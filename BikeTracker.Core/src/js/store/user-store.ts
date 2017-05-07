@@ -1,4 +1,6 @@
 import { observable, action } from 'mobx';
+import * as _ from "lodash";
+import { AppStore } from "./app-store";
 
 interface IWhoAmIResult {
     authenticated: boolean;
@@ -8,10 +10,18 @@ interface IWhoAmIResult {
 }
 
 export class UserStore {
+    constructor(parentStore: AppStore) {
+        this._appStore = parentStore;
+    }
+
+    private _appStore: AppStore;
+
     @observable authenticated: boolean;
     @observable name: string;
+    @observable administrator: boolean;
 
-    @action checkAuthentication = async (tryRefresh:boolean = false) => {
+    @action checkAuthentication = async (tryRefresh: boolean = false) => {
+
         let result = await fetch('/api/account/whoami', {
             credentials: 'same-origin'
         });
@@ -20,9 +30,10 @@ export class UserStore {
 
         this.authenticated = whoAmI.authenticated;
         this.name = whoAmI.realName;
+        this.administrator = _.includes(whoAmI.role, "AdminUser");
 
         if (!this.authenticated && tryRefresh)
-            this.refreshAuthentication();
+            await this.refreshAuthentication();
     }
 
     @action refreshAuthentication = async () => {

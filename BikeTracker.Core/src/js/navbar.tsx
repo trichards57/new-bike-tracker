@@ -6,6 +6,7 @@ interface IMainNavProps {
     name: string;
     authenticated: boolean;
     onLogout?: () => void;
+    administrator: boolean;
 }
 
 interface IMainNavState {
@@ -43,10 +44,20 @@ export class MainNav extends React.Component<IMainNavProps, IMainNavState> {
             </NavItem>;
         }
 
+        let adminLinks: any;
+
+        if (this.props.administrator) {
+            adminLinks = <NavItem>
+                <Link className="nav-link" to="/app/admin">Admin</Link>
+            </NavItem>
+        }
+
         return (
             <Navbar color="sja-dark-green" inverse toggleable>
                 <NavbarToggler right onClick={() => this.toggle()} />
-                <NavbarBrand href="/">SJA Tracker</NavbarBrand>
+                <NavbarBrand href="/">
+                    SJA Tracker
+                </NavbarBrand>
                 <Collapse isOpen={this.state.isOpen} navbar>
                     <Nav navbar>
                         <NavItem>
@@ -58,6 +69,7 @@ export class MainNav extends React.Component<IMainNavProps, IMainNavState> {
                         <NavItem>
                             <Link className="nav-link" to="/Contact">Contact</Link>
                         </NavItem>
+                        {adminLinks}
                     </Nav>
                     <Nav navbar className="ml-auto">
                         {loginElement}

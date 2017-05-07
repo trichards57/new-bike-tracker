@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 
-import { Jumbotron, Button, Card, CardBlock, CardTitle, CardText, CardDeck } from 'reactstrap';
+import { Jumbotron, Button, Card, CardBlock, CardTitle, CardText, CardDeck, Container } from 'reactstrap';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { AppStore } from "../store/app-store";
 import { inject, observer } from "mobx-react";
@@ -18,7 +18,7 @@ export class Home extends React.Component<IHomeProps, undefined> {
 
 
         return (
-            <div className="container">
+            <Container>
                 <Jumbotron>
                     <h1 className="display-3">SJA Tracker</h1>
                     <p className="lead">Welcome to the St Ambulance SWR Central District Tracker</p>
@@ -54,7 +54,7 @@ export class Home extends React.Component<IHomeProps, undefined> {
                         </CardBlock>
                     </Card>
                 </CardDeck>
-            </div>
+            </Container>
         );
     }
 }

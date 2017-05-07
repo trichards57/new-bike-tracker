@@ -152,6 +152,7 @@ namespace BikeTracker.Core
 
             services.AddTransient<IItemService<CallsignRecord>, CallsignService>();
             services.AddTransient<IItemService<LocationRecord>, LocationRecordService>();
+            services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<ApplicationUserManager>();
         }
     }

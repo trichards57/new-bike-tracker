@@ -8717,5 +8717,11 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
   .card-deck.front-page .card:nth-last-child(2) {
     margin-right: 0; } }
 
-#login-card {
+.login-card {
   margin-top: 40px; }
+
+.waiting-display {
+  margin-top: 20px; }
+
+.jumbotron {
+  margin-top: 20px; }
