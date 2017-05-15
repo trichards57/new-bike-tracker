@@ -4,7 +4,6 @@
     <TargetFramework>net462</TargetFramework>
     <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
   </PropertyGroup>
-
   <PropertyGroup>
     <UserSecretsId>aspnet-BikeTracker.Core-05ed097b-131c-49c7-a1c0-2a58723f268d</UserSecretsId>
     <TypeScriptEnabled>false</TypeScriptEnabled>
@@ -36,9 +35,4 @@
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\js\NewFolder\" />
-  </ItemGroup>
-
-
 </Project>
