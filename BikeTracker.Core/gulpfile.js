@@ -109,10 +109,7 @@ gulp.task('release-sass', (cb) => {
 });
 
 gulp.task('release-app', (cb) => {
-    var b = browserify(appSources, {
-        // generate source maps in non-production environment
-        debug: true,
-    });
+    var b = browserify(appSources);
 
     // mark vendor libraries as external
     getNPMPackageIds().forEach(function (id) {
@@ -129,10 +126,7 @@ gulp.task('release-app', (cb) => {
 });
 
 gulp.task('release-vendor', (cb) => {
-    var b = browserify({
-        // generate source maps in non-production environment
-        debug: true
-    });
+    var b = browserify();
 
     // resolve npm modules
     getNPMPackageIds().forEach(function (id) {

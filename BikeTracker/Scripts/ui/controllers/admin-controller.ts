@@ -61,9 +61,9 @@ class AdminController extends BaseController {
 
         let vm = this;
 
-        modalInstance.result.then(function (res) {
-            var i = vm.User.
-        });
+        //modalInstance.result.then(function (res) {
+        //    var i = vm.User.
+        //});
     }
 }
 

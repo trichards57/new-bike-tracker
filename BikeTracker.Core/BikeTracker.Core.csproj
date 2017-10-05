@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
     <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
+    <TypeScriptToolsVersion>2.4</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup>
     <UserSecretsId>aspnet-BikeTracker.Core-05ed097b-131c-49c7-a1c0-2a58723f268d</UserSecretsId>
